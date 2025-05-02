@@ -1,6 +1,6 @@
 # TuRTLe
 <div align="center">
-  <img src="![image](https://github.com/user-attachments/assets/7690f8ef-2887-426c-bea5-0be2c8b6ed8f)" width="400" alt="HPAI"/>
+  <img src="https://raw.githubusercontent.com/HPAI-BSC/prompt_engine/main/images/TuRTLe_logo.png" width="400" alt="HPAI"/>
   <h2 align="center">
     TuRTLe: A Unified Evaluation of LLMs for RTL Generation
   </h2>
