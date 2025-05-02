@@ -1,9 +1,8 @@
-# TuRTLe
 <div align="center">
-  <img src="https://raw.githubusercontent.com/HPAI-BSC/prompt_engine/main/images/TuRTLe_logo.png" width="400" alt="HPAI"/>
-  <h2 align="center">
+  <h1 align="center">
     TuRTLe: A Unified Evaluation of LLMs for RTL Generation
-  </h2>
+  </h1>
+  <img src="images/TuRTLe_logo.png" width="400" alt="HPAI"/>
 </div>
 <div align="center" style="line-height: 1;">
   <a href="https://hpai.bsc.es/" target="_blank" style="margin: 1px;">
@@ -37,3 +36,36 @@
     <img alt="License" src="https://img.shields.io/github/license/HPAI-BSC/TuRTLe" style="display: inline-block; vertical-align: middle;"/>
   </a>
 </div>
+
+_Description here_    
+      
+# Leaderboard   
+
+# Usage
+
+## Prerequisites
+
+## Running benchmarks
+
+## Add your own benchmark   
+
+      
+# How to contribute   
+
+# License   
+
+# Citation
+
+```
+@misc{garciagasulla2025turtleunifiedevaluationllms,
+      title={TuRTLe: A Unified Evaluation of LLMs for RTL Generation}, 
+      author={Dario Garcia-Gasulla and Gokcen Kestor and Emanuele Parisi and Miquel Albert\'i-Binimelis and Cristian Gutierrez and Razine Moundir Ghorab and Orlando Montenegro and Bernat Homs and Miquel Moreto},
+      year={2025},
+      eprint={2504.01986},
+      archivePrefix={arXiv},
+      primaryClass={cs.AR},
+      url={https://arxiv.org/abs/2504.01986}, 
+}
+```
+      
+# Contact
