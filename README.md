@@ -63,7 +63,7 @@ Benchmarks implemented so far are:
 
 - **[2025-03-31]** Our paper *"TuRTLe: A Unified Evaluation of LLMs for RTL Generation"* is now available on [arXiv](https://arxiv.org/abs/2504.01986)!
 
-# Leaderboard 📋 
+# Leaderboard 🥇 
 
 Check the [TuRTLe Leaderboard](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard) to know the best open-source models for each task.
 
@@ -142,13 +142,13 @@ The process to implement a benchmark is very similar to the one described by [bi
 3. Complete all the TODO comments in the template file.
 3. Define a configuration file named `turtle/configs/<benchmark_name>.yml` and list the models you want to evaluate along with their required parameters.
       
-# How to contribute   
+# How to contribute 🤝  
 
 Any contribution is more than welcome! If you've found a bug or have an idea for an improvement, don't hesitate to open an issue using our [issue template](). We also encourage people to do pull requests with new benchmarks of any task relevant for chip design.
 
-# License   
+# License ⚖️  
 
-# Citation
+# Citation 📖
 
 ```
 @misc{garciagasulla2025turtleunifiedevaluationllms,
@@ -162,7 +162,7 @@ Any contribution is more than welcome! If you've found a bug or have an idea for
 }
 ```
       
-# Contact
+# Contact 📩
 
 ---
 
