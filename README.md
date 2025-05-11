@@ -43,7 +43,7 @@
 </div>
 <br>
 
-# 🐢 Welcome to the **TuRTLe Project**! 🐢
+# 🐢Welcome to the **TuRTLe Project**!🐢
 
 TuRTLe is a framework to systematically assess LLMs across
 key RTL generation tasks. It integrates multiple existing benchmarks and automates the evaluation process, enabling a comprehensive assessment of LLM performance in syntax correctness,
@@ -63,28 +63,52 @@ Benchmarks implemented so far are:
 
 - **[2025-03-31]** Our paper *"TuRTLe: A Unified Evaluation of LLMs for RTL Generation"* is now available on [arXiv](https://arxiv.org/abs/2504.01986)!
 
-# Leaderboard   
+# Leaderboard 📋 
 
 Check the [TuRTLe Leaderboard](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard) to know the best open-source models for each task.
 
-# Usage
-
-## 📋 *Requirements*
-
-Before we get started, make sure you have the following installed on your system:
-
-We recommend using Singularity for containerization on HPC environments.  
+# Usage  
 
 ## 🛠 *Installation Steps*
 
-Clone the repository and run the following command to install all the dependencies
+Follow the steps below to set up the environment and install all dependencies:
+
+1. **Clone the repository** (including submodules):
+
+   ```bash
+   git clone --recurse-submodules https://github.com/HPAI-BSC/TuRTLe.git
+   cd your-repo-name
+   ```
+
+   > *If you've already cloned the repo without `--recurse-submodules`, run:*
+
+   ```bash
+   git submodule update --init --recursive
+   ```
+
+2. **(Optional) Create and activate a virtual environment**:
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install Python dependencies**:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+We recommend using Singularity for containerization on HPC environments. TuRTLe can dynamically create and submit Slurm job script. To enable this, include the following settings in your benchmark configuration file:
+- **singularity_image**: path to your singularity image.
+- For each model, specify a **slurm_config** from `turtle/configs/slurm.yml` with the slurm directives to run the benchmark.
 
 ## 🏃‍♂️ *Running the Project*
 
-To execute the project, use the run.py script with the appropriate arguments. Below are the details of the available parameters:
+To execute the project, use the `turtle/run.py` script with the appropriate arguments. Below are the details of the available parameters:
 
 ```bash
-python run.py [--benchmark <config_file>] [--model <model_name>] [--run_all]
+python turtle/run.py [--benchmark <config_file>] [--model <model_name>] [--run_all]
 ```
 
 ### Parameters
@@ -97,22 +121,26 @@ python run.py [--benchmark <config_file>] [--model <model_name>] [--run_all]
 
 1. Run all models specified in the configuration file for the RTL-Repo benchmark:
    ```bash
-   python run.py --benchmark rtlrepo 
+   python turtle/run.py --benchmark rtlrepo 
    ```
 
 2. Test Qwen2.5-32B against the benchmark VerilogEval Code Completion:
    ```bash
-   python run.py --benchmark verilog_eval_cc --model Qwen2.5-32B
+   python turtle/run.py --benchmark verilog_eval_cc --model Qwen2.5-32B
    ```
 
 3. Run all benchmarks against all models:
    ```bash
-   python run.py --run_all
+   python turtle/run.py --run_all
    ```
 
 ## ✨ *Add your benchmark*   
 
-The process to implement a benchmark is very similar to the one described by [bigcode-evaluation-harness guide](https://github.com/bigcode-project/bigcode-evaluation-harness/blob/main/docs/guide.md).
+The process to implement a benchmark is very similar to the one described by [bigcode-evaluation-harness guide](https://github.com/bigcode-project/bigcode-evaluation-harness/blob/main/docs/guide.md). Follow these steps:
+
+1. Copy the `turtle/tasks/template/new_task.py` into `turtle/tasks/` and rename it with the name of your benchmark `<benchmark_name>.py`.
+3. Complete all the TODO comments in the template file.
+3. Define a configuration file named `turtle/configs/<benchmark_name>.yml` and list the models along with their required parameters.
       
 # How to contribute   
 
