@@ -45,8 +45,8 @@
 
 # 🐢Welcome to the **TuRTLe Project**!🐢
 
-TuRTLe is a framework to systematically assess LLMs across
-key RTL generation tasks. It integrates multiple existing benchmarks and automates the evaluation process, enabling a comprehensive assessment of LLM performance in syntax correctness,
+TuRTLe is a framework to assess LLMs across
+key RTL generation tasks systematically. It integrates multiple existing benchmarks and automates the evaluation process, enabling a comprehensive assessment of LLM performance in syntax correctness,
 functional correctness, synthesis, PPA optimization, and exact line
 completion.
 
@@ -138,9 +138,9 @@ python turtle/run.py [--benchmark <config_file>] [--model <model_name>] [--run_a
 
 The process to implement a benchmark is very similar to the one described by [bigcode-evaluation-harness guide](https://github.com/bigcode-project/bigcode-evaluation-harness/blob/main/docs/guide.md). Follow these steps:
 
-1. Copy the `turtle/tasks/template/new_task.py` into `turtle/tasks/` and rename it with the name of your benchmark `<benchmark_name>.py`.
+1. Copy the `turtle/tasks/template/new_task.py` into `turtle/tasks/` and rename it to the name of your benchmark `<benchmark_name>.py`.
 3. Complete all the TODO comments in the template file.
-3. Define a configuration file named `turtle/configs/<benchmark_name>.yml` and list the models along with their required parameters.
+3. Define a configuration file named `turtle/configs/<benchmark_name>.yml` and list the models you want to evaluate along with their required parameters.
       
 # How to contribute   
 
