@@ -166,4 +166,4 @@ Any contribution is more than welcome! If you've found a bug or have an idea for
 
 ---
 
-**Made with ❤️ by [HPAI]**  
+**Made with ❤️ by [HPAI](https://hpai.bsc.es/) at the [Barcelona Supercomputing Center (BSC)](https://www.bsc.es/)**  
