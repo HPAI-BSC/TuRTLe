@@ -54,18 +54,31 @@ This work extends the functionality and flexibility of [bigcode-evaluation-harne
 
 Benchmarks implemented so far are:
 
-- [VerilogEval](https://github.com/NVlabs/verilog-eval) (Specification-to-RTL and Module Completion)
-- [RTLLM v1.1 and v2.0](https://github.com/hkust-zhiyao/RTLLM) (Specification-to-RTL)
-- [VGen](https://github.com/shailja-thakur/VGen) (Module Completion)
-- [RTL-Repo](https://github.com/AUCOHL/RTL-Repo) (Single Line Completion)
+- [VerilogEval](https://github.com/NVlabs/verilog-eval): Specification-to-RTL and Module Completion
+- [RTLLM v1.1 and v2.0](https://github.com/hkust-zhiyao/RTLLM): Specification-to-RTL
+- [VGen](https://github.com/shailja-thakur/VGen): Module Completion
+- [RTL-Repo](https://github.com/AUCOHL/RTL-Repo): Single Line Completion
+
+Open-source EDA tools integrated:
+
+- [ICARUS Verilog](https://github.com/steveicarus/iverilog): syntax and functionality
+- [Yosis](https://github.com/YosysHQ/yosys): synthesis
+- [OpenROAD](https://github.com/The-OpenROAD-Project/OpenROAD): PPA
+- [OpenLane](https://github.com/The-OpenROAD-Project/OpenLane): to integrate Yosis and OpenROAD
+
+General overview of the framework:
+![TuRTLe diagram](images/TuRTLe_diagram.png)
 
 # Latest News 🔥
 
-- **[2025-03-31]** Our paper *"TuRTLe: A Unified Evaluation of LLMs for RTL Generation"* is now available on [arXiv](https://arxiv.org/abs/2504.01986)!
+- **[2025-05-14]** The project’s source code is now publicly released. We’d love to hear your feedback, so give it a try!
+- **[2025-03-31]** Our paper *"TuRTLe: A Unified Evaluation of LLMs for RTL Generation"* is now available on [ArXiv](https://arxiv.org/abs/2504.01986)!
+- **[2025-03-20]** The leaderboard is now live! Check it out on our [Huggingface Space](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard).
 
 # Leaderboard 🥇 
 
 Check the [TuRTLe Leaderboard](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard) to know the best open-source models for each task.
+![Leaderboard screenshot](images/Leaderboard_screenshot.png)
 
 # Usage  
 
@@ -141,12 +154,6 @@ The process to implement a benchmark is very similar to the one described by [bi
 1. Copy the `turtle/tasks/template/new_task.py` into `turtle/tasks/` and rename it to the name of your benchmark `<benchmark_name>.py`.
 3. Complete all the TODO comments in the template file.
 3. Define a configuration file named `turtle/configs/<benchmark_name>.yml` and list the models you want to evaluate along with their required parameters.
-      
-# How to contribute 🤝  
-
-Any contribution is more than welcome! If you've found a bug or have an idea for an improvement, don't hesitate to open an issue using our [issue template](). We also encourage people to do pull requests with new benchmarks of any task relevant for chip design.
-
-# License ⚖️  
 
 # Citation 📖
 
@@ -161,8 +168,14 @@ Any contribution is more than welcome! If you've found a bug or have an idea for
       url={https://arxiv.org/abs/2504.01986}, 
 }
 ```
-      
+
+# How to contribute 🤝  
+
+Any contribution is more than welcome! If you've found a bug or have an idea for an improvement, don't hesitate to open an issue using our [issue template](). We also encourage people to do pull requests with new benchmarks of any task relevant for chip design.
+
 # Contact 📩
+
+If you have any questions or feedback, feel free to email us at hpai@bsc.es. You can also support the project by following or starring the repository.
 
 ---
 
