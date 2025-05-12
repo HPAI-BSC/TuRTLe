@@ -66,7 +66,7 @@ Open-source EDA tools integrated:
 - [OpenROAD](https://github.com/The-OpenROAD-Project/OpenROAD): PPA
 - [OpenLane](https://github.com/The-OpenROAD-Project/OpenLane): to integrate Yosis and OpenROAD
 
-General overview of the framework:
+For more details about our work, refer to our [ArXiv paper](https://arxiv.org/abs/2504.01986). Here you have a diagram of the high-level structure of the framework:
 ![TuRTLe diagram](images/TuRTLe_diagram.png)
 
 # Latest News 🔥
