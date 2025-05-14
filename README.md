@@ -112,9 +112,29 @@ Follow the steps below to set up the environment and install all dependencies:
    pip install -r requirements.txt
    ```
 
-We recommend using Singularity for containerization on HPC environments. TuRTLe can dynamically create and submit Slurm job script. To enable this, include the following settings in your benchmark configuration file:
+4. **Intall EDA Tools (not required for line completion benchmarks)**
+
+    To install **OpenLane**, follow the instructions provided in the [OpenLane Installation Guide](https://openlane2.readthedocs.io/en/latest/getting_started/installation_overview.html).
+    
+    To install **ICARUS Verilog** on Windows check the [Icarus Verilog Windows download page](https://bleyer.org/icarus/). To install it on Linux execute:
+    ```bash
+    sudo apt-get update
+    sudo apt-get install iverilog
+    ```
+
+Finally, we recommend using Singularity for containerization on HPC environments. TuRTLe can dynamically create and submit Slurm job script. To enable this, include the following settings in your benchmark configuration file:
 - **singularity_image**: path to your singularity image.
 - For each model, specify a **slurm_config** from `turtle/configs/slurm.yml` with the slurm directives to run the benchmark.
+
+## 🚀 *Quick Demo*
+
+To quickly test the framework, try to evaluate a small model on the RTL-Repo benchmark by executing the command:
+
+```bash
+python turtle/run.py --benchmark demo --model Qwen2-0.5B
+```
+
+This command will load the configurations from the `demo.yml` file, where we specified the benchmark we want to run (RTL-Repo) and all the parameters required for the evaluation. The results (`generations.json` and `metrics.json`) will be saved in the `results/` directory.
 
 ## 🏃‍♂️ *Running the Project*
 
