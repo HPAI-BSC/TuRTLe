@@ -54,7 +54,7 @@ This work extends the functionality and flexibility of [bigcode-evaluation-harne
 
 Benchmarks implemented so far are:
 
-- [VerilogEval](https://github.com/NVlabs/verilog-eval): Specification-to-RTL and Module Completion
+- [VerilogEval v2.0](https://github.com/NVlabs/verilog-eval): Specification-to-RTL and Module Completion
 - [RTLLM v1.1 and v2.0](https://github.com/hkust-zhiyao/RTLLM): Specification-to-RTL
 - [VGen](https://github.com/shailja-thakur/VGen): Module Completion
 - [RTL-Repo](https://github.com/AUCOHL/RTL-Repo): Single Line Completion
@@ -62,7 +62,7 @@ Benchmarks implemented so far are:
 Open-source EDA tools integrated:
 
 - [ICARUS Verilog](https://github.com/steveicarus/iverilog): syntax and functionality
-- [Yosis](https://github.com/YosysHQ/yosys): synthesis
+- [Yosys](https://github.com/YosysHQ/yosys): synthesis
 - [OpenROAD](https://github.com/The-OpenROAD-Project/OpenROAD): PPA
 - [OpenLane](https://github.com/The-OpenROAD-Project/OpenLane): to integrate Yosis and OpenROAD
 
