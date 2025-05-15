@@ -82,21 +82,18 @@ Check the [TuRTLe Leaderboard](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Lea
 
 # Usage  
 
+## ⚠️ *Dependencies Notice*
+
+Please note that **vLLM** currently supports up to **Python 3.12**. Ensure that your Python version does not exceed this limit to avoid compatibility issues.
+
 ## 🛠 *Installation Steps*
 
 Follow the steps below to set up the environment and install all dependencies:
 
-1. **Clone the repository** (including submodules):
+1. **Clone the repository**:
 
    ```bash
-   git clone --recurse-submodules https://github.com/HPAI-BSC/TuRTLe.git
-   cd your-repo-name
-   ```
-
-   > *If you've already cloned the repo without `--recurse-submodules`, run:*
-
-   ```bash
-   git submodule update --init --recursive
+   git clone --recursive https://github.com/HPAI-BSC/turtle.git
    ```
 
 2. **(Optional) Create and activate a virtual environment**:
@@ -108,11 +105,24 @@ Follow the steps below to set up the environment and install all dependencies:
 
 3. **Install Python dependencies**:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+    ```bash
+    cd your-repo-path
+    pip install -r requirements.txt
+    ```
+    On non-Linux devices the above command will raise:
+    ```
+    AssertionError: vLLM only supports Linux platform (including WSL).​
+    ```
+    In this case, vLLM has to be installed from source (see their [installation page](https://docs.vllm.ai/en/stable/getting_started/installation/cpu.html?device=apple#build-wheel-from-source) for details).
 
-4. **Intall EDA Tools (not required for line completion benchmarks)**
+4. **Install bigcode-evaluation-harness as a pypi package**:
+    
+    ```bash
+    cd your-repo-path/bigcode-evaluation-harness/​
+    pip install -e .
+    ```
+
+5. **Intall EDA Tools (not required for single line completion benchmarks)**
 
     To install **OpenLane**, follow the instructions provided in the [OpenLane Installation Guide](https://openlane2.readthedocs.io/en/latest/getting_started/installation_overview.html).
     
