@@ -113,7 +113,7 @@ Follow the steps below to set up the environment and install all dependencies:
     ```
     AssertionError: vLLM only supports Linux platform (including WSL).​
     ```
-    In this case, vLLM has to be installed from source (see their [installation page](https://docs.vllm.ai/en/stable/getting_started/installation/cpu.html?device=apple#build-wheel-from-source) for details).
+    In this case, vLLM has to be installed from source (see their [installation page](https://docs.vllm.ai/en/stable/getting_started/installation.html) for details).
 
 4. **Install bigcode-evaluation-harness as a pypi package**:
     
