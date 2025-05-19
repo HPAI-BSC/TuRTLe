@@ -75,6 +75,12 @@ For more details about our work, refer to our [ArXiv paper](https://arxiv.org/ab
 - **[2025-03-31]** Our paper *"TuRTLe: A Unified Evaluation of LLMs for RTL Generation"* is now available on [ArXiv](https://arxiv.org/abs/2504.01986)!
 - **[2025-03-20]** The leaderboard is now live! Check it out on our [Huggingface Space](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard).
 
+# Road Map
+
+- **[In progress]** Release repo compatible with local execution
+- **[In progress]** Release multi-node code version
+- **[In progress]** Release updated paper on Arxiv
+
 # Leaderboard 🥇 
 
 Check the [TuRTLe Leaderboard](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard) to know the best open-source models for each task.
@@ -113,7 +119,7 @@ Follow the steps below to set up the environment and install all dependencies:
     ```
     AssertionError: vLLM only supports Linux platform (including WSL).​
     ```
-    In this case, vLLM has to be installed from source (see their [installation page](https://docs.vllm.ai/en/stable/getting_started/installation/cpu.html?device=apple#build-wheel-from-source) for details).
+    In this case, vLLM has to be installed from source (see their [installation page](https://docs.vllm.ai/en/stable/getting_started/installation.html) for details).
 
 4. **Install bigcode-evaluation-harness as a pypi package**:
     
@@ -138,13 +144,7 @@ Finally, we recommend using Singularity for containerization on HPC environments
 
 ## 🚀 *Quick Demo*
 
-To quickly test the framework, try to evaluate a small model on the RTL-Repo benchmark by executing the command:
-
-```bash
-python turtle/run.py --benchmark demo --model Qwen2-0.5B
-```
-
-This command will load the configurations from the `demo.yml` file, where we specified the benchmark we want to run (RTL-Repo) and all the parameters required for the evaluation. The results (`generations.json` and `metrics.json`) will be saved in the `results/` directory.
+Coming soon.
 
 ## 🏃‍♂️ *Running the Project*
 
