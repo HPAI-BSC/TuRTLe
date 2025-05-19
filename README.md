@@ -71,7 +71,7 @@ For more details about our work, refer to our [ArXiv paper](https://arxiv.org/ab
 
 # Latest News 🔥
 
-- **[2025-05-14]** The project’s source code is now publicly released. We’d love to hear your feedback, so give it a try!
+- **[2025-05-19]** The project’s source code is now publicly released. We’d love to hear your feedback, so give it a try!
 - **[2025-03-31]** Our paper *"TuRTLe: A Unified Evaluation of LLMs for RTL Generation"* is now available on [ArXiv](https://arxiv.org/abs/2504.01986)!
 - **[2025-03-20]** The leaderboard is now live! Check it out on our [Huggingface Space](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard).
 
@@ -91,6 +91,10 @@ Check the [TuRTLe Leaderboard](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Lea
 ## ⚠️ *Dependencies Notice*
 
 Please note that **vLLM** currently supports up to **Python 3.12**. Ensure that your Python version does not exceed this limit to avoid compatibility issues.
+
+## ⚙️ *HPC Environment Requirements*
+
+Most of the modes require to be executed in HPC environments. For this reason, TuRTLe currently relies on **Slurm** and **Singularity** for its execution.
 
 ## 🛠 *Installation Steps*
 
@@ -153,6 +157,8 @@ To execute the project, use the `turtle/run.py` script with the appropriate argu
 ```bash
 python turtle/run.py [--benchmark <config_file>] [--model <model_name>] [--run_all]
 ```
+
+If the configuration file includes both `singularity_image` and `slurm_config`, TuRTLe will automatically generate and execute a Slurm script to run the benchmark using the specified Singularity image.
 
 ### Parameters
 
