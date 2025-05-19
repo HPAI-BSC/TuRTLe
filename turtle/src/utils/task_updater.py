@@ -50,11 +50,10 @@ class TaskUpdater:
             sys.path.insert(0, src_path)
 
         try:
-            # Importar usando la ruta completa desde el directorio src
+            # Add your new benchmark python files here
             self.verilog_eval = import_module("tasks.verilog_eval")
             self.rtllm = import_module("tasks.rtllm")
             self.rtlrepo = import_module("tasks.rtlrepo")
-            self.verigen = import_module("tasks.vgen")
         except ImportError as e:
             print(f"Error importing modules: {e}")
             print(f"Current sys.path: {sys.path}")
@@ -62,13 +61,13 @@ class TaskUpdater:
 
     def _create_extended_registry(self):
         """Combine original and new tasks into extended registry."""
+        # Add your new benchmark tasks here
         self.extended_registry = {
             **self.original_registry,
             "verilog_eval_cc": self.verilog_eval.VerilogEvalCodeComplete,
             "verilog_eval_rtl": self.verilog_eval.VerilogEvalRTLToSpecification,
             "rtllm": self.rtllm.RTLLM,
             "RTLRepo": self.rtlrepo.RTLRepo,
-            "VeriGen": self.verigen.VeriGen,
         }
 
     def _update_all_tasks(self):

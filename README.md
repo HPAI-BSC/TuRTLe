@@ -56,7 +56,7 @@ Benchmarks implemented so far are:
 
 - [VerilogEval v2.0](https://github.com/NVlabs/verilog-eval): Specification-to-RTL and Module Completion
 - [RTLLM v1.1 and v2.0](https://github.com/hkust-zhiyao/RTLLM): Specification-to-RTL
-- [VGen](https://github.com/shailja-thakur/VGen): Module Completion
+- [VGen](https://github.com/shailja-thakur/VGen): Module Completion (code will be released soon)
 - [RTL-Repo](https://github.com/AUCOHL/RTL-Repo): Single Line Completion
 
 Open-source EDA tools integrated:
@@ -190,6 +190,7 @@ The process to implement a benchmark is very similar to the one described by [bi
 1. Copy the `turtle/tasks/template/new_task.py` into `turtle/tasks/` and rename it to the name of your benchmark `<benchmark_name>.py`.
 3. Complete all the TODO comments in the template file.
 3. Define a configuration file named `turtle/configs/<benchmark_name>.yml` and list the models you want to evaluate along with their required parameters.
+4. Update the `_load_new_modules()` and `_create_extended_registry()` methods within `turtle/src/utils/task_updater.py`.
 
 # Citation 📖
 
