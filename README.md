@@ -144,13 +144,7 @@ Finally, we recommend using Singularity for containerization on HPC environments
 
 ## 🚀 *Quick Demo*
 
-To quickly test the framework, try to evaluate a small model on the RTL-Repo benchmark by executing the command:
-
-```bash
-python turtle/run.py --benchmark demo --model Qwen2-0.5B
-```
-
-This command will load the configurations from the `demo.yml` file, where we specified the benchmark we want to run (RTL-Repo) and all the parameters required for the evaluation. The results (`generations.json` and `metrics.json`) will be saved in the `results/` directory.
+Coming soon.
 
 ## 🏃‍♂️ *Running the Project*
 
