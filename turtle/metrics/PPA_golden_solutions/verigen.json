@@ -1,0 +1,104 @@
+[
+    {
+        "prob_name": "abro",
+        "area": 158.9024,
+        "power": 2.360967300774064e-05,
+        "performance": 2.8861969187091345
+    },
+    {
+        "prob_name": "advshifter",
+        "area": 4092.6752,
+        "power": 0.0006095740245655179,
+        "performance": 3.9069644181282106
+    },
+    {
+        "prob_name": "mux",
+        "area": 56.304,
+        "power": 6.010862307448406e-06,
+        "performance": 4.777198549737826
+    },
+    {
+        "prob_name": "and_gate",
+        "area": 7.5072,
+        "power": 8.142714023051667e-07,
+        "performance": 4.495954624739611
+    },
+    {
+        "prob_name": "truthtable",
+        "area": 25.024,
+        "power": 2.2110200461611385e-06,
+        "performance": 4.83335718462532
+    },
+    {
+        "prob_name": "counter",
+        "area": 188.9312,
+        "power": 2.907705493271351e-05,
+        "performance": 2.8037917225987794
+    },
+    {
+        "prob_name": "signed-addition-overflow",
+        "area": 359.0944,
+        "power": 3.5585573641583323e-05,
+        "performance": 6.048789418330826
+    },
+    {
+        "prob_name": "priority_encoder",
+        "area": 21.2704,
+        "power": 1.5396054777738755e-06,
+        "performance": 4.750241001669886
+    },
+    {
+        "prob_name": "shift-left-rotate",
+        "area": 774.4928,
+        "power": 8.925750444177538e-05,
+        "performance": 3.7686146381355625
+    },
+    {
+        "prob_name": "ram",
+        "area": 21048.9376,
+        "power": 0.001658824970945716,
+        "performance": 7.7919080060293995
+    },
+    {
+        "prob_name": "lfsr",
+        "area": 182.6752,
+        "power": 2.4486174879712053e-05,
+        "performance": 2.931088121845648
+    },
+    {
+        "prob_name": "half_adder",
+        "area": 23.7728,
+        "power": 2.41129214373359e-06,
+        "performance": 4.645453708750079
+    },
+    {
+        "prob_name": "permutation",
+        "area": 160.1536,
+        "power": 2.5439287128392607e-05,
+        "performance": 4.441449778116371
+    },
+    {
+        "prob_name": "wire_assign",
+        "area": 5.0048,
+        "power": 7.949776090754312e-07,
+        "performance": 4.441449778116371
+    },
+    {
+        "prob_name": "countslow",
+        "area": 203.9456,
+        "power": 2.4684248273842968e-05,
+        "performance": 3.0891683419007396
+    },
+    {
+        "prob_name": "simple-fsm",
+        "area": 52.5504,
+        "power": 7.400784397759708e-06,
+        "performance": 2.74315578017095
+    },
+    {
+        "prob_name": "advfsm",
+        "area": 125.12,
+        "power": 1.7890528397401795e-05,
+        "performance": 2.893305010803026
+    }
+]

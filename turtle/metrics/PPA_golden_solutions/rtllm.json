@@ -1,0 +1,284 @@
+[
+    {
+        "prob_name": "41_sequence_detector.json",
+        "area": 191.4336,
+        "power": 2.658979246916715e-05,
+        "performance": 2.763893858679041
+    },
+    {
+        "prob_name": "37_RAM.json",
+        "area": 3570.9248,
+        "power": 0.0006231274455785751,
+        "performance": 4.15144930183068
+    },
+    {
+        "prob_name": "04_adder_8bit.json",
+        "area": 437.92,
+        "power": 6.820196722401306e-05,
+        "performance": 7.663711437928706
+    },
+    {
+        "prob_name": "07_asyn_fifo.json",
+        "area": 7189.3952,
+        "power": 0.00226050172932446,
+        "performance": 3.498316180202081
+    },
+    {
+        "prob_name": "32_multi_pipe_8bit.json",
+        "area": 5557.8304,
+        "power": 0.0006432364461943507,
+        "performance": 3.7735844406235497
+    },
+    {
+        "prob_name": "31_multi_pipe_4bit.json",
+        "area": 1063.52,
+        "power": 0.000157241229317151,
+        "performance": 3.347903160571894
+    },
+    {
+        "prob_name": "03_adder_64bit.json",
+        "area": 13589.2832,
+        "power": 0.002436748007312417,
+        "performance": 7.913370405161471
+    },
+    {
+        "prob_name": "45_sub_64bit.json",
+        "area": 4091.424,
+        "power": 0.0003866658953484148,
+        "performance": 8.415343993177013
+    },
+    {
+        "prob_name": "42_serial2parallel.json",
+        "area": 832.048,
+        "power": 0.00016644665447529405,
+        "performance": 2.8384688736198678
+    },
+    {
+        "prob_name": "12_comparator_3bit.json",
+        "area": 105.1008,
+        "power": 7.64497417549137e-06,
+        "performance": 5.56084860565421
+    },
+    {
+        "prob_name": "18_fixed_point_substractor.json",
+        "area": 3823.6672,
+        "power": 0.0003324878343846649,
+        "performance": 8.377053732242398
+    },
+    {
+        "prob_name": "29_multi_16bit.json",
+        "area": 6150.8992,
+        "power": 0.0017666425555944443,
+        "performance": 5.7124899760735826
+    },
+    {
+        "prob_name": "17_fixed_point_adder.json",
+        "area": 4031.3664,
+        "power": 0.000369002838851884,
+        "performance": 8.229087200138467
+    },
+    {
+        "prob_name": "33_parallel2serial.json",
+        "area": 256.496,
+        "power": 3.596790338633582e-05,
+        "performance": 2.7593064170115484
+    },
+    {
+        "prob_name": "47_traffic_light.json",
+        "area": 833.2992,
+        "power": 0.00037087866803631186,
+        "performance": 2.9743153226657917
+    },
+    {
+        "prob_name": "40_ROM.json",
+        "area": 71.3184,
+        "power": 7.857409400457982e-06,
+        "performance": 4.638761728257586
+    },
+    {
+        "prob_name": "48_up_down_counter.json",
+        "area": 1187.3888,
+        "power": 0.0003272691392339766,
+        "performance": 3.4991617260815486
+    },
+    {
+        "prob_name": "01_adder_16bit.json",
+        "area": 874.5888,
+        "power": 9.292084723711014e-05,
+        "performance": 7.6916863944051865
+    },
+    {
+        "prob_name": "22_freq_divbyfrac.json",
+        "area": 284.0224,
+        "power": 3.060122980969027e-05,
+        "performance": 8.02275579789011
+    },
+    {
+        "prob_name": "10_calendar.json",
+        "area": 979.6896,
+        "power": 8.854318002704531e-05,
+        "performance": 2.7897771549179717
+    },
+    {
+        "prob_name": "24_fsm.json",
+        "area": 226.4672,
+        "power": 3.640044087660499e-05,
+        "performance": 4.649247562977125
+    },
+    {
+        "prob_name": "44_square_wave.json",
+        "area": 650.624,
+        "power": 0.00019138108473271132,
+        "performance": 4.9642222848634745
+    },
+    {
+        "prob_name": "06_alu.json",
+        "area": 15008.144,
+        "power": 0.0005687741213478148,
+        "performance": 12.318225677038999
+    },
+    {
+        "prob_name": "13_comparator_4bit.json",
+        "area": 125.12,
+        "power": 8.697977136762347e-06,
+        "performance": 5.7895123667191095
+    },
+    {
+        "prob_name": "05_adder_bcd.json",
+        "area": 253.9936,
+        "power": 3.444917092565447e-05,
+        "performance": 6.2291367160867654
+    },
+    {
+        "prob_name": "14_counter_12.json",
+        "area": 190.1824,
+        "power": 8.042228000704199e-05,
+        "performance": 2.8607306222500473
+    },
+    {
+        "prob_name": "20_freq_div.json",
+        "area": 685.6576,
+        "power": 6.875157851027325e-05,
+        "performance": 2.7724541225302115
+    },
+    {
+        "prob_name": "28_LIFObuffer.json",
+        "area": 1217.4176,
+        "power": 0.00022683056886307895,
+        "performance": 3.5043522409130743
+    },
+    {
+        "prob_name": "08_barrel_shifter.json",
+        "area": 286.5248,
+        "power": 1.9020182662643492e-05,
+        "performance": 5.354181471953711
+    },
+    {
+        "prob_name": "43_signal_generator.json",
+        "area": 504.2336,
+        "power": 3.348392783664167e-05,
+        "performance": 2.818676705155509
+    },
+    {
+        "prob_name": "36_radix2_div.json",
+        "area": 2668.8096,
+        "power": 0.0002786866680253297,
+        "performance": 6.169508412104584
+    },
+    {
+        "prob_name": "30_multi_8bit.json",
+        "area": 3465.824,
+        "power": 0.0005636403220705688,
+        "performance": 11.74898944721883
+    },
+    {
+        "prob_name": "38_right_shifter.json",
+        "area": 170.1632,
+        "power": 4.5272772695170715e-05,
+        "performance": 2.706536182891041
+    },
+    {
+        "prob_name": "23_freq_divbyodd.json",
+        "area": 314.0512,
+        "power": 4.5923192374175414e-05,
+        "performance": 8.015722756874807
+    },
+    {
+        "prob_name": "15_div_16bit.json",
+        "area": 8346.7552,
+        "power": 0.08259827643632889,
+        "performance": 31.963226525804526
+    },
+    {
+        "prob_name": "26_JC_counter.json",
+        "area": 1685.3664,
+        "power": 0.0003060466842725873,
+        "performance": 3.0286438658677355
+    },
+    {
+        "prob_name": "27_LFSR.json",
+        "area": 136.3808,
+        "power": 1.9576495105866343e-05,
+        "performance": 2.776013941737048
+    },
+    {
+        "prob_name": "49_width_8to16.json",
+        "area": 987.1968,
+        "power": 0.00027976048295386136,
+        "performance": 2.94882060449647
+    },
+    {
+        "prob_name": "35_pulse_detect.json",
+        "area": 85.0816,
+        "power": 1.1471332982182503e-05,
+        "performance": 5.02107414302715
+    },
+    {
+        "prob_name": "00_accu.json",
+        "area": 974.6848,
+        "power": 0.0004063329251948744,
+        "performance": 4.143822957614237
+    },
+    {
+        "prob_name": "34_pe.json",
+        "area": 28762.5856,
+        "power": 0.015884894877672195,
+        "performance": 10.055828232506022
+    },
+    {
+        "prob_name": "21_freq_divbyeven.json",
+        "area": 178.9216,
+        "power": 2.3908451112220064e-05,
+        "performance": 2.7729399561395276
+    },
+    {
+        "prob_name": "46_synchronizer.json",
+        "area": 334.0704,
+        "power": 3.4922632039524615e-05,
+        "performance": 2.327575309483003
+    },
+    {
+        "prob_name": "02_adder_32bit.json",
+        "area": 2297.2032,
+        "power": 0.0002276026934850961,
+        "performance": 8.159794182408982
+    },
+    {
+        "prob_name": "25_instr_reg.json",
+        "area": 618.0928,
+        "power": 0.00013166091230232269,
+        "performance": 2.960570317142987
+    },
+    {
+        "prob_name": "16_edge_detect.json",
+        "area": 96.3424,
+        "power": 1.702456211205572e-05,
+        "performance": 2.754913930512693
+    },
+    {
+        "prob_name": "39_ring_counter.json",
+        "area": 240.2304,
+        "power": 3.9198363083414733e-05,
+        "performance": 2.9095435773096607
+    }
+]

@@ -1,0 +1,15 @@
+configurations:
+  - type: general-single-node-small
+    output: slurm_output/job_%j.out
+    error: slurm_output/job_%j.err
+    nodes: 1
+    cpus-per-task: 80
+    time: "01:00:00"
+    gres: gpu:4
+  - type: general-single-node-large
+    output: slurm_output/job_%j.out
+    error: slurm_output/job_%j.err
+    nodes: 1
+    cpus-per-task: 80
+    time: "02:00:00"
+    gres: gpu:4

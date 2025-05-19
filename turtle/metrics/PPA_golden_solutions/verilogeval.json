@@ -1,0 +1,932 @@
+[
+    {
+        "prob_name": "Prob006",
+        "area": 40.0384,
+        "power": 6.359820417856099e-06,
+        "performance": 4.441449778116371
+    },
+    {
+        "prob_name": "Prob045",
+        "area": 470.4512,
+        "power": 9.68735184869729e-05,
+        "performance": 2.7007230549696972
+    },
+    {
+        "prob_name": "Prob112",
+        "area": 35.0336,
+        "power": 2.3640691324544605e-06,
+        "performance": 4.773095609411983
+    },
+    {
+        "prob_name": "Prob065",
+        "area": 25.024,
+        "power": 8.457898843516887e-07,
+        "performance": 4.511170009677814
+    },
+    {
+        "prob_name": "Prob132",
+        "area": 11.2608,
+        "power": 1.5371896324722911e-06,
+        "performance": 4.562762963269713
+    },
+    {
+        "prob_name": "Prob013",
+        "area": 6.256,
+        "power": 7.422120233968599e-07,
+        "performance": 4.562762963269713
+    },
+    {
+        "prob_name": "Prob108",
+        "area": 24951.4304,
+        "power": 0.011716422624886036,
+        "performance": 8.422444979843345
+    },
+    {
+        "prob_name": "Prob033",
+        "area": 380.3648,
+        "power": 3.6364632251206785e-05,
+        "performance": 5.8897126620606475
+    },
+    {
+        "prob_name": "Prob100",
+        "area": 28.7776,
+        "power": 2.9400616767816246e-06,
+        "performance": 4.67293483801124
+    },
+    {
+        "prob_name": "Prob147",
+        "area": 71.3184,
+        "power": 1.3101981494401116e-05,
+        "performance": 4.779856423733949
+    },
+    {
+        "prob_name": "Prob072",
+        "area": 23.7728,
+        "power": 2.799514504658873e-06,
+        "performance": 5.0938337212267655
+    },
+    {
+        "prob_name": "Prob009",
+        "area": 51.2992,
+        "power": 5.531345777853858e-06,
+        "performance": 4.799109467882301
+    },
+    {
+        "prob_name": "Prob092",
+        "area": 2996.624,
+        "power": 0.0003188203845638782,
+        "performance": 4.703182643128014
+    },
+    {
+        "prob_name": "Prob001",
+        "area": 3.7536,
+        "power": 3.802499981553353e-12,
+        "performance": -1000000043329398899999999999999999999990
+    },
+    {
+        "prob_name": "Prob048",
+        "area": 30.0288,
+        "power": 5.870092081750045e-06,
+        "performance": 2.7007230549696972
+    },
+    {
+        "prob_name": "Prob115",
+        "area": 4080.1632,
+        "power": 0.0006041686865501106,
+        "performance": 4.065503382350052
+    },
+    {
+        "prob_name": "Prob068",
+        "area": 787.0048,
+        "power": 8.354508463526145e-05,
+        "performance": 3.6848380945064054
+    },
+    {
+        "prob_name": "Prob040",
+        "area": 190.1824,
+        "power": 2.626138120831456e-05,
+        "performance": 2.7893650401195753
+    },
+    {
+        "prob_name": "Prob135",
+        "area": 26.2752,
+        "power": 2.0256259176676394e-06,
+        "performance": 4.682415254731243
+    },
+    {
+        "prob_name": "Prob060",
+        "area": 115.1104,
+        "power": 2.0273791960789822e-05,
+        "performance": 2.7007230549696972
+    },
+    {
+        "prob_name": "Prob016",
+        "area": 162.656,
+        "power": 1.6578213035245426e-05,
+        "performance": 5.180237496695699
+    },
+    {
+        "prob_name": "Prob036",
+        "area": 16.2656,
+        "power": 1.670747565185593e-06,
+        "performance": 4.551537719994862
+    },
+    {
+        "prob_name": "Prob103",
+        "area": 48.7968,
+        "power": 4.97653763886774e-06,
+        "performance": 4.829191183629894
+    },
+    {
+        "prob_name": "Prob075",
+        "area": 111.3568,
+        "power": 3.0275143217295408e-05,
+        "performance": 2.923732227965653
+    },
+    {
+        "prob_name": "Prob142",
+        "area": 105.1008,
+        "power": 1.973882353922818e-05,
+        "performance": 3.0342509363898813
+    },
+    {
+        "prob_name": "Prob095",
+        "area": 120.1152,
+        "power": 2.165123078157194e-05,
+        "performance": 3.3917725144076423
+    },
+    {
+        "prob_name": "Prob004",
+        "area": 160.1536,
+        "power": 2.5439287128392607e-05,
+        "performance": 4.441449778116371
+    },
+    {
+        "prob_name": "Prob043",
+        "area": 231.472,
+        "power": 3.486883724690415e-05,
+        "performance": 5.017681745457161
+    },
+    {
+        "prob_name": "Prob138",
+        "area": 217.7088,
+        "power": 3.221791121177375e-05,
+        "performance": 2.9814771495555945
+    },
+    {
+        "prob_name": "Prob063",
+        "area": 220.2112,
+        "power": 7.286889740498737e-05,
+        "performance": 2.8885101794686676
+    },
+    {
+        "prob_name": "Prob130",
+        "area": 162.656,
+        "power": 7.941027433844283e-06,
+        "performance": 5.2260524054148245
+    },
+    {
+        "prob_name": "Prob039",
+        "area": 22.5216,
+        "power": 2.609033572298358e-06,
+        "performance": 5.010129564140861
+    },
+    {
+        "prob_name": "Prob106",
+        "area": 123.8688,
+        "power": 1.2213962463647476e-06,
+        "performance": 5.403278644115668
+    },
+    {
+        "prob_name": "Prob031",
+        "area": 21.2704,
+        "power": 5.628709914162755e-06,
+        "performance": 2.7007230549696972
+    },
+    {
+        "prob_name": "Prob126",
+        "area": 230.2208,
+        "power": 2.3103015337255783e-05,
+        "performance": 5.174901320599223
+    },
+    {
+        "prob_name": "Prob078",
+        "area": 57.5552,
+        "power": 2.145291909982916e-05,
+        "performance": 8.001366240492743
+    },
+    {
+        "prob_name": "Prob098",
+        "area": 25.024,
+        "power": 5.705841431336012e-06,
+        "performance": 2.7007230549696972
+    },
+    {
+        "prob_name": "Prob070",
+        "area": 31.28,
+        "power": 2.455445837767911e-06,
+        "performance": 4.6893501520283944
+    },
+    {
+        "prob_name": "Prob007",
+        "area": 5.0048,
+        "power": 7.949776090754312e-07,
+        "performance": 4.441449778116371
+    },
+    {
+        "prob_name": "Prob090",
+        "area": 7.5072,
+        "power": 8.142714023051667e-07,
+        "performance": 4.495954624739611
+    },
+    {
+        "prob_name": "Prob027",
+        "area": 51.2992,
+        "power": 5.531345777853858e-06,
+        "performance": 4.799109467882301
+    },
+    {
+        "prob_name": "Prob066",
+        "area": 1961.8816,
+        "power": 0.00036966073093935847,
+        "performance": 2.71421892643873
+    },
+    {
+        "prob_name": "Prob133",
+        "area": 284.0224,
+        "power": 4.154321868554689e-05,
+        "performance": 2.8683476405928188
+    },
+    {
+        "prob_name": "Prob153",
+        "area": 16650.9696,
+        "power": 0.0028113636653870344,
+        "performance": 8.099132926895475
+    },
+    {
+        "prob_name": "Prob109",
+        "area": 46.2944,
+        "power": 2.0893716282444075e-05,
+        "performance": 2.9330847469896026
+    },
+    {
+        "prob_name": "Prob034",
+        "area": 170.1632,
+        "power": 4.502967931330204e-05,
+        "performance": 2.7007230549696972
+    },
+    {
+        "prob_name": "Prob129",
+        "area": 71.3184,
+        "power": 1.0902968824666459e-05,
+        "performance": 4.556999129252057
+    },
+    {
+        "prob_name": "Prob101",
+        "area": 6.256,
+        "power": 8.060195568759809e-07,
+        "performance": 4.629228464920115
+    },
+    {
+        "prob_name": "Prob121",
+        "area": 186.4288,
+        "power": 2.8239452149136923e-05,
+        "performance": 2.9798797606225866
+    },
+    {
+        "prob_name": "Prob093",
+        "area": 21.2704,
+        "power": 2.3074189812177792e-06,
+        "performance": 4.642109716905333
+    },
+    {
+        "prob_name": "Prob002",
+        "area": 3.7536,
+        "power": 3.802499981553353e-12,
+        "performance": -1000000043329398899999999999999999999990
+    },
+    {
+        "prob_name": "Prob022",
+        "area": 11.2608,
+        "power": 1.2040853789585526e-06,
+        "performance": 4.712188772558483
+    },
+    {
+        "prob_name": "Prob069",
+        "area": 11.2608,
+        "power": 1.2040853789585526e-06,
+        "performance": 4.712188772558483
+    },
+    {
+        "prob_name": "Prob136",
+        "area": 213.9552,
+        "power": 3.1826602935325354e-05,
+        "performance": 2.986895482158216
+    },
+    {
+        "prob_name": "Prob061",
+        "area": 43.792,
+        "power": 7.309784450626466e-06,
+        "performance": 2.908934286896515
+    },
+    {
+        "prob_name": "Prob156",
+        "area": 1013.472,
+        "power": 0.00017096041119657457,
+        "performance": 3.593632826364778
+    },
+    {
+        "prob_name": "Prob037",
+        "area": 495.4752,
+        "power": 5.4137446568347514e-05,
+        "performance": 2.7586309573042627
+    },
+    {
+        "prob_name": "Prob104",
+        "area": 32.5312,
+        "power": 6.3710976974107325e-06,
+        "performance": 2.7007230549696972
+    },
+    {
+        "prob_name": "Prob057",
+        "area": 27.5264,
+        "power": 2.0316249447205337e-06,
+        "performance": 4.855072703511936
+    },
+    {
+        "prob_name": "Prob124",
+        "area": 26236.4128,
+        "power": 0.0049956729635596275,
+        "performance": 9.240403148636997
+    },
+    {
+        "prob_name": "Prob096",
+        "area": 175.168,
+        "power": 2.6308967790100724e-05,
+        "performance": 2.8201608513368033
+    },
+    {
+        "prob_name": "Prob005",
+        "area": 3.7536,
+        "power": 6.900002631482494e-07,
+        "performance": 4.380746778215958
+    },
+    {
+        "prob_name": "Prob025",
+        "area": 113.8592,
+        "power": 1.3777827007288579e-05,
+        "performance": 4.982924658376039
+    },
+    {
+        "prob_name": "Prob139",
+        "area": 255.2448,
+        "power": 4.066924884682521e-05,
+        "performance": 3.187168619234459
+    },
+    {
+        "prob_name": "Prob064",
+        "area": 157.6512,
+        "power": 2.384933759458363e-05,
+        "performance": 4.441449778116371
+    },
+    {
+        "prob_name": "Prob131",
+        "area": 8.7584,
+        "power": 8.383676117773575e-07,
+        "performance": 4.501465771989716
+    },
+    {
+        "prob_name": "Prob084",
+        "area": 336.5728,
+        "power": 7.137937063816935e-05,
+        "performance": 5.126026637137694
+    },
+    {
+        "prob_name": "Prob151",
+        "area": 270.2592,
+        "power": 2.9411214200081304e-05,
+        "performance": 3.4843664495477453
+    },
+    {
+        "prob_name": "Prob032",
+        "area": 30.0288,
+        "power": 4.766877282236237e-06,
+        "performance": 4.450825389779886
+    },
+    {
+        "prob_name": "Prob127",
+        "area": 48.7968,
+        "power": 8.888043339538854e-06,
+        "performance": 2.9465557494621804
+    },
+    {
+        "prob_name": "Prob052",
+        "area": 2233.392,
+        "power": 0.0003436395199969411,
+        "performance": 6.78898623201286
+    },
+    {
+        "prob_name": "Prob099",
+        "area": 21.2704,
+        "power": 1.8470220766175771e-06,
+        "performance": 4.828015235368953
+    },
+    {
+        "prob_name": "Prob008",
+        "area": 5.0048,
+        "power": 7.949776090754312e-07,
+        "performance": 4.441449778116371
+    },
+    {
+        "prob_name": "Prob091",
+        "area": 23.7728,
+        "power": 1.8958488681164454e-06,
+        "performance": 4.828015235368953
+    },
+    {
+        "prob_name": "Prob028",
+        "area": 15.0144,
+        "power": 1.07802566162718e-06,
+        "performance": -1000000043329398899999999999999999999990
+    },
+    {
+        "prob_name": "Prob020",
+        "area": 37.536,
+        "power": 2.1534092411457095e-06,
+        "performance": 4.910902268285623
+    },
+    {
+        "prob_name": "Prob067",
+        "area": 203.9456,
+        "power": 2.4684248273842968e-05,
+        "performance": 3.0891683419007396
+    },
+    {
+        "prob_name": "Prob087",
+        "area": 67.5648,
+        "power": 7.3515639087418094e-06,
+        "performance": 4.729752945394012
+    },
+    {
+        "prob_name": "Prob154",
+        "area": 639.3632,
+        "power": 0.00015712181630078703,
+        "performance": 2.725301617073188
+    },
+    {
+        "prob_name": "Prob035",
+        "area": 192.6848,
+        "power": 2.9305954740266316e-05,
+        "performance": 2.7903500300148805
+    },
+    {
+        "prob_name": "Prob055",
+        "area": 834.5504,
+        "power": 6.962350744288415e-05,
+        "performance": 8.026852076877617
+    },
+    {
+        "prob_name": "Prob122",
+        "area": 48.7968,
+        "power": 5.228278951108223e-06,
+        "performance": 4.802302025302206
+    },
+    {
+        "prob_name": "Prob094",
+        "area": 113.8592,
+        "power": 1.1207210263819434e-05,
+        "performance": 4.703182643128014
+    },
+    {
+        "prob_name": "Prob023",
+        "area": 500.48,
+        "power": 7.94978259364143e-05,
+        "performance": 4.441449778116371
+    },
+    {
+        "prob_name": "Prob118",
+        "area": 1587.7728,
+        "power": 0.00025001855101436377,
+        "performance": 3.333131420766878
+    },
+    {
+        "prob_name": "Prob110",
+        "area": 45.0432,
+        "power": 7.363800705206813e-06,
+        "performance": 2.7629084246945137
+    },
+    {
+        "prob_name": "Prob062",
+        "area": 90.0864,
+        "power": 9.619019692763686e-06,
+        "performance": 4.8213125967351225
+    },
+    {
+        "prob_name": "Prob082",
+        "area": 1139.8432,
+        "power": 0.00017920621030498296,
+        "performance": 2.918757984585441
+    },
+    {
+        "prob_name": "Prob019",
+        "area": 8.7584,
+        "power": 8.574261300964281e-07,
+        "performance": 4.547998328892256
+    },
+    {
+        "prob_name": "Prob011",
+        "area": 6.256,
+        "power": 7.422120233968599e-07,
+        "performance": 4.562762963269713
+    },
+    {
+        "prob_name": "Prob058",
+        "area": 42.5408,
+        "power": 9.90238186204806e-06,
+        "performance": 4.962254081429754
+    },
+    {
+        "prob_name": "Prob125",
+        "area": 12.512,
+        "power": 1.1346742212481331e-06,
+        "performance": 4.557524486802168
+    },
+    {
+        "prob_name": "Prob050",
+        "area": 7.5072,
+        "power": 6.119551017036429e-07,
+        "performance": 4.837989479304277
+    },
+    {
+        "prob_name": "Prob145",
+        "area": 40.0384,
+        "power": 2.336648094569682e-06,
+        "performance": -1000000043329398899999999999999999999990
+    },
+    {
+        "prob_name": "Prob097",
+        "area": 1072.2784,
+        "power": 5.355942266760394e-05,
+        "performance": 5.838486970255681
+    },
+    {
+        "prob_name": "Prob026",
+        "area": 12.512,
+        "power": 1.6400063032051548e-06,
+        "performance": 4.73744279436926
+    },
+    {
+        "prob_name": "Prob046",
+        "area": 262.752,
+        "power": 6.207218393683434e-05,
+        "performance": 7.700723165992002
+    },
+    {
+        "prob_name": "Prob113",
+        "area": 21.2704,
+        "power": 1.80448637365771e-06,
+        "performance": 4.785797449351347
+    },
+    {
+        "prob_name": "Prob085",
+        "area": 206.448,
+        "power": 3.080013993894681e-05,
+        "performance": 2.956340811388757
+    },
+    {
+        "prob_name": "Prob152",
+        "area": 201.4432,
+        "power": 3.2962543627945706e-05,
+        "performance": 3.2578423103564162
+    },
+    {
+        "prob_name": "Prob014",
+        "area": 7.5072,
+        "power": 8.142714023051667e-07,
+        "performance": 4.495954624739611
+    },
+    {
+        "prob_name": "Prob128",
+        "area": 128.8736,
+        "power": 2.1478535927599296e-05,
+        "performance": 2.725301617073188
+    },
+    {
+        "prob_name": "Prob053",
+        "area": 37.536,
+        "power": 1.808534398151096e-05,
+        "performance": 2.732909753631512
+    },
+    {
+        "prob_name": "Prob148",
+        "area": 197.6896,
+        "power": 2.498150206520222e-05,
+        "performance": 2.952923988911536
+    },
+    {
+        "prob_name": "Prob120",
+        "area": 136.3808,
+        "power": 2.134698661393486e-05,
+        "performance": 2.718138013826496
+    },
+    {
+        "prob_name": "Prob073",
+        "area": 640.6144,
+        "power": 9.998673340305686e-05,
+        "performance": 2.92135990333954
+    },
+    {
+        "prob_name": "Prob140",
+        "area": 334.0704,
+        "power": 5.048514867667109e-05,
+        "performance": 3.2456667161456076
+    },
+    {
+        "prob_name": "Prob029",
+        "area": 32.5312,
+        "power": 3.3862254440464312e-06,
+        "performance": 4.802302025302206
+    },
+    {
+        "prob_name": "Prob049",
+        "area": 30.0288,
+        "power": 5.822428647661582e-06,
+        "performance": 2.754913930512693
+    },
+    {
+        "prob_name": "Prob021",
+        "area": 9241.3632,
+        "power": 0.0004952984163537621,
+        "performance": 11.337475057451268
+    },
+    {
+        "prob_name": "Prob116",
+        "area": 16.2656,
+        "power": 1.4992810974945314e-06,
+        "performance": 4.5956544315274925
+    },
+    {
+        "prob_name": "Prob041",
+        "area": 240.2304,
+        "power": 4.693549999501556e-05,
+        "performance": 2.7007230549696972
+    },
+    {
+        "prob_name": "Prob088",
+        "area": 52.5504,
+        "power": 5.711036010325188e-06,
+        "performance": 4.645237881387987
+    },
+    {
+        "prob_name": "Prob155",
+        "area": 454.1856,
+        "power": 0.00010546611156314611,
+        "performance": 3.251532246595196
+    },
+    {
+        "prob_name": "Prob080",
+        "area": 538.016,
+        "power": 7.655453373445198e-05,
+        "performance": 4.464752027794656
+    },
+    {
+        "prob_name": "Prob017",
+        "area": 1126.08,
+        "power": 0.00012338579108472914,
+        "performance": 5.87091036847304
+    },
+    {
+        "prob_name": "Prob056",
+        "area": 36.2848,
+        "power": 7.170730441430351e-06,
+        "performance": 2.712885770593056
+    },
+    {
+        "prob_name": "Prob123",
+        "area": 615.5904,
+        "power": 7.358442962868139e-05,
+        "performance": 6.66425489211463
+    },
+    {
+        "prob_name": "Prob076",
+        "area": 217.7088,
+        "power": 1.1672697837639134e-05,
+        "performance": 5.377671127283854
+    },
+    {
+        "prob_name": "Prob143",
+        "area": 112.608,
+        "power": 1.0696810022636782e-05,
+        "performance": 5.262322504476697
+    },
+    {
+        "prob_name": "Prob024",
+        "area": 23.7728,
+        "power": 2.41129214373359e-06,
+        "performance": 4.645453708750079
+    },
+    {
+        "prob_name": "Prob119",
+        "area": 88.8352,
+        "power": 1.2628049262275454e-05,
+        "performance": 2.9598260236062286
+    },
+    {
+        "prob_name": "Prob044",
+        "area": 48.7968,
+        "power": 6.804490112699568e-06,
+        "performance": 5.268073903996126
+    },
+    {
+        "prob_name": "Prob111",
+        "area": 38.7872,
+        "power": 6.8518120315275155e-06,
+        "performance": 2.7268914564894144
+    },
+    {
+        "prob_name": "Prob083",
+        "area": 16.2656,
+        "power": 1.841930384216539e-06,
+        "performance": 4.642884652598438
+    },
+    {
+        "prob_name": "Prob150",
+        "area": 78.8256,
+        "power": 7.698236913711298e-06,
+        "performance": 5.0524841296389695
+    },
+    {
+        "prob_name": "Prob012",
+        "area": 16.2656,
+        "power": 1.841930384216539e-06,
+        "performance": 4.642884652598438
+    },
+    {
+        "prob_name": "Prob107",
+        "area": 38.7872,
+        "power": 6.8377771640371066e-06,
+        "performance": 2.733935599735278
+    },
+    {
+        "prob_name": "Prob059",
+        "area": 20.0192,
+        "power": 3.1789145396032836e-06,
+        "performance": 4.450825389779886
+    },
+    {
+        "prob_name": "Prob079",
+        "area": 42.5408,
+        "power": 4.890794116363395e-06,
+        "performance": 4.675411967693841
+    },
+    {
+        "prob_name": "Prob051",
+        "area": 67.5648,
+        "power": 6.051443051546812e-06,
+        "performance": 5.071784691334121
+    },
+    {
+        "prob_name": "Prob071",
+        "area": 92.5888,
+        "power": 4.283822818251792e-06,
+        "performance": 5.225689140430893
+    },
+    {
+        "prob_name": "Prob047",
+        "area": 240.2304,
+        "power": 4.6587170800194144e-05,
+        "performance": 2.754913930512693
+    },
+    {
+        "prob_name": "Prob114",
+        "area": 226.4672,
+        "power": 3.9818974073568825e-06,
+        "performance": 5.702850575411957
+    },
+    {
+        "prob_name": "Prob134",
+        "area": 51.2992,
+        "power": 3.6896167330269236e-06,
+        "performance": 4.907639100679357
+    },
+    {
+        "prob_name": "Prob086",
+        "area": 176.4192,
+        "power": 3.211488728993572e-05,
+        "performance": 2.824165203855272
+    },
+    {
+        "prob_name": "Prob015",
+        "area": 80.0768,
+        "power": 1.2719640835712198e-05,
+        "performance": 4.441449778116371
+    },
+    {
+        "prob_name": "Prob102",
+        "area": 10.0096,
+        "power": 1.295913875765109e-06,
+        "performance": 4.5498572863772635
+    },
+    {
+        "prob_name": "Prob054",
+        "area": 410.3936,
+        "power": 8.70020012371242e-05,
+        "performance": 2.7007230549696972
+    },
+    {
+        "prob_name": "Prob149",
+        "area": 294.032,
+        "power": 3.7132380384719e-05,
+        "performance": 3.903774525243641
+    },
+    {
+        "prob_name": "Prob074",
+        "area": 107.6032,
+        "power": 2.62351368292002e-05,
+        "performance": 3.115880752717909
+    },
+    {
+        "prob_name": "Prob141",
+        "area": 1346.2912,
+        "power": 0.00012581172632053494,
+        "performance": 3.3245804827893775
+    },
+    {
+        "prob_name": "Prob003",
+        "area": 3.7536,
+        "power": 3.802499981553353e-12,
+        "performance": -1000000043329398899999999999999999999990
+    },
+    {
+        "prob_name": "Prob117",
+        "area": 135.1296,
+        "power": 2.937723184004426e-05,
+        "performance": 2.7745999616528954
+    },
+    {
+        "prob_name": "Prob042",
+        "area": 160.1536,
+        "power": 2.5310228011221625e-05,
+        "performance": 4.641786419951419
+    },
+    {
+        "prob_name": "Prob137",
+        "area": 376.6112,
+        "power": 5.962178693152964e-05,
+        "performance": 3.0804282219144934
+    },
+    {
+        "prob_name": "Prob089",
+        "area": 123.8688,
+        "power": 1.4794488379266113e-05,
+        "performance": 2.7581286923937176
+    },
+    {
+        "prob_name": "Prob081",
+        "area": 26.2752,
+        "power": 2.581081162134069e-06,
+        "performance": 4.722302460509644
+    },
+    {
+        "prob_name": "Prob018",
+        "area": 2314.72,
+        "power": 9.767102164914832e-05,
+        "performance": 7.4466748208849385
+    },
+    {
+        "prob_name": "Prob038",
+        "area": 161.4048,
+        "power": 2.5906487280735746e-05,
+        "performance": 2.78126085589982
+    },
+    {
+        "prob_name": "Prob010",
+        "area": 8.7584,
+        "power": 8.574261300964281e-07,
+        "performance": 4.547998328892256
+    },
+    {
+        "prob_name": "Prob105",
+        "area": 5536.56,
+        "power": 0.001141670043580234,
+        "performance": 5.6633044301563675
+    },
+    {
+        "prob_name": "Prob030",
+        "area": 12824.8,
+        "power": 0.07270504534244537,
+        "performance": 10.452693895183176
+    },
+    {
+        "prob_name": "Prob077",
+        "area": 22.5216,
+        "power": 2.5171873403451173e-06,
+        "performance": 4.6604030842440585
+    },
+    {
+        "prob_name": "Prob144",
+        "area": 70408.7776,
+        "power": 0.08847005665302277,
+        "performance": 11.895388788456877
+    }
+]
