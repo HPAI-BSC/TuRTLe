@@ -75,6 +75,12 @@ For more details about our work, refer to our [ArXiv paper](https://arxiv.org/ab
 - **[2025-03-31]** Our paper *"TuRTLe: A Unified Evaluation of LLMs for RTL Generation"* is now available on [ArXiv](https://arxiv.org/abs/2504.01986)!
 - **[2025-03-20]** The leaderboard is now live! Check it out on our [Huggingface Space](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard).
 
+# Road Map
+
+- **[In progress]** Release repo compatible with local execution
+- **[In progress]** Release multi-node code version
+- **[In progress]** Release updated paper on Arxiv
+
 # Leaderboard 🥇 
 
 Check the [TuRTLe Leaderboard](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard) to know the best open-source models for each task.
