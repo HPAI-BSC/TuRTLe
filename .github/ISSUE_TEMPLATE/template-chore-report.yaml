@@ -1,0 +1,55 @@
+name: 🛠️ Chore Request
+description: Request a new chore or task to be added to this project.
+title: "[🛠️]: "
+labels: ["chore request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for submitting this chore request! Your contribution to the project is appreciated.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Contribution Guidelines
+      description: Please review and follow the contribution guidelines of this project.
+      options:
+        - label: I have read and agree to the project's contribution guidelines [link]
+          required: true
+
+  - type: checkboxes
+    id: openissue
+    attributes:
+      label: Existing Chore or Task
+      description: Have you checked if the chore or task already exists in the project?
+      options:
+        - label: I have checked for existing chores or tasks
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Describe the chore or task
+      description: Provide a clear and concise description of the chore or task you are requesting.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Reason or Problem
+      description: Explain why this chore or task is necessary. Is there a problem it addresses?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Details
+      description: Include any other relevant details, attachments, or context.
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Requester
+      description: Mention yourself or any other relevant contributors or stakeholders.
+    validations:
+      required: false
