@@ -1,10 +1,10 @@
 # This template file is adapted from: https://github.com/EleutherAI/lm-evaluation-harness/blob/master/templates/new_task.py
 
 """
-VerilogEval: Evaluating Large Language Models for Verilog Code Generation
-https://arxiv.org/abs/2309.07544
-VerlogEval benchmark implemented by HPAI team at Barcelona Supercomputing Center (BSC).
-Homepage: https://github.com/NVlabs/verilog-eval
+RTLLM: An Open-Source Benchmark for Design RTL Generation with Large Language Model
+https://arxiv.org/abs/2308.05345
+RTLLM benchmark implemented by HPAI team at Barcelona Supercomputing Center (BSC).
+Homepage: https://github.com/hkust-zhiyao/RTLLM
 """
 import json
 import os
@@ -25,11 +25,21 @@ from transformers import AutoTokenizer
 os.environ["HF_ALLOW_CODE_EVAL"] = "1"
 
 _CITATION = """
-@inproceedings{liu2023verilogeval,
-  title={{VerilogEval:} Evaluating Large Language Models for Verilog Code Generation},
-  author={Liu, Mingjie and Pinckney, Nathaniel and Khailany, Brucek and Ren, Haoxing},
-  booktitle={2023 IEEE/ACM International Conference on Computer-Aided Design (ICCAD)}, 
-  year={2023}
+@inproceedings{lu2024rtllm,
+  author={Lu, Yao and Liu, Shang and Zhang, Qijun and Xie, Zhiyao},
+  booktitle={2024 29th Asia and South Pacific Design Automation Conference (ASP-DAC)}, 
+  title={RTLLM: An Open-Source Benchmark for Design RTL Generation with Large Language Model}, 
+  year={2024},
+  pages={722-727},
+  organization={IEEE}
+  }
+
+@inproceedings{liu2024openllm,
+  title={OpenLLM-RTL: Open Dataset and Benchmark for LLM-Aided Design RTL Generation(Invited)},
+  author={Liu, Shang and Lu, Yao and Fang, Wenji and Li, Mengming and Xie, Zhiyao},
+  booktitle={Proceedings of 2024 IEEE/ACM International Conference on Computer-Aided Design (ICCAD)},
+  year={2024},
+  organization={ACM}
 }
 """
 
