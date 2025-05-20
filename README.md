@@ -13,7 +13,7 @@
   <a href="https://github.com/HPAI-BSC" target="_blank" style="margin: 1px;">
     <img alt="GitHub" src="https://img.shields.io/badge/GitHub-HPAI-%23121011.svg?logo=github&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
   </a>
-  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/HPAI-BSC/TuRTLe"
+  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/HPAI-BSC/turtle"
   style="display: inline-block; vertical-align: middle;">
   <img alt="HPAI followers" src="https://img.shields.io/github/followers/HPAI-BSC"
   style="display: inline-block; vertical-align: middle;">
@@ -34,7 +34,7 @@
     <img alt="Arxiv" src="https://img.shields.io/badge/arXiv-2409.15127-b31b1b.svg" style="display: inline-block; vertical-align: middle;"/>
   </a>
   <a href="LICENSE" style="margin: 1px;">
-    <img alt="License" src="https://img.shields.io/github/license/HPAI-BSC/TuRTLe" style="display: inline-block; vertical-align: middle;"/>
+    <img alt="License" src="https://img.shields.io/github/license/HPAI-BSC/turtle" style="display: inline-block; vertical-align: middle;"/>
   </a>
 </div>
 <br>
