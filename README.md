@@ -208,7 +208,7 @@ The process to implement a benchmark is very similar to the one described by [bi
 
 # How to contribute 🤝  
 
-Any contribution is more than welcome! If you've found a bug or have an idea for an improvement, don't hesitate to open an issue using our [issue template](). We also encourage people to do pull requests with new benchmarks of any task relevant for chip design.
+Any contribution is more than welcome! If you've found a bug or have an idea for an improvement, don't hesitate to [open a new issue](https://github.com/HPAI-BSC/TuRTLe/issues) using our issue forms. We also encourage people to do pull requests with new benchmarks of any task relevant for chip design.
 
 # Contact 📩
 
