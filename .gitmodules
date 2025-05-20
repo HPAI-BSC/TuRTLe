@@ -6,4 +6,4 @@
 	url = https://github.com/NVlabs/verilog-eval.git
 [submodule "turtle/tasks/rtllm"]
 	path = turtle/tasks/rtllm
-	url = https://github.com/hkust-zhiyao/RTLLM.git
+	url = https://github.com/hkust-zhiyao/RTLLM
