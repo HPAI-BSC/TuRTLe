@@ -103,7 +103,7 @@ Follow the steps below to set up the environment and install all dependencies:
 1. **Clone the repository**:
 
    ```bash
-   git clone --recursive https://github.com/HPAI-BSC/turtle.git
+   git clone --recursive https://github.com/HPAI-BSC/TuRTLe.git
    ```
 
 2. **(Optional) Create and activate a virtual environment**:
