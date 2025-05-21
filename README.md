@@ -13,10 +13,14 @@
   <a href="https://github.com/HPAI-BSC" target="_blank" style="margin: 1px;">
     <img alt="GitHub" src="https://img.shields.io/badge/GitHub-HPAI-%23121011.svg?logo=github&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
   </a>
-  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/HPAI-BSC/turtle"
-  style="display: inline-block; vertical-align: middle;">
-  <img alt="HPAI followers" src="https://img.shields.io/github/followers/HPAI-BSC"
-  style="display: inline-block; vertical-align: middle;">
+  <a href="https://github.com/HPAI-BSC/turtle/stargazers" target="_blank" style="margin: 1px;">
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/HPAI-BSC/turtle"
+    style="display: inline-block; vertical-align: middle;">
+  </a>
+  <a href="https://github.com/orgs/HPAI-BSC/followers" target="_blank" style="margin: 1px;">
+    <img alt="HPAI followers" src="https://img.shields.io/github/followers/HPAI-BSC"
+    style="display: inline-block; vertical-align: middle;">
+  </a>
 </div>
 <div align="center" style="line-height: 1;">
   <a href="https://www.linkedin.com/company/hpai" target="_blank" style="margin: 1px;">
