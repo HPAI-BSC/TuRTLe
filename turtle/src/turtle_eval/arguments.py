@@ -274,6 +274,15 @@ class ExtendedVLLMArguments(EvalArguments):
     tensor_parallel_size: Optional[int] = field(
         default=4, metadata={"help": "Number of tensor parallel replicas."}
     )
+    ip: Optional[str] = field(
+        default=None,
+        metadata={"help":"IP of the vLLM inference server."}
+    )
+    port: Optional[str] = field(
+        default=None,
+        metadata={"help":"Port of the vLLM inference server."}
+    )
+
 
 
 @dataclass

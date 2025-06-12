@@ -30,7 +30,7 @@ class SlurmConfigLoader:
         """
         params = []
         for key, value in slurm_config.items():
-            if key == "type" or key == "singularity_path":  # Exclude these from SLURM parameters
+            if key == "type" or key == "env":  # Exclude these from SLURM parameters
                 continue
             if isinstance(value, bool):  # Handle boolean flags
                 if value:
@@ -86,3 +86,22 @@ class SlurmConfigLoader:
             Dictionary of all configuration types and their commands.
         """
         return self.config_dict.copy()
+    
+    def get_env_vars(self, config_type: str = None) -> Dict[str, str]:
+        """
+        Get environment variables from the configuration.
+        Parameters:
+            config_type: The type of configuration to filter for (optional).
+        Returns:
+            Dictionary of environment variables.
+        """
+        if config_type not in self.config_dict:
+            raise ValueError(f"No SLURM configuration found for type: {config_type}")
+        
+        # get env variable from type config
+        env_vars = {}
+        for cfg in self.config:
+            if "env" in cfg and cfg["type"] == config_type:
+                env_vars.update(cfg["env"])
+        return env_vars
+    

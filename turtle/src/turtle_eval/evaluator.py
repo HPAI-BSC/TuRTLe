@@ -18,13 +18,14 @@ If you are using a pre-trained model, it is recommended to use the `--allow_code
 class EvaluatorAdapter:
     """Adaptador class to modified evaluator for LCase."""
 
-    def __init__(self, model, tokenizer, args):
+    def __init__(self, model, client, tokenizer, args):
         """
         Modified constructor to use the new evaluator,
         without use accelerator
         """
 
         self.model = model
+        self.client = client
         self.tokenizer = tokenizer
         self.args = args
         self.allow_code_execution = args.allow_code_execution
@@ -52,7 +53,7 @@ class EvaluatorAdapter:
         ]
 
         generations = get_generations(
-            task, dataset, self.model, self.tokenizer, n_tasks, self.args
+            task, dataset, self.model, self.client, self.tokenizer, n_tasks, self.args
         )
 
         if len(generations[0]) > self.args.n_samples:

@@ -1,7 +1,6 @@
 import json
 import os
 import re
-import shutil
 import subprocess
 import sys
 from datetime import datetime
@@ -64,9 +63,15 @@ def extract_problem_name(ref_path, mode="auto"):
     
     return None
 
-def standardize_module_name(verilog_content):
-    """Change any module name to TopModule in the Verilog content."""
-    if not verilog_content:
+def standardize_module_name(verilog_content, mode="auto"):
+    """
+    Change module name to TopModule in the Verilog content unless in rtllm mode.
+    
+    Args:
+        verilog_content: The Verilog code to process
+        mode: Processing mode - if "rtllm", keeps original module name
+    """
+    if not verilog_content or mode == "rtllm":
         return verilog_content
         
     # Check if there's already a module named TopModule
@@ -156,6 +161,47 @@ def create_config_for_generation(gen_dir):
     config = {
         "DESIGN_NAME": "TopModule",
         "VERILOG_FILES": "dir::TopModule.sv",
+        "CLOCK_PERIOD": 10
+    }
+    
+    # Set the clock port(s) based on what was found
+    if clock_ports:
+        if len(clock_ports) == 1:
+            # Single clock case - use a string
+            config["CLOCK_PORT"] = clock_ports[0]
+            print(f"Detected single clock port '{clock_ports[0]}' in {gen_dir}")
+        else:
+            # Multiple clocks case - use a list
+            config["CLOCK_PORT"] = clock_ports
+            print(f"Detected multiple clock ports {clock_ports} in {gen_dir}")
+    else:
+        config["CLOCK_PORT"] = ""
+        print(f"No clock ports detected in {gen_dir}")
+    
+    # Write configuration file
+    config_path = gen_dir / "config.json"
+    with open(config_path, 'w') as f:
+        json.dump(config, f, indent=4)
+    
+    return True
+
+def create_config_for_rtllm(gen_dir, module_name):
+    """Create OpenLane config file for RTLLM mode with original module name."""
+    # Find Verilog file
+    verilog_file = gen_dir / f"{module_name}.sv"
+    if not verilog_file.exists():
+        print(f"No {module_name}.sv found in {gen_dir}")
+        return False
+    
+    verilog_content = verilog_file.read_text()
+    
+    # Get all clock port names if present
+    clock_ports = detect_clock_ports(verilog_content)
+    
+    # Base configuration using the original module name
+    config = {
+        "DESIGN_NAME": module_name,
+        "VERILOG_FILES": f"dir::{module_name}.sv",
         "CLOCK_PERIOD": 10
     }
     
@@ -275,19 +321,42 @@ def create_problem_structure(
                     print(f"Skipping empty generation for {problem_name} generation_{gen_idx}")
                     continue
                 
-                # Standardize the module name in the Verilog content
-                verilog_content = standardize_module_name(generation["generation"])
+                # Get original module name for rtllm mode
+                original_module_name = None
+                if mode == "rtllm":
+                    for pattern in [r'module\s+(\w+)', r'module\s+(\w+)\s*\(']:
+                        match = re.search(pattern, generation["generation"])
+                        if match:
+                            original_module_name = match.group(1)
+                            break
+                
+                # Standardize the module name in the Verilog content (preserving original for rtllm mode)
+                verilog_content = standardize_module_name(generation["generation"], mode)
                 
                 # If the Verilog content doesn't have a module declaration, add a basic one
                 if "module" not in verilog_content:
-                    verilog_content = f"module TopModule(\n  // Default inputs/outputs\n);\n\n{verilog_content}\n\nendmodule // TopModule"
+                    if mode == "rtllm":
+                        module_name = original_module_name or problem_name
+                        verilog_content = f"module {module_name}(\n  // Default inputs/outputs\n);\n\n{verilog_content}\n\nendmodule // {module_name}"
+                    else:
+                        verilog_content = f"module TopModule(\n  // Default inputs/outputs\n);\n\n{verilog_content}\n\nendmodule // TopModule"
                 
-                # Write TopModule.sv with standardized module name
-                with open(gen_dir / "TopModule.sv", 'w') as f:
+                # Write Verilog file with appropriate name
+                if mode == "rtllm":
+                    module_name = original_module_name or problem_name
+                    target_file = gen_dir / f"{module_name}.sv"
+                else:
+                    target_file = gen_dir / "TopModule.sv"
+                    
+                with open(target_file, 'w') as f:
                     f.write(verilog_content)
                 
                 # Create config.json
-                create_config_for_generation(gen_dir)
+                if mode == "rtllm":
+                    create_config_for_rtllm(gen_dir, original_module_name or problem_name)
+                else:
+                    create_config_for_generation(gen_dir)
+                
                 problems_processed += 1
             except KeyError as e:
                 print(f"Key error in generation: {e}")
@@ -298,7 +367,7 @@ def create_problem_structure(
         print(f"Skipped {problems_skipped} problems that did not match filters")
     
     return problems_map if problems_processed > 0 else {}
-    
+
 def read_metrics(file_path):
     metric = {}
     try:
@@ -342,7 +411,6 @@ def find_latest_run_metrics(folder_path):
 
     return find_file(latest_dir, 'metrics.json')
 
-
 def run_openlane_for_generation(gen_dir, problem_name, model_name, pdk_root=None):
     """Run OpenLane for a single generation and check if it completes successfully."""
     print(f"\nProcessing {model_name} / {problem_name} / {gen_dir.name}...")
@@ -362,7 +430,7 @@ def run_openlane_for_generation(gen_dir, problem_name, model_name, pdk_root=None
         ])
         
         # Run the command
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = subprocess.run(command, capture_output=True, text=True, timeout=300)
         
         # Check if synthesis was successful
         success = "Flow complete" in result.stdout or "OpenRoad.STAPrePNR complete" in result.stdout
@@ -370,25 +438,23 @@ def run_openlane_for_generation(gen_dir, problem_name, model_name, pdk_root=None
         
         # print immediate feedback
         print(f"{'✅' if success else '❌'} {model_name} / {problem_name} / {gen_dir.name}: {status}")
-        
-        # Read PPA
+
         metrics = {}
         if success:
             metrics_path = find_latest_run_metrics(os.path.join(gen_dir,'runs'))
             if metrics_path:
                 metrics = read_metrics(metrics_path)
-
+        
         return {
             "generation": gen_dir.name,
             "status": status,
             "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             "output": result.stdout if not success else "",
-            "metrics": metrics
+            "metrics": metrics,
         }
-        
     except Exception as e:
-        print(f"❌ {model_name} / {problem_name} / {gen_dir.name}: Error - {str(e)}")
-        return {
+        print(f"ERROR: {model_name} / {problem_name} / {gen_dir.name}: Error - {str(e)}")
+        return { 
             "generation": gen_dir.name,
             "status": "Error",
             "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -397,7 +463,7 @@ def run_openlane_for_generation(gen_dir, problem_name, model_name, pdk_root=None
     finally:
         os.chdir(original_dir)
 
-def process_problems(problems_map, model_name, problem_filter=None, pdk_root=None):
+def process_problems(problems_map, model_name, problem_filter=None, pdk_root=None, mode="auto"):
     """Process all problems for a model, optionally filtering by problem list."""
     # Store results for all problems
     model_results = {}
@@ -413,10 +479,17 @@ def process_problems(problems_map, model_name, problem_filter=None, pdk_root=Non
         problem_results = []
         for gen_dir in gen_dirs:
             if gen_dir.is_dir():
-                # Check if TopModule.sv exists
-                if not (gen_dir / "TopModule.sv").exists():
-                    print(f"Skipping {gen_dir} - no TopModule.sv found")
-                    continue
+                # Handle different file names based on mode
+                if mode == "rtllm":
+                    # For rtllm, check for any .sv file
+                    if not any(file.suffix == ".sv" for file in gen_dir.iterdir()):
+                        print(f"Skipping {gen_dir} - no Verilog file found")
+                        continue
+                else:
+                    # For other modes, check for TopModule.sv
+                    if not (gen_dir / "TopModule.sv").exists():
+                        print(f"Skipping {gen_dir} - no TopModule.sv found")
+                        continue
                     
                 result = run_openlane_for_generation(gen_dir, problem_name, model_name, pdk_root)
                 problem_results.append(result)
@@ -596,7 +669,7 @@ def process_single_json(
         return {}
     
     # Process problems
-    model_results = process_problems(problems_map, model_name, problem_filter, pdk_root)
+    model_results = process_problems(problems_map, model_name, problem_filter, pdk_root, mode)
     
     # Generate report if requested
     if generate_report and model_results:

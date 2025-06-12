@@ -34,6 +34,7 @@ def eval_verilog_eval(path: Path, test: Path, ref: Path, flag: bool = False):
         'passed': False,
         'syntax_passed': False,
         'func_passed': False,
+        'synthesis_passed': False,
         'result': '',
         'passfail': '?',
     }
@@ -138,6 +139,7 @@ def eval_rtllm(path: Path, test: Path, ref: Path, flag: bool = False):
         'passed': False,
         'syntax_passed': False,
         'func_passed': False,
+        'synthesis_passed': False,
         'result': ''
     }
 
@@ -181,6 +183,7 @@ def eval_script_verigen(path: Path, test: Path, ref: Path, flag: bool):
         'passed': False,
         'syntax_passed': False,
         'func_passed': False,
+        'synthesis_passed': False,
         'result': ''
     }
 

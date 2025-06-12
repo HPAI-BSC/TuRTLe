@@ -1,8 +1,8 @@
 benchmark:
   - task: rtllm
-    compute_ppa: "split"
-    path_data_benchmark: 
+    rtllm_version: "2.0"
     # Path to the path to the benchmark dataset
+    path_data_benchmark: 
     # You can run the previous version by selecting ggcristian/RTLLM-v1.1 instead
     path_dataset_test: ggcristian/RTLLM-v2.0
     path_temporary_files: /your_path
@@ -14,16 +14,15 @@ benchmark:
       - name: CodeV-CL-7B
         multinode: False
         max_length_generation: 2048
-        slurm_config: general-single-node-small
-        max_tokens: 2048
+        slurm_config: general-single-node-large
         temperature: [0.2]
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
@@ -32,16 +31,15 @@ benchmark:
       - name: CodeV-DS-6.7B
         multinode: False
         max_length_generation: 2048
-        slurm_config: general-single-node-small
-        max_tokens: 2048
+        slurm_config: general-single-node-large
         temperature: [0.2]
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
@@ -49,16 +47,15 @@ benchmark:
       - name: CodeV-QW-7B
         multinode: False
         max_length_generation: 2048
-        slurm_config: general-single-node-small
-        max_tokens: 2048
+        slurm_config: general-single-node-large
         temperature: [0.2]
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
@@ -66,28 +63,26 @@ benchmark:
       - name: deepseek-coder-6.7b-instruct
         multinode: False
         max_length_generation: 2048
-        slurm_config: general-single-node-small
-        max_tokens: 2048
+        slurm_config: general-single-node-large
         temperature: [0.2]
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
         trust_remote_code: True
       - name: HaVen-CodeQwen
         multinode: False
-        slurm_config: general-single-node-small
-        max_tokens: 2048
+        slurm_config: general-single-node-large
         temperature: [0.2]
         max_length_generation: 2048
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
@@ -99,17 +94,16 @@ benchmark:
         trust_remote_code: True
       - name: OpenCoder-8B-Instruct
         multinode: False
-        slurm_config: general-single-node-small
-        max_tokens: 2048
+        slurm_config: general-single-node-large
         temperature: [0.2]
         max_length_generation: 2048
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
@@ -118,15 +112,14 @@ benchmark:
         multinode: False
         max_length_generation: 2048
         slurm_config: general-single-node-large
-        max_tokens: 2048
         temperature: [0.2]
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 16
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
@@ -137,12 +130,12 @@ benchmark:
         max_tokens: 16384
         temperature: [0.2]
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
@@ -150,50 +143,47 @@ benchmark:
       - name: Qwen2.5-32B-Instruct
         multinode: False
         slurm_config: general-single-node-large
-        max_tokens: 2048
         temperature: [0.2]
         max_length_generation: 2048
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 16
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
         trust_remote_code: True
       - name: Qwen2.5-Coder-7B-Instruct
         multinode: False
-        slurm_config: general-single-node-small
-        max_tokens: 2048
-        temperature: [0.2]
+        slurm_config: general-single-node-large
         max_length_generation: 2048
+        temperature: [0.2]
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
         trust_remote_code: True
       - name: Qwen2.5-Coder-14B-Instruct
         multinode: False
-        slurm_config: general-single-node-small
-        max_tokens: 2048
+        slurm_config: general-single-node-large
         temperature: [0.2]
         max_length_generation: 2048
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
@@ -201,16 +191,15 @@ benchmark:
       - name: Qwen2.5-Coder-32B-Instruct
         multinode: False
         slurm_config: general-single-node-large
-        max_tokens: 2048
         temperature: [0.2]
         max_length_generation: 2048
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 16
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
@@ -218,33 +207,32 @@ benchmark:
       - name: RTLCoder-Deepseek-v1.1
         multinode: False
         slurm_config: general-single-node-large
-        max_tokens: 2048
         temperature: [0.2]
         max_length_generation: 2048
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
         trust_remote_code: True
+        prompt: deepseek
       - name: RTLCoder-Mistral-v1.1
         multinode: False
         slurm_config: general-single-node-large
-        max_tokens: 2048
         temperature: [0.2]
         max_length_generation: 2048
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
@@ -252,32 +240,30 @@ benchmark:
       - name: starchat2-15b-v0.1
         multinode: False
         slurm_config: general-single-node-large
-        max_tokens: 2048
         temperature: [0.2]
         max_length_generation: 2048
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
         trust_remote_code: True
-      - name: OriGen_Fix_merged
-        slurm_config: general-single-node-small
-        max_tokens: 2048
+      - name: Origen_merged
+        slurm_config: general-single-node-large
         temperature: [0.2]
         max_length_generation: 2048
         top_p: 0.95
-        top_k: 0
+        top_k: -1
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
         few_shot: 0
-        precision: fp16
+        precision: bf16
         save_generations: True
         save_metrics: True
         save_references: False
@@ -361,6 +347,111 @@ benchmark:
         slurm_config: general-single-node-large
         temperature: [0.2]
         max_tokens: 16384
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: Llama-3.3-70B-Instruct
+        max_length_generation: 2048
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: Qwen2.5-72B-Instruct
+        max_length_generation: 2048
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: neuralmagic_Meta-Llama-3.1-405B-Instruct-FP8
+        max_length_generation: 2048
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: CodeLlama-70b-Instruct-hf
+        max_length_generation: 2048
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: DeepSeek-R1
+        max_tokens: 16384
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: Qwen3-235B-A22B
+        max_tokens: 16384
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: DeepSeek-R1-0528
+        max_tokens: 16384
+        slurm_config: general-multi-node
+        temperature: [0.2]
         top_p: 0.95
         top_k: -1
         n_samples: 5

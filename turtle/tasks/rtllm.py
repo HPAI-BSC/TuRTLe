@@ -10,14 +10,18 @@ import json
 import os
 import re
 import tempfile
+import warnings
+from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
 from datasets import load_from_disk
 from metrics.code_eval import estimate_pass_at_k
 from metrics.eval_verilog import eval_rtllm
-from metrics.openlane_unified import (create_problem_structure,
-                                      run_openlane_for_generation)
+from metrics.openlane_unified import (
+    create_problem_structure,
+    run_openlane_for_generation,
+)
 from metrics.ppa_score import compute_ppa_score
 from src.turtle_eval.base import TaskExtension
 from transformers import AutoTokenizer
@@ -40,7 +44,7 @@ _CITATION = """
   booktitle={Proceedings of 2024 IEEE/ACM International Conference on Computer-Aided Design (ICCAD)},
   year={2024},
   organization={ACM}
-}
+  }
 """
 
 
@@ -66,7 +70,7 @@ class RTLLM(TaskExtension):
             raise ValueError(
                 f"Path to `RTLLM` repo not found.\n`{self.path_rtllm_repo}` does not exists."
             )
-        
+
         self.dataset = load_from_disk(self.path_dataset_test)
 
         # setup directories for (later-on) computing the PPA
@@ -74,16 +78,24 @@ class RTLLM(TaskExtension):
         if self.load_generations_path is not None:
             json_path = self.load_generations_path
             output_dir = Path(os.path.dirname(json_path) + "/")
-            _ = create_problem_structure(output_dir, json_path)
+            _ = create_problem_structure(output_dir, json_path, mode="rtllm")
             self.base_gen_dir = output_dir
-        else:
-            self.base_gen_dir = None
-
+            self.debug = False
 
     # TODO: Delete this, just a helper function that will print contents generated for debug purposes
     def _printHelper(self, title: str, content: str):
         if self.debug:
-            print("\n" + "-" * 30 + title + "-" * 30 + "\n" + content + "\n" + "-" * 70 + "\n")
+            print(
+                "\n"
+                + "-" * 30
+                + title
+                + "-" * 30
+                + "\n"
+                + content
+                + "\n"
+                + "-" * 70
+                + "\n"
+            )
 
     def get_dataset(self):
         """Returns dataset for the task or an iterable of any object, that get_prompt can handle"""
@@ -103,14 +115,21 @@ class RTLLM(TaskExtension):
         if tokenizer.chat_template is None:
             if self.prompt == "deepseek":
                 tokenizer.chat_template = "{% if not add_generation_prompt is defined %}\n{% set add_generation_prompt = false %}\n{% endif %}\n{%- set ns = namespace(found=false) -%}\n{%- for message in messages -%}\n    {%- if message['role'] == 'system' -%}\n        {%- set ns.found = true -%}\n    {%- endif -%}\n{%- endfor -%}\n{{bos_token}}{%- if not ns.found -%}\n{{'You are an AI programming assistant, utilizing the Deepseek Coder model, developed by Deepseek Company, and you only answer questions related to computer science. For politically sensitive questions, security and privacy issues, and other non-computer science questions, you will refuse to answer\\n'}}\n{%- endif %}\n{%- for message in messages %}\n    {%- if message['role'] == 'system' %}\n{{ message['content'] }}\n    {%- else %}\n        {%- if message['role'] == 'user' %}\n{{'### Instruction:\\n' + message['content'] + '\\n'}}\n        {%- else %}\n{{'### Response:\\n' + message['content'] + '\\n<|EOT|>\\n'}}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{% if add_generation_prompt %}\n{{'### Response:'}}\n{% endif %}"
-        full_prompt = self.get_file(os.path.join(self.path_rtllm_repo, doc["folder_path"], "design_description.txt"))
-        conversation = [ {"role": "user", "content": full_prompt.strip()}, ]
+        full_prompt = self.get_file(
+            os.path.join(
+                self.path_dataset, doc["folder_path"], "design_description.txt"
+            )
+        )
+        conversation = [
+            {"role": "user", "content": full_prompt.strip()},
+        ]
         # Some models might not have a template,
         # in that case we return the raw prompt
         try:
             ret = tokenizer.apply_chat_template(
                 conversation, tokenize=False, add_generation_prompt=True
             )
+            ret += "<think>\n"
         except ValueError:
             print(f"Warning: {self.model} does not has a tokenizer template.")
             ret = full_prompt.strip()
@@ -229,6 +248,98 @@ class RTLLM(TaskExtension):
             "generation": generation,
         }
 
+    def parse_ppa_json(self) -> list[dict]:
+        # we read the problems from the PPA json list
+        # to know in advance which problems require a call to openlane
+        base_dir = Path(__file__).resolve().parent.parent
+        golden_metrics_path = base_dir / "metrics/PPA_golden_solutions/rtllm.json"
+        if not golden_metrics_path.exists():
+            raise FileNotFoundError(f"File not found: {golden_metrics_path}")
+        with open(golden_metrics_path, "r") as fd:
+            data: list[dict] = json.load(fd)
+        return data
+
+    def _evaluate_stx_fnc(self, generation: str, test_path: str, ref_path: str) -> dict:
+        with tempfile.NamedTemporaryFile(
+            suffix=".sv", delete=True, dir=self.path_temporary_files
+        ) as f:
+            f.write(generation.encode("utf-8"))
+            f.flush()
+            result = eval_rtllm(Path(f.name), Path(test_path), Path(ref_path))
+        return result
+
+    def _evaluate_syn_ppa(
+        self, result: dict, problem_id: str, generation_index: int, C: defaultdict
+    ) -> dict:
+        gen_dir = Path(
+            os.path.join(
+                self.base_gen_dir,
+                "generated_problems",
+                "verified_" + problem_id,
+                f"generation_{generation_index+1}",
+            )
+        )
+        openlane_result = run_openlane_for_generation(
+            gen_dir,
+            problem_id,
+            "model_name",
+        )
+
+        if (
+            openlane_result["status"] == "Success"
+        ):  # If metrics could be generated, synthesis passed
+            result["synthesis_passed"] = True
+            C["area"][problem_id].append(openlane_result["metrics"]["area"])
+            C["power"][problem_id].append(openlane_result["metrics"]["power"])
+            C["performance"][problem_id].append(
+                openlane_result["metrics"]["performance"]
+            )
+
+        result.update(
+            {
+                "openlane_status": openlane_result["status"],
+                "openlane_output": openlane_result.get("output", ""),
+            }
+        )
+        return result, C
+
+    def _compute_pass_k(
+        self, correct: np.ndarray, total: np.ndarray, ks: list[int]
+    ) -> dict:
+        results = {}
+        for k in ks:
+            if (total >= k).all():
+                results[f"pass@{k}"] = round(
+                    estimate_pass_at_k(total, correct, k).mean() * 100, 2
+                )
+        return results
+
+    def _compute_ppa(self, ppa_data: list[dict], C: dict, n: int) -> dict:
+        g = {"area": {}, "power": {}, "performance": {}}
+        for entry in ppa_data:
+            name = entry["prob_name"]
+            short_name = name.split("_", 1)[-1].replace(".json", "")
+            g["area"][short_name] = entry["area"]
+            g["power"][short_name] = entry["power"]
+            g["performance"][short_name] = entry["performance"]
+
+        raw_power = compute_ppa_score(C["power"], g["power"], n, "power")
+        raw_performance = compute_ppa_score(
+            C["performance"], g["performance"], n, "performance"
+        )
+        raw_area = compute_ppa_score(C["area"], g["area"], n, "area")
+
+        # Values are \in (0,2], where higher is worse
+        # We want to flip the values and scale them to [0,100]
+        def clip_and_flip_percentatge(val):
+            return (2 - val) * 100
+
+        return {
+            "power": round(clip_and_flip_percentatge(raw_power), 2),
+            "performance": round(clip_and_flip_percentatge(raw_performance), 2),
+            "area": round(clip_and_flip_percentatge(raw_area), 2),
+        }
+
     def process_results(self, generations, references):
         """
         Takes the list of LM generations and evaluates them against ground truth references,
@@ -242,102 +353,54 @@ class RTLLM(TaskExtension):
         """
         records = list()
         correct_syntax, correct_func, correct_synthesis, total = [], [], [], []
-        C = {"area": {}, "power": {}, "performance": {}}  # to compute PPA score
+
+        # Dynamically read PPA from golden solutions
+        ppa_data = self.parse_ppa_json()
+        ppa_ids = [
+            d["prob_name"].split("_", 1)[-1].split(".")[0] for d in ppa_data
+        ]  # 35_freq_by_odd.json => freq_by_odd
+        C = defaultdict(lambda: defaultdict(list))
+
         for i in range(len(references)):
-            n_correct_syntax = 0
-            n_correct_func = 0
-            n_correct_synthesis = 0
-            for j in range( len(generations[i])):  # can be either 1 or 20 samples in our case
+            n_correct_syntax, n_correct_func, n_correct_synthesis = 0, 0, 0
+            for j in range(len(generations[i])):  # N=5
                 test_path = generations[i][j]["test_path"]
                 ref_path = generations[i][j]["ref_path"]
                 generation = generations[i][j]["generation"]
-                problem_id = (os.path.basename(ref_path).split("verified_")[-1].split(".")[0])
-                # Evaluate STX & FNC through Icarus Verilog
-                with tempfile.NamedTemporaryFile(suffix=".sv", delete=True, dir=self.path_temporary_files) as f:
-                    f.write(generation.encode("utf-8"))
-                    f.flush()
-                    result = eval_rtllm(
-                        Path(f.name), Path(test_path), Path(ref_path)
-                    )
-                result["synthesis_passed"] = False
-                if result["func_passed"] == True:
-                    # Evaluate SYN & PPA through OpenLane
-                    gen_dir = Path(os.path.join(self.base_gen_dir, "generated_problems", "verified_" + problem_id, f"generation_{j+1}"))
-                    openlane_result = run_openlane_for_generation(gen_dir, problem_id, "model_name")
-                    if openlane_result["metrics"]:  # If metrics could be generated, synthesis passed
-                        result["synthesis_passed"] = True
-                        # Check if the list exists, if not, create it
-                        if problem_id not in C["area"]:
-                            C["area"][problem_id] = []
-                            C["power"][problem_id] = []
-                            C["performance"][problem_id] = []
 
-                        # Metrics of the LLM's generation
-                        C["area"][problem_id].append(openlane_result["metrics"]["area"])
-                        C["power"][problem_id].append(openlane_result["metrics"]["power"])
-                        C["performance"][problem_id].append(openlane_result["metrics"]["performance"])
+                problem_id = (
+                    os.path.basename(ref_path).split("verified_")[-1].split(".")[0]
+                )
 
-                    result.update(
-                        {
-                            "openlane_status": openlane_result["status"],
-                            "openlane_output": openlane_result.get("output", ""),
-                        }
-                    )
-                records.append(result)
+                result = self._evaluate_stx_fnc(generation, test_path, ref_path)
+                if result["func_passed"] and problem_id in ppa_ids:
+                    result, C = self._evaluate_syn_ppa(result, problem_id, j, C)
+
                 n_correct_syntax += int(result["syntax_passed"])
                 n_correct_func += int(result["func_passed"])
                 n_correct_synthesis += int(result["synthesis_passed"])
+
+                records.append(result)
+
             correct_syntax.append(n_correct_syntax)
             correct_func.append(n_correct_func)
             correct_synthesis.append(n_correct_synthesis)
             total.append(len(generations[i]))
 
-        # Calculate pass@k (taken from VerilogEval v1 repo)
-        ret = {"syntax": None, "func": None}
-        total = np.array(total)
+        # Calculate pass@k (adapted from VerilogEval v1 repo)
         ks = [1, 5, 20]
+        ret = {
+            "syntax": self._compute_pass_k(
+                np.array(correct_syntax), np.array(total), ks
+            ),
+            "func": self._compute_pass_k(np.array(correct_func), np.array(total), ks),
+            "synthesis": self._compute_pass_k(
+                np.array(correct_synthesis), np.array(total), ks
+            ),
+        }
 
-        # pass@k STX
-        correct_syntax = np.array(correct_syntax)
-        ret["syntax"] = { f"pass@{k}": estimate_pass_at_k(total, correct_syntax, k).mean() for k in ks if (total >= k).all() }
-
-        # pass@k FNC
-        correct_func = np.array(correct_func)
-        ret["func"] = { f"pass@{k}": estimate_pass_at_k(total, correct_func, k).mean() for k in ks if (total >= k).all() }
-
-        # pass@k SYN
-        correct_synthesis = np.array(correct_synthesis)
-        ret["synthesis"] = { f"pass@{k}": estimate_pass_at_k(total, correct_synthesis, k).mean() for k in ks if (total >= k).all() }
-
-        # Compute PPA score
-        # Dynamically read PPA from golden solutions
-        base_dir = Path(__file__).resolve().parent.parent
-        golden_metrics_path = base_dir / "metrics/PPA_golden_solutions/rtllm.json"
-        if not golden_metrics_path.exists():
-            raise FileNotFoundError(f"File not found: {golden_metrics_path}")
-        with open(golden_metrics_path, "r") as file:
-            data = json.load(file)
-        g = {"area": {}, "power": {}, "performance": {}}
-        for entry in data:
-            name = entry["prob_name"]
-            short_name = name.split("_", 1)[-1].replace(".json", "")
-            g["area"][short_name] = entry["area"]
-            g["power"][short_name] = entry["power"]
-            g["performance"][short_name] = entry["performance"]
-
-        raw_power = compute_ppa_score(C["power"], g["power"], len(references), "power")
-        raw_performance = compute_ppa_score(
-            C["performance"], g["performance"], len(references), "performance"
-        )
-        raw_area = compute_ppa_score(C["area"], g["area"], len(references), "area")
-
-        # Values are \in (0,2], where higher is worse
-        # We want to flip the values and scale them to [0,100]
-        def clip_and_flip_percentatge(val):
-            return (1 - (val / 2)) * 100
-
-        ret["area"] = round(clip_and_flip_percentatge(raw_area), 2)
-        ret["power"] = round(clip_and_flip_percentatge(raw_power), 2)
-        ret["performance"] = round(clip_and_flip_percentatge(raw_performance), 2)
+        # Calculate PPA score
+        ppa = self._compute_ppa(ppa_data, C, len(references))
+        ret.update(ppa)
 
         return ret

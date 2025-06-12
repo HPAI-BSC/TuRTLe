@@ -1,7 +1,6 @@
 benchmark:
   - task: verilog_eval_cc
     path_data_benchmark: 
-    compute_ppa: "split"
     path_dataset_test:
     path_temporary_files: /your_path
     path_model: /your_path
@@ -12,7 +11,7 @@ benchmark:
       - name: CodeV-CL-7B
         multinode: False
         max_length_generation: 2048
-        slurm_config: general-single-node-small
+        slurm_config: general-single-node-large
         temperature: [0.2]
         top_p: 0.95
         top_k: -1
@@ -42,7 +41,6 @@ benchmark:
         save_metrics: True
         save_references: False
         trust_remote_code: True
-        prompt: deepseek
       - name: CodeV-QW-7B
         multinode: False
         max_length_generation: 2048
@@ -59,17 +57,16 @@ benchmark:
         save_metrics: True
         save_references: False
         trust_remote_code: True
-        prompt: qwen
       - name: deepseek-coder-6.7b-base
         multinode: False
         max_length_generation: 2048
-        slurm_config: general-single-node-small
+        slurm_config: general-single-node-large
         temperature: [0.2]
         top_p: 0.95
         top_k: -1
         n_samples: 5
         swap_space: 50
-        continuous_batching_size: 16
+        continuous_batching_size: 64
         few_shot: 0
         precision: bf16
         save_generations: True
@@ -93,7 +90,6 @@ benchmark:
         save_metrics: True
         save_references: False
         trust_remote_code: True
-        prompt: qwen
       - name: OpenCoder-8B-Base
         multinode: False
         slurm_config: general-single-node-large
@@ -143,7 +139,6 @@ benchmark:
         save_metrics: True
         save_references: False
         trust_remote_code: True
-        prompt: r1
       - name: Qwen2.5-32B
         multinode: False
         slurm_config: general-single-node-large
@@ -210,14 +205,14 @@ benchmark:
         trust_remote_code: True
       - name: RTLCoder-Deepseek-v1.1
         multinode: False
-        slurm_config: general-single-node-small
+        slurm_config: general-single-node-large
         temperature: [0.2]
         max_length_generation: 2048
         top_p: 0.95
         top_k: -1
         n_samples: 5
         swap_space: 50
-        continuous_batching_size: 32
+        continuous_batching_size: 64
         few_shot: 0
         precision: bf16
         save_generations: True
@@ -241,7 +236,6 @@ benchmark:
         save_metrics: True
         save_references: False
         trust_remote_code: True
-        prompt: mistral
       - name: starchat2-15b-v0.1
         multinode: False
         slurm_config: general-single-node-large
@@ -258,8 +252,7 @@ benchmark:
         save_metrics: True
         save_references: False
         trust_remote_code: True
-        prompt: starchat
-      - name: OriGen_Fix_merged
+      - name: Origen_merged
         slurm_config: general-single-node-large
         temperature: [0.2]
         max_length_generation: 2048
@@ -268,21 +261,6 @@ benchmark:
         n_samples: 5
         swap_space: 50
         continuous_batching_size: 64
-        few_shot: 0
-        precision: bf16
-        save_generations: True
-        save_metrics: True
-        save_references: False
-        trust_remote_code: True
-      - name: gemma-3-27b-pt
-        slurm_config: general-single-node-large
-        temperature: [0.2]
-        max_length_generation: 2048
-        top_p: 0.95
-        top_k: -1
-        n_samples: 5
-        swap_space: 50
-        continuous_batching_size: 16
         few_shot: 0
         precision: bf16
         save_generations: True
@@ -353,6 +331,126 @@ benchmark:
         slurm_config: general-single-node-large
         temperature: [0.2]
         max_tokens: 16384
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: gemma-3-27b-pt
+        slurm_config: general-single-node-large
+        temperature: [0.2]
+        max_length_generation: 2048
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: Meta-Llama-3.1-70B
+        max_length_generation: 2048
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: Qwen2.5-72B
+        max_length_generation: 2048
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: neuralmagic_Meta-Llama-3.1-405B-FP8
+        max_length_generation: 2048
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: CodeLlama-70b-hf
+        max_length_generation: 2048
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: DeepSeek-R1
+        max_tokens: 16384
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: Qwen3-235B-A22B
+        max_tokens: 16384
+        slurm_config: general-multi-node
+        temperature: [0.2]
+        top_p: 0.95
+        top_k: -1
+        n_samples: 5
+        swap_space: 50
+        continuous_batching_size: 64
+        few_shot: 0
+        precision: bf16
+        save_generations: True
+        save_metrics: True
+        save_references: False
+        trust_remote_code: True
+      - name: DeepSeek-R1-0528
+        max_tokens: 16384
+        slurm_config: general-multi-node
+        temperature: [0.2]
         top_p: 0.95
         top_k: -1
         n_samples: 5

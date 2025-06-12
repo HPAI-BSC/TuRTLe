@@ -1,13 +1,11 @@
 import json
-import torch
-import numpy as np
 import random
 
+import numpy as np
+import torch
 
-from .utils import (
-    PrompBatcher, 
-    complete_code
-)
+from .utils import PrompBatcher, complete_code
+
 
 def set_seed(seed=77)-> None:
     """
@@ -25,6 +23,7 @@ def get_generations(
         task,
         dataset,
         model,
+        client,
         tokenizer,
         n_tasks,
         args
@@ -35,6 +34,7 @@ def get_generations(
         - task (str): The task name.
         - dataset (Dataset): The dataset to use for generation.
         - model (Model): The model to use for generation.
+        - client (str): The vLLM OpenAI API client (multi-node).
         - tokenizer (Tokenizer): The tokenizer to use for generation.
         - n_tasks (int): The number of tasks to generate code for.
         - args (Namespace): The command-line arguments.
@@ -83,6 +83,7 @@ def get_generations(
     generations = complete_code(
         task,
         model,
+        client,
         tokenizer,
         prompt_batched_iterator,
         args=args,

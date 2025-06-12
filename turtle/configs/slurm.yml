@@ -4,7 +4,7 @@ configurations:
     error: slurm_output/job_%j.err
     nodes: 1
     cpus-per-task: 80
-    time: "01:00:00"
+    time: "08:00:00"
     gres: gpu:4
   - type: general-single-node-large
     output: slurm_output/job_%j.out
@@ -13,3 +13,29 @@ configurations:
     cpus-per-task: 80
     time: "02:00:00"
     gres: gpu:4
+    exclusive: true
+  - type: general-multi-node
+    account: bsc70
+    qos: normal
+    output: slurm_output/job_%j.out
+    error: slurm_output/job_%j.err
+    nodes: 8
+    cpus-per-task: 80
+    ntasks-per-node: 1
+    time: "06:00:00"
+    gres: gpu:4
+    exclusive: true
+    env:
+      SLURM_CPU_BIND: 'none'
+      SRUN_CPUS_PER_TASK: '80'
+      SLURM_GPUS_PER_TASK: '4'
+      USE_SYSTEM_NCCL: '1'
+      NUMEXPR_MAX_THREADS: '80'
+      NCCL_IB_HCA: 'mlx5_0,mlx5_1,mlx5_4,mlx5_5'
+      TRANSFORMERS_OFFLINE: '1'
+      HF_DATASETS_OFFLINE: '1'
+      TORCH_NCCL_ASYNC_ERROR_HANDLING: '1'
+      TRITON_LIBCUDA_PATH: '/usr/local/cuda/compat/lib.real/libcuda.so'
+      VLLM_CUDA_MEM_ALIGN_KV_CACHE: '1'
+      TIMEOUT_HEAD: '300'
+      TIMEOUT_WORKER: '800'

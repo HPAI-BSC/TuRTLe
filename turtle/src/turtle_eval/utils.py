@@ -177,6 +177,7 @@ def _parse_instruction(code, instruction_tokens):
 def complete_code(
     task,
     model,
+    client,
     tokenizer,
     prompt_batched_iterator,
     args,
@@ -225,15 +226,42 @@ def complete_code(
                 presence_penalty=args.presence_penalty,
                 stop=task.stop_words
             )            
-        batch_outputs = model.generate(
-            prompts=prompts,
-            sampling_params=sampling_params,
-        )
-        for sample_output in batch_outputs:
-            sample_gens = []
-            for generation in sample_output.outputs:
-                sample_gens.append(generation.text)
-            code_gens.append(sample_gens)
+
+        if client is None:
+            batch_outputs = model.generate(
+                prompts=prompts,
+                sampling_params=sampling_params,
+            )
+            for sample_output in batch_outputs:
+                sample_gens = []
+                for generation in sample_output.outputs:
+                    sample_gens.append(generation.text)
+                code_gens.append(sample_gens)
+        else:
+            batch_outputs = client.completions.create(
+                model=model,
+                prompt=prompts,
+                n=args.n_samples,
+                top_p=args.top_p,
+                temperature=args.temperature,
+                max_tokens=args.max_tokens if args.max_tokens is not None else args.max_length_generation,
+                frequency_penalty=args.frequency_penalty,
+                presence_penalty=args.presence_penalty,
+                stop=task.stop_words,
+            )
+            # `batch_outputs.choices` is a flat list of length 40 (8 prompts × 5 samples)
+            # we should follow the same format done by `model.generate`
+            num_prompts = len(prompts)
+            num_samples = args.n_samples
+            grouped_outputs = [
+                batch_outputs.choices[i * num_samples : (i + 1) * num_samples]
+                for i in range(num_prompts)
+            ]
+            for prompt, generations in zip(prompts, grouped_outputs):
+                sample_gens = []
+                for generation in generations:
+                    sample_gens.append(generation.text)
+                code_gens.append(sample_gens)
 
         batch_id+=1
 

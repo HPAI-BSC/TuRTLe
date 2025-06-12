@@ -26,7 +26,7 @@ class TurtleCommandBuilder:
         return:
             The launcher command list of strings.
         """
-        command_ = '"python turtle/src/turtle.py'
+        command_ = '"python -u turtle/src/turtle.py'
 
         return command_
 

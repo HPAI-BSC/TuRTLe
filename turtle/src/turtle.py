@@ -6,12 +6,16 @@ from typing import Any, List, Type
 import datasets
 import torch
 import transformers
+from openai import OpenAI
 from transformers import AutoTokenizer, HfArgumentParser
-from turtle_eval.arguments import (ExtendedGenerationArguments,
-                                   ExtendedModelArgument,
-                                   ExtendedVLLMArguments,
-                                   ExtendedWorkflowArguments, get_task_updater,
-                                   pattern_match)
+from turtle_eval.arguments import (
+    ExtendedGenerationArguments,
+    ExtendedModelArgument,
+    ExtendedVLLMArguments,
+    ExtendedWorkflowArguments,
+    get_task_updater,
+    pattern_match,
+)
 from turtle_eval.proxy import LCaseEvaluatorProxy
 
 
@@ -34,9 +38,7 @@ def parse_extended_args(extended_classes: List[Type[Any]]):
     fields_dict = {}
     for cls in [EvalArguments] + extended_classes:
         for field in fields(cls):
-            if (
-                field.name not in fields_dict
-            ):  # Child classes override parent fields
+            if field.name not in fields_dict:  # Child classes override parent fields
                 fields_dict[field.name] = field
 
     # 2. Dynamically create a combined dataclass
@@ -71,10 +73,11 @@ def main():
     task = pattern_match(args.tasks.split(","), task_updater.ALL_TASKS)
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
     results = {}
+
     if args.load_generations_path:
         # here we don't generate code but only evaluate previously computed generations
         evaluator = LCaseEvaluatorProxy(
-            use_modified=True, model=None, tokenizer=None, args=args
+            use_modified=True, model=None, client=None, tokenizer=None, args=args
         )
         print("evaluation only mode")
         results[task] = evaluator.evaluate(task)
@@ -132,20 +135,34 @@ def main():
             tokenizer.bos_token_id = 1
             print("Changing bos_token to <s>")
 
-        model = LLM(
-            model=args.model,
-            tensor_parallel_size=4,
-            trust_remote_code=args.trust_remote_code,
-            dtype=dict_precisions[args.precision],
-            gpu_memory_utilization=args.gpu_memory_utilization,
-            swap_space=args.swap_space,
-            max_seq_len_to_capture=args.sequence_length_limit,
-            max_model_len=args.sequence_length_limit,
-        )
-        model.set_tokenizer(tokenizer=tokenizer)
+        client = None
+        if hasattr(args, "ip") and args.ip and hasattr(args, "port") and args.port:
+            api_url = f"http://{args.ip}:{args.port}/v1"
+            client = OpenAI(
+                api_key="EMPTY",
+                base_url=api_url,
+                timeout=99999,
+            )
+            model = args.model
+        else:
+            model = LLM(
+                model=args.model,
+                tensor_parallel_size=4,
+                trust_remote_code=args.trust_remote_code,
+                dtype=dict_precisions[args.precision],
+                gpu_memory_utilization=args.gpu_memory_utilization,
+                swap_space=args.swap_space,
+                max_seq_len_to_capture=args.sequence_length_limit,
+                max_model_len=args.sequence_length_limit,
+            )
+            model.set_tokenizer(tokenizer=tokenizer)
 
         evaluator = LCaseEvaluatorProxy(
-            use_modified=True, model=model, tokenizer=tokenizer, args=args
+            use_modified=True,
+            model=model,
+            client=client,
+            tokenizer=tokenizer,
+            args=args,
         )
 
         if args.generation_only:

@@ -1,0 +1,193 @@
+#!/bin/bash
+{% if slurm_enabled %}
+#SBATCH --account={{ account }}
+#SBATCH --qos={{ qos }}
+#SBATCH --output={{ output }}
+#SBATCH --error={{ error }}
+#SBATCH --nodes={{ nodes }}
+#SBATCH --time={{ time }}
+#SBATCH --gres={{ gres }}
+#SBATCH --cpus-per-task={{ cpus_per_task }}
+#SBATCH --ntasks-per-node={{ ntasks_per_node }}
+#SBATCH --exclusive
+{% endif %}
+
+# Configuration values
+TASKS=("{{ task }}")
+TEMPERATURES=({{ temperature }})
+MODEL_NAME="{{ model_name }}"
+MODEL_PATH="{{ model_path }}"
+BASE_OUTPUT_PATH="{{ metric_output_path }}"
+{% if singularity_enabled %}SIF_PATH="{{ singularity_image }}"{% endif %}
+
+# Environment variables
+export SLURM_CPU_BIND={{ SLURM_CPU_BIND }}
+export SRUN_CPUS_PER_TASK={{ SRUN_CPUS_PER_TASK }}
+export SLURM_GPUS_PER_TASK={{ SLURM_GPUS_PER_TASK }}
+export USE_SYSTEM_NCCL={{ USE_SYSTEM_NCCL }}
+export NUMEXPR_MAX_THREADS={{ NUMEXPR_MAX_THREADS }}
+export NCCL_IB_HCA="{{ NCCL_IB_HCA }}"
+export TRANSFORMERS_OFFLINE={{ TRANSFORMERS_OFFLINE }}
+export HF_DATASETS_OFFLINE={{ HF_DATASETS_OFFLINE }}
+export TORCH_NCCL_ASYNC_ERROR_HANDLING={{ TORCH_NCCL_ASYNC_ERROR_HANDLING }}
+export TRITON_LIBCUDA_PATH={{ TRITON_LIBCUDA_PATH }}
+export RAY_CGRAPH_get_timeout=400
+export RAY_CGRAPH_submit_timeout=400
+export NCCL_P2P_DISABLE=1
+export VLLM_USE_V1=0
+
+echo "START TIME: $(date)"
+
+set -e
+
+set +x
+module purge 
+{% if singularity_enabled %}module load singularity{% endif %}
+set -x
+
+SRUN_ARGS="--wait=60 --kill-on-bad-exit=1"
+
+# Paths and ports
+{% if singularity_enabled %}SINGULARITY_IMAGE="{{ singularity_image }}"{% endif %}
+
+ray_port=$(python3 -c "import socket; s = socket.socket(); s.bind(('', 0)); print(s.getsockname()[1]); s.close()")
+vllm_port=$(python3 -c "import socket; s = socket.socket(); s.bind(('', 0)); print(s.getsockname()[1]); s.close()")
+
+# Timeout settings (in seconds)
+TIMEOUT_HEAD={{ TIMEOUT_HEAD }}
+TIMEOUT_WORKER={{ TIMEOUT_WORKER }}
+
+# Getting the node names
+nodes=$(scontrol show hostnames "$SLURM_JOB_NODELIST")
+nodes_array=($nodes)
+
+head_node=${nodes_array[0]}
+head_node_ip=$(srun --nodes=1 --ntasks=1 -w "$head_node" hostname --ip-address)
+
+ip_head=$head_node_ip:$ray_port
+export ip_head
+echo "IP Head: $ip_head"
+
+# For head node
+export VLLM_HOST_IP=$head_node_ip
+echo "Starting HEAD at $head_node"
+
+# Function to poll for Ray service readiness
+wait_for_ray() {
+    local node=$1
+    local sleep_interval=10
+    local timeout=$2
+    local elapsed=0
+    while true; do
+        if {% if singularity_enabled %}singularity exec --nv "$SINGULARITY_IMAGE" {% endif %}bash -c "ray status" &>/dev/null; then
+            echo "Ray service is up on $node."
+            break
+        fi
+        sleep $sleep_interval
+        elapsed=$((elapsed + sleep_interval))
+        if [ "$elapsed" -ge "$timeout" ]; then
+            echo "Timeout waiting for Ray service on $node."
+            exit 1
+        fi
+    done
+}
+
+# Function to poll for VLLM readiness using netcat
+wait_for_vllm() {
+    local host=$1
+    local port=$2
+    local timeout=$3
+    local interval=10
+    local elapsed=0
+    while ! nc -z "$host" "$port"; do
+        echo "Waiting for VLLM to be up at $host:$port..."
+        sleep $interval
+        elapsed=$((elapsed + interval))
+        if [ "$elapsed" -ge "$timeout" ]; then
+            echo "Timeout waiting for VLLM service on $host:$port."
+            exit 1
+        fi
+    done
+    echo "VLLM service is up at $host:$port."
+}
+
+# Start the head node
+srun --nodes=1 --ntasks=1 -w "$head_node" \
+    {% if singularity_enabled %}singularity exec --nv $SINGULARITY_IMAGE {% endif %}\
+    bash -c "export VLLM_HOST_IP=$head_node_ip && ray start --head --node-ip-address='$head_node_ip' --port=$ray_port \
+    --num-cpus '${SLURM_CPUS_PER_TASK}' --num-gpus '${SLURM_GPUS_PER_TASK}' --block" &
+
+# Wait for head node to be ready
+wait_for_ray "$head_node" "$TIMEOUT_HEAD"
+{% if singularity_enabled %}singularity exec --nv $SINGULARITY_IMAGE {% endif %}bash -c "ray status"
+
+# Start worker nodes
+worker_num=$((SLURM_JOB_NUM_NODES - 1))
+
+for ((i = 1; i <= worker_num; i++)); do
+    node_i=${nodes_array[$i]}
+    echo "Starting WORKER $i at $node_i"
+    node_ip=$(srun --nodes=1 --ntasks=1 -w "$node_i" hostname --ip-address)
+    echo "Node ip $node_ip"
+    srun --nodes=1 --ntasks=1 -w "$node_i" \
+        {% if singularity_enabled %}singularity exec --nv $SINGULARITY_IMAGE {% endif %}\
+        bash -c "export VLLM_HOST_IP=$node_ip && ray start --address '$ip_head' \
+        --num-cpus '${SLURM_CPUS_PER_TASK}' --num-gpus '${SLURM_GPUS_PER_TASK}' --block" &
+    
+    # Poll until worker has successfully joined Ray cluster
+    wait_for_ray "$node_i" "$TIMEOUT_WORKER"
+    {% if singularity_enabled %}singularity exec --nv $SINGULARITY_IMAGE {% endif %}bash -c "ray status"
+done
+
+# Final cluster status check
+echo "Final Ray cluster status:"
+{% if singularity_enabled %}singularity exec --nv $SINGULARITY_IMAGE {% endif %}bash -c "ray status"
+
+# Start vLLM server
+server_start_time=$(date +%s)
+{% if singularity_enabled %}singularity exec --nv $SINGULARITY_IMAGE {% endif %}\
+    bash -c "export VLLM_HOST_IP=$head_node_ip && export VLLM_CUDA_MEM_ALIGN_KV_CACHE={{ VLLM_CUDA_MEM_ALIGN_KV_CACHE }} && vllm serve ${MODEL_PATH}${MODEL_NAME} \
+        --host $head_node_ip \
+        --port $vllm_port \
+        --distributed-executor-backend ray \
+        --trust-remote-code \
+        --dtype bfloat16 \
+        --enforce-eager \
+        --swap-space 48 \
+        --max-model-len 18432 \
+        --gpu-memory-utilization 0.9 \
+        --tensor-parallel-size 4 \
+        --pipeline-parallel-size $SLURM_JOB_NUM_NODES &"
+
+# Wait for VLLM to be ready with error handling
+if ! wait_for_vllm "$head_node_ip" "$vllm_port" "$TIMEOUT_WORKER"; then
+    echo "ERROR: VLLM server failed to start"
+    continue
+fi
+
+
+for TEMP in "${TEMPERATURES[@]}"; do
+    METRIC_OUTPUT_PATH="${BASE_OUTPUT_PATH}/${TASK_NAME}/${MODEL_NAME}/metrics.json"
+    GENERATION_OUTPUT_PATH="${BASE_OUTPUT_PATH}/${TASK_NAME}/${MODEL_NAME}/generation.json"
+
+    {% if singularity_enabled %}singularity exec --nv "${SIF_PATH}" {% endif %}\
+        bash -c {{ turtle_commands }}
+        echo "Check logs for details. Moving to next configuration..."
+done
+
+
+# Cleanup with error handling
+pkill -f "vllm serve" || echo "Warning: Failed to kill vLLM server process"
+sleep 20  # Increased wait time for better cleanup
+
+# Force cleanup of any zombie processes
+killall -9 python3.10 2>/dev/null || true
+sleep 5
+
+# Check Ray cluster health
+if ! {% if singularity_enabled %}singularity exec --nv $SINGULARITY_IMAGE {% endif %}bash -c "ray status" >/dev/null 2>&1; then
+    echo "ERROR: Ray cluster appears unhealthy. Attempting to recover..."
+    # Could add Ray cluster recovery logic here if needed
+fi
+
+echo "END TIME: $(date)"

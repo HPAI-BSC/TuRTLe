@@ -1,6 +1,9 @@
 import logging
 import os
+import re
 import subprocess
+import tempfile
+import time
 from pathlib import Path
 from typing import Dict, List
 
@@ -15,11 +18,25 @@ class WorkflowExecutor:
     using subprocess."""
 
     def __init__(self, args: Dict, logger: logging.Logger) -> None:
+        """Initialize the WorkflowExecutor.
+        Parameters:
+            - args: Dictionary of command line arguments
+            - logger: Configured logger instance
+        Returns:
+            None
+        """
         self.args = args
         self.file_handler = FileHandler()
         self.registry_updater = RegistryUpdater()
         self.CONFIGS_DIR = Path(__file__).resolve().parent.parent.parent / "configs"
         self.logger = logger
+        self.slurm_loader = None
+
+        # Multi-node execution state
+        self.head_node_ip = None
+        self.ray_port = None
+        self.vllm_port = None
+        self.running_processes = []
 
     def load_yaml_config(self, file_path: Path) -> Dict:
         """Load a YAML configuration file.
@@ -44,7 +61,7 @@ class WorkflowExecutor:
         commands = {}
         for task_name, image_path in task_image_list:
             commands[task_name] = (
-                f"VLLM_WORKER_MULTIPROC_METHOD=spawn singularity exec --nv {image_path} bash -c "
+                f"VLLM_WORKER_MULTIPROC_METHOD=spawn VLLM_USE_V1=0 singularity exec --nv {image_path} bash -c "
             )
         return commands
 
@@ -64,51 +81,224 @@ class WorkflowExecutor:
             commands[task_name] = f"docker run --gpus all {image_name} bash -c "
         return commands
 
-    def run_command(self, command: str) -> None:
-        """Execute a shell command."""
-        print(f"\n\nExecuting command: {command} \n\n")
-        result = subprocess.run(
-            command,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-        if result.returncode != 0:
-            print("Error executing command:")
-            print(result.stderr)
-        else:
-            print("Command executed successfully:")
-            print(result.stdout)
+    # Methods for multi-node execution
+    def _setup_environment(self, slurm_config: str = None) -> None:
+        """Set up environment variables for distributed execution."""
+        # Essential environment variables from bash script
+        enviroment_vars = self.slurm_loader.get_env_vars(slurm_config)
+
+        # Apply environment variables
+        eviroment = {}
+        for key, value in enviroment_vars.items():
+            eviroment[key] = value
+
+        return eviroment
+
+    def parse_sbatch_string(self, slurm_command: str) -> Dict[str, str]:
+        """Parse a string containing sbatch parameters into a dictionary.
+        Parameters:
+            - slurm_command: String containing sbatch parameters
+        Returns:
+            - Dictionary with parameter names as keys and their values
+        """
+        # Delete 'sbatch' from the beginning of the string if it exists
+        if slurm_command.startswith("sbatch "):
+            sbatch_str = slurm_command[7:]
+
+        # Split the string into parts
+        parts = slurm_command.split()
+
+        result = {}
+
+        for part in parts:
+            # check if the part starts with '--' (indicating a parameter)
+            if part.startswith("--"):
+                # split the part into key and value
+                key_value = part[2:].split("=", 1)
+                key = key_value[0]
+                # If there is no value (e.g., --exclusive), assign None
+                value = key_value[1] if len(key_value) > 1 else None
+                result[key] = value
 
         return result
 
-    def run_job(self, slurm_command: str, singularity_command: str, bigcode_command: str) -> None:
-        if not slurm_command or not singularity_command:
-            return self.run_command(bigcode_command)
-        
-        """Run the job using SLURM and Singularity."""
-        print(f"START TIME: {os.popen('date').read().strip()}\n")
-        full_command = slurm_command + "--wrap='"
-        load_command = "module purge && module load singularity && "
+    def build_multinode_commands(self, dictionary: Dict[str, str]) -> str:
+        """Build commands for multi-node execution.
+        Parameters:
+            - dictionary: Dictionary containing sbatch parameters
+        Returns:
+            - rendered_script: Rendered script for multi-node execution
+        """
+        from jinja2 import Environment, FileSystemLoader
 
-        # Note if we include the evaluation flag we must:
-        # - Remove generation_only flag
-        # - Substitute the load-generations-path by the save-generations-path
-        # In normal scenarios this should not be needed, but we are using two images, one for inference, another to eval
+        # get current working directory
+        path_template = "template"
+        new_path = Path(__file__).parent.parent / path_template
+
+        # generate_only flag
         if self.args and self.args.generation_only is True:
-            bigcode_command = bigcode_command[:-1] + " " + "--generation_only" + '"'
-        elif self.args and self.args.evaluate_only is True:
-            bigcode_command = bigcode_command.replace("--save_generations True", "--save_generations False")
-            bigcode_command = bigcode_command.replace("--save_generations_path", "--load_generations_path")
+            dictionary["turtle_commands"] = (
+                dictionary["turtle_commands"][:-1] + " " + "--generation_only" + '"'
+            )
 
-        full_command += load_command + singularity_command + bigcode_command
-        full_command += "'"
+        env = Environment(loader=FileSystemLoader(new_path))
+        template = env.get_template("multinode.sh.j2")
 
-        self.logger.info(f"Running command: {full_command}")
+        rendered_template = template.render(dictionary)
 
-        return self.run_command(full_command)
+        return rendered_template
 
+    # End of multi-node execution
+
+    def run_command(self, command: str) -> None:
+        """Execute a shell command safely.
+        Parameters:
+            - command: Command string to execute
+        Returns:
+            - result: CompletedProcess object containing the result of the command
+        """
+        try:
+            result = subprocess.run(
+                command,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            if result.returncode != 0:
+                self.logger.error(f"Command failed (exit code {result.returncode})")
+                self.logger.error(f"Error output: {result.stderr.strip()}")
+            else:
+                self.logger.info("Command executed successfully")
+                self.logger.debug(f"Command output: {result.stdout.strip()}")
+
+            return result
+        except Exception as e:
+            self.logger.exception(f"Exception while executing command: {str(e)}")
+            # Create a dummy result to return in case of exception
+            return subprocess.CompletedProcess(
+                args=command, returncode=1, stdout="", stderr=str(e)
+            )
+
+    def run_job(
+        self,
+        slurm_command: str,
+        slurm_confgs: str,
+        singularity_command: str,
+        turtle_command: str,
+        task: str = None,
+        singularity_image: str = None,
+        model_path: str = None,
+        model_name: str = None,
+        type_job: str = None,
+        temperature: str = None,
+        benchmark_config: List[Dict] = None,
+        turtle_commands: str = None,
+    ) -> subprocess.CompletedProcess:
+        """Run job using either SLURM or direct multi-node execution.
+        Parameters:
+            - slurm_command: SLURM sbatch command
+            - turtle_command: Task command to execute
+            - task: Task name (multi-node only)
+            - singularity_image: Singularity image path (multi-node only)
+            - model_path: Model directory path (multi-node only)
+        Returns:
+            - CompletedProcess with execution results
+        """
+        self.logger.info(f"JOB START TIME: {time.ctime()}")
+        if self.args and self.args.generation_only is True:
+            turtle_command = turtle_command[:-1] + " " + "--generation_only" + '"'
+
+        if slurm_command != "":
+            modified_slurm_command = slurm_command.replace(
+                "--cpus-per-task", "--cpus_per_task"
+            )
+            modified_slurm_command = modified_slurm_command.replace(
+                "--ntasks-per-node", "--ntasks_per_node"
+            )
+            dictionary = self.parse_sbatch_string(modified_slurm_command)
+            # Add task, singularity image, and model path to the dictionary
+            dictionary["slurm_enabled"] = True
+        else:
+            dictionary = {}
+
+        dictionary["task"] = task
+        if singularity_image:
+            dictionary["singularity_enabled"] = True
+            dictionary["singularity_image"] = singularity_image
+            if (self.args and self.args.evaluate_only is True) and benchmark_config[
+                0
+            ].get("evaluation_image", False):
+                singularity_command = singularity_command.replace(
+                    singularity_image, benchmark_config[0].get("evaluation_image")
+                )
+                dictionary["singularity_image"] = benchmark_config[0].get(
+                    "evaluation_image"
+                )
+                if dictionary.get("slurm_enabled", False):
+                    slurm_command = re.sub(r"--nodes=\d+", "--nodes=1", slurm_command)
+
+        dictionary["model_name"] = model_name
+        dictionary["model_path"] = model_path
+        dictionary["temperature"] = temperature
+        dictionary["metric_output_path"] = benchmark_config[0].get("metric_output_path")
+
+        string1, string2 = turtle_commands.split("--model", 1)
+        new_turtle_commands = f"{string1.strip()} --ip ${{head_node_ip}} --port ${{vllm_port}} --model{string2}"
+
+        dictionary["turtle_commands"] = new_turtle_commands
+
+        # Add environment variables to the dictionary
+        dictionary.update(self._setup_environment(slurm_confgs))
+
+        # The idea is that when we run an evaluation only command, there is no need to go for a multi-node setup
+        print(self.args.evaluate_only)
+        if "multi-node" in type_job and (
+            self.args and self.args.evaluate_only is not True
+        ):
+            # 1. Fill jinja2 template with
+            multinode_command = self.build_multinode_commands(dictionary)
+
+            # 2. Create a temporary file to store the script
+            path_template = "template"
+            temp_folder = Path(__file__).parent.parent / path_template
+
+            # 2. Create a temporary file to store the script
+            with tempfile.NamedTemporaryFile(
+                mode="w", suffix=".sh", dir=temp_folder, delete=False
+            ) as f:
+                f.write(multinode_command)
+                script_path = f.name
+
+            # 3. Make the script executable
+            os.chmod(script_path, 0o755)
+
+            full_cmd = (
+                # f"{slurm_command} --wrap='"
+                f"sbatch {script_path}'"
+            )
+        else:
+            # Note if we include the evaluation flag we must:
+            # - Remove generation_only flag
+            # - Substitute the load-generations-path by the save-generations-path
+            # In normal scenarios this should not be needed, but we are using two images, one for inference, another to eval
+            if self.args and self.args.evaluate_only is True:
+                turtle_command = turtle_command.replace(
+                    "--save_generations True", "--save_generations False"
+                )
+                turtle_command = turtle_command.replace(
+                    "--save_generations_path", "--load_generations_path"
+                )
+
+            # Single-node SLURM execution
+            full_cmd = (
+                f"{slurm_command} --wrap="
+                f"'module purge && module load singularity && "
+                f"{singularity_command} {turtle_command}'"
+            )
+
+        return self.run_command(full_cmd)
 
     def filter_model_config(self, config_dict: Dict, model_name: str) -> Dict:
         """
@@ -198,10 +388,9 @@ class WorkflowExecutor:
 
         if filter_slurm and os.path.isfile(self.CONFIGS_DIR / "slurm.yml"):
             slurm_config_raw = self.load_yaml_config(self.CONFIGS_DIR / "slurm.yml")
-            loader = SlurmConfigLoader(slurm_config_raw)
+            self.slurm_loader = SlurmConfigLoader(slurm_config_raw)
 
-            # get all slurm configs
-            slurm_configs_commands = loader.get_all_configs()
+            slurm_configs_commands = self.slurm_loader.get_all_configs()
         else:
             slurm_configs_commands = {}
 
@@ -212,11 +401,13 @@ class WorkflowExecutor:
             if "singularity_image" in item
         ]
         if filter_singularity:
-            singularity_commands = self.build_singularity_commands(filter_singularity).get(_task)
+            singularity_commands = self.build_singularity_commands(
+                filter_singularity
+            ).get(_task)
         else:
             singularity_commands = None
 
-        '''
+        """
         # check docker configs
         filter_docker = [
             (item["task"], item["docker_image"])
@@ -225,7 +416,7 @@ class WorkflowExecutor:
         ]
         if filter_docker:
             docker_commands = self.build_docker_commands(filter_docker)
-        '''
+        """
 
         total_jobs = 0
         all_job_ids = []
@@ -238,38 +429,84 @@ class WorkflowExecutor:
             for model in benchmark.get("models", []):
                 # Process each temperature configuration
                 for temp in model.get("temperature", []):
-                    print("=" * 80)
-                    print(
-                        f" Process task: {_task} - Model: {model.get('name')} - Temp: {temp}"
+                    self.logger.info("=" * 80)
+                    ttitle = self.aligns_text(
+                        f"Process task: {_task} - Model: {model.get('name')} - Temp: {temp}"
                     )
-                    print("=" * 80)
+                    self.logger.info(ttitle)
+                    self.logger.info("=" * 80)
 
-                    slurm_commands = slurm_configs_commands.get(
-                        model.get("slurm_config")
-                    )
+                    # If slurm config command dictionary is not empty
+                    if slurm_configs_commands:
+                        slurm_commands = slurm_configs_commands.get(
+                            model.get("slurm_config")
+                        )
+                    else:
+                        slurm_commands = ""
 
-                    # Build the command for task1 using accelerate
+                    # Build the command required for turtle
                     turtle_command = builder.build_command(model=model.get("name"))
 
                     # send job
                     result = self.run_job(
                         slurm_command=slurm_commands,
-                        singularity_command=singularity_commands,
-                        bigcode_command=turtle_command,
+                        slurm_confgs=model.get("slurm_config"),
+                        singularity_command=singularity_commands.get(_task),
+                        turtle_command=turtle_command,
+                        task=benchmark.get("task"),
+                        singularity_image=benchmark.get("singularity_image"),
+                        model_path=benchmark.get("path_model"),
+                        model_name=model.get("name"),
+                        type_job=model.get("slurm_config"),
+                        temperature=temp,
+                        benchmark_config=benchmark_config,
+                        turtle_commands=turtle_command,
                     )
                     job_id = result.stdout.strip()
 
                     if job_id:
                         all_job_ids.append(job_id)
                         total_jobs += 1
-                        print(f"    Job sending (T={temp}): ID {job_id}")
+                        self.logger.info(f"Job sending (T={temp}): ID {job_id}")
                     else:
-                        print(f"    Error to send job: {result.stderr}")
+                        self.logger.error(f"Error to send job: {result.stderr}")
 
-        print("=" * 80)
-        print("\n final report")
-        print(f"Total jobs sending: {total_jobs}")
-        print(f"IDs jobs: {', '.join(all_job_ids)}")
+        self.logger.info("=" * 80)
+        tittle = self.aligns_text("FINAL REPORT")
+        self.logger.info(tittle)
+        self.logger.info(f"Total jobs submitted: {total_jobs}")
+        self.logger.info("-" * 80)
+
+        if all_job_ids:
+            # Create a table-like presentation for job IDs
+            self.logger.info("+" + "-" * 30 + "+")
+            subttitle = self.aligns_text("Job ID", 28)
+            self.logger.info("| " + subttitle.ljust(28) + " |")
+            self.logger.info("+" + "-" * 30 + "+")
+
+            for job_id in all_job_ids:
+                self.logger.info("| " + job_id.ljust(28) + " |")
+
+            self.logger.info("+" + "-" * 30 + "+")
+            self.logger.info("=" * 80)
+        else:
+            self.logger.info("No jobs were successfully submitted.")
+
+    def aligns_text(self, tittle: str = "", weight: int = 80) -> str:
+        """Center the text in a string of a given width.
+        Parameters:
+            - tittle: The text to center
+            - weight: The width of the string
+        Returns:
+            - centered_text: The centered text
+        """
+        # If the title is longer than the weight, return it as is
+        if len(tittle) >= weight:
+            return tittle
+
+        # find the number of white spaces to add
+        white_spaces = (weight - len(tittle)) // 2
+        return " " * white_spaces + tittle
 
     def execute(self) -> None:
         """Execute the complete workflow."""
