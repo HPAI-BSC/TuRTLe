@@ -159,6 +159,8 @@ If the configuration file includes both `singularity_image` and `slurm_config`, 
 - `--benchmark`: Name of the .yml file in `turtle/configs/` with the configurations of the benchmark to run (e.g., `rtlrepo`, `rtllm_v2.0`, `verilog_eval_cc`, `verilog_eval_rtl`, `verigen`).
 - `--model`: Specify a particular model to run. If not provided, all models in the configuration file will be executed.
 - `--run_all`: Use this flag to run all benchmarks against all models.
+- `--generation_only`: Use this flag only compute generations.
+- `--evaluation_only`: Use this flag to run only the evaluation phase.
 
 #### Examples
 
