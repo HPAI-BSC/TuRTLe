@@ -89,11 +89,11 @@ Check the [TuRTLe Leaderboard](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Lea
 > **Dependencies Notice**  
 > **vLLM** currently supports up to **Python 3.12**. Ensure that your Python version does not exceed this limit to avoid compatibility issues.
 
-### *HPC Environment Requirements*
+### HPC Environment Requirements
 
 Most of the modes require to be executed in HPC environments. For this reason, TuRTLe currently relies on **Slurm** and **Singularity** for its execution.
 
-### *Installation*
+### Installation
 
 1. **Clone the repository**:
 
@@ -140,11 +140,11 @@ Finally, we recommend using Singularity for containerization on HPC environments
 - **singularity_image**: path to your singularity image.
 - For each model, specify a **slurm_config** from `turtle/configs/slurm.yml` with the slurm directives to run the benchmark.
 
-### *Quick Demo*
+### Quick Demo
 
 Coming soon.
 
-### *Running the Project*
+### Running the Project
 
 To execute the project, use the `turtle/run.py` script with the appropriate arguments. Below are the details of the available parameters:
 
@@ -177,7 +177,7 @@ If the configuration file includes both `singularity_image` and `slurm_config`, 
    python turtle/run.py --run_all
    ```
 
-### *Add your benchmark*   
+### Add your benchmark   
 
 The process to implement a benchmark is very similar to the one described by [bigcode-evaluation-harness guide](https://github.com/bigcode-project/bigcode-evaluation-harness/blob/main/docs/guide.md). Follow these steps:
 
