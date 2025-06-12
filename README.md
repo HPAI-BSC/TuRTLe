@@ -66,34 +66,34 @@ Open-source EDA tools integrated:
 For more details about our work, refer to our [ArXiv paper](https://arxiv.org/abs/2504.01986). Here you have a diagram of the high-level structure of the framework:
 ![TuRTLe diagram](images/TuRTLe_diagram.png)
 
-# Latest News 🔥
+## News
 
 - **[2025-06-12]** We add support for multi-node inference with Ray and the configurations for bigger models.
 - **[2025-05-19]** The project’s source code is now publicly released. We’d love to hear your feedback, so give it a try!
 - **[2025-03-31]** Our paper *"TuRTLe: A Unified Evaluation of LLMs for RTL Generation"* is now available on [ArXiv](https://arxiv.org/abs/2504.01986)!
 - **[2025-03-20]** The leaderboard is now live! Check it out on our [Huggingface Space](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard).
 
-# Road Map
+## Road Map
 
 - **[In progress]** Release repo compatible with local execution
 - **[In progress]** Release updated paper on Arxiv
 
-# Leaderboard 🥇 
+## Leaderboard 🥇 
 
 Check the [TuRTLe Leaderboard](https://huggingface.co/spaces/HPAI-BSC/TuRTLe-Leaderboard) to know the best open-source models for each task.
 ![Leaderboard screenshot](images/Leaderboard_screenshot.png)
 
-# Usage  
+## Usage  
 
 > [!WARNING]
 > **Dependencies Notice**  
 > **vLLM** currently supports up to **Python 3.12**. Ensure that your Python version does not exceed this limit to avoid compatibility issues.
 
-## *HPC Environment Requirements*
+### *HPC Environment Requirements*
 
 Most of the modes require to be executed in HPC environments. For this reason, TuRTLe currently relies on **Slurm** and **Singularity** for its execution.
 
-## *Installation*
+### *Installation*
 
 1. **Clone the repository**:
 
@@ -140,11 +140,11 @@ Finally, we recommend using Singularity for containerization on HPC environments
 - **singularity_image**: path to your singularity image.
 - For each model, specify a **slurm_config** from `turtle/configs/slurm.yml` with the slurm directives to run the benchmark.
 
-## *Quick Demo*
+### *Quick Demo*
 
 Coming soon.
 
-## *Running the Project*
+### *Running the Project*
 
 To execute the project, use the `turtle/run.py` script with the appropriate arguments. Below are the details of the available parameters:
 
@@ -154,13 +154,13 @@ python turtle/run.py [--benchmark <config_file>] [--model <model_name>] [--run_a
 
 If the configuration file includes both `singularity_image` and `slurm_config`, TuRTLe will automatically generate and execute a Slurm script to run the benchmark using the specified Singularity image.
 
-### Parameters
+#### Parameters
 
 - `--benchmark`: Name of the .yml file in `turtle/configs/` with the configurations of the benchmark to run (e.g., `rtlrepo`, `rtllm_v2.0`, `verilog_eval_cc`, `verilog_eval_rtl`, `verigen`).
 - `--model`: Specify a particular model to run. If not provided, all models in the configuration file will be executed.
 - `--run_all`: Use this flag to run all benchmarks against all models.
 
-### Examples
+#### Examples
 
 1. Run all models specified in the configuration file for the RTL-Repo benchmark:
    ```bash
@@ -177,7 +177,7 @@ If the configuration file includes both `singularity_image` and `slurm_config`, 
    python turtle/run.py --run_all
    ```
 
-## *Add your benchmark*   
+### *Add your benchmark*   
 
 The process to implement a benchmark is very similar to the one described by [bigcode-evaluation-harness guide](https://github.com/bigcode-project/bigcode-evaluation-harness/blob/main/docs/guide.md). Follow these steps:
 
@@ -186,7 +186,7 @@ The process to implement a benchmark is very similar to the one described by [bi
 3. Define a configuration file named `turtle/configs/<benchmark_name>.yml` and list the models you want to evaluate along with their required parameters.
 4. Update the `_load_new_modules()` and `_create_extended_registry()` methods within `turtle/src/utils/task_updater.py`.
 
-# Citation
+## Citation
 
 ```
 @misc{garciagasulla2025turtleunifiedevaluationllms,
@@ -200,11 +200,11 @@ The process to implement a benchmark is very similar to the one described by [bi
 }
 ```
 
-# How to contribute 🤝  
+## How to contribute 🤝  
 
 Any contribution is more than welcome! If you've found a bug or have an idea for an improvement, don't hesitate to [open a new issue](https://github.com/HPAI-BSC/TuRTLe/issues) using our issue forms. We also encourage people to do pull requests with new benchmarks of any task relevant for chip design.
 
-# Contact
+## Contact
 
 If you have any questions or feedback, feel free to email us at hpai@bsc.es. You can also support the project by following or starring the repository.
 
