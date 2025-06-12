@@ -1,6 +1,7 @@
 <div align="center" style="line-height: 1;">
-<img src="images/TuRTLe_logo.png" width="400" alt="HPAI"/>
+<img src="images/TuRTLe_logo.png" width="250" alt="HPAI"/>
 </div>
+<br/>
 <div align="center" style="line-height: 1;">
   <a href="https://hpai.bsc.es/" target="_blank" style="margin: 1px;">
     <img alt="Web" src="https://img.shields.io/badge/Website-HPAI-8A2BE2" style="display: inline-block; vertical-align: middle;"/>
@@ -40,8 +41,6 @@
   </a>
 </div>
 <br>
-
-# **TuRTLe Framework** 🐢
 
 TuRTLe is a framework to assess LLMs across
 key RTL generation tasks systematically. It integrates multiple existing benchmarks and automates the evaluation process, enabling a comprehensive assessment of LLM performance in syntax correctness,
