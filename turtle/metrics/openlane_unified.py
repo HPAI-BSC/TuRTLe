@@ -2,7 +2,6 @@ import json
 import os
 import re
 import subprocess
-import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -436,7 +435,7 @@ def run_openlane_for_generation(gen_dir, problem_name, model_name, pdk_root=None
         success = "Flow complete" in result.stdout or "OpenRoad.STAPrePNR complete" in result.stdout
         status = "Success" if success else "Failed"
         
-        # print immediate feedback
+        # Print immediate feedback
         print(f"{'✅' if success else '❌'} {model_name} / {problem_name} / {gen_dir.name}: {status}")
 
         metrics = {}

@@ -53,7 +53,7 @@ Benchmarks implemented so far are:
 
 - [VerilogEval v2.0](https://github.com/NVlabs/verilog-eval): Specification-to-RTL and Module Completion
 - [RTLLM v1.1 and v2.0](https://github.com/hkust-zhiyao/RTLLM): Specification-to-RTL
-- [VGen](https://github.com/shailja-thakur/VGen): Module Completion (code will be released soon)
+- [VGen](https://github.com/shailja-thakur/VGen): Module Completion
 - [RTL-Repo](https://github.com/AUCOHL/RTL-Repo): Single Line Completion
 
 Open-source EDA tools integrated:
@@ -76,7 +76,6 @@ For more details about our work, refer to our [ArXiv paper](https://arxiv.org/ab
 ## Road Map
 
 - **[In progress]** Release repo compatible with local execution
-- **[In progress]** Release updated paper on Arxiv
 
 ## Leaderboard 🥇 
 
