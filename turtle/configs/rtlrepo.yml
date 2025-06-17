@@ -26,7 +26,6 @@ benchmark:
         max_tokens: 50
         temperature: [0.2]
         n_samples: 5
-        swap_space: 256
         continuous_batching_size: 64
         precision: fp16
         save_generations: True
@@ -40,7 +39,6 @@ benchmark:
         max_tokens: 50
         temperature: [0.2]
         n_samples: 5
-        swap_space: 256
         continuous_batching_size: 64
         precision: fp16
         save_generations: True
@@ -83,7 +81,6 @@ benchmark:
         max_tokens: 50
         temperature: [0.2]
         n_samples: 5
-        swap_space: 256
         continuous_batching_size: 64
         precision: fp16
         save_generations: True
