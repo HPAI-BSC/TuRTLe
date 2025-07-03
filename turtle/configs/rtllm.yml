@@ -8,8 +8,10 @@ benchmark:
     path_temporary_files: /your_path
     path_model: /your_path
     metric_output_path: /your_path
-    singularity_image: /your_path
-    evaluation_image: /your_path
+    singularity_image: /your_path.sif # inference image (vLLM)
+    evaluation_image: /your_path.sif  # evaluation image (OpenLane, Icarus/Verilator)
+    generate_report: False
+    simulator: "icarus" # we support "icarus" or "verilator"
     models:
       - name: CodeV-CL-7B
         multinode: False

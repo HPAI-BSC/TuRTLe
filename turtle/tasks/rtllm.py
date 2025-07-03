@@ -9,6 +9,7 @@ Homepage: https://github.com/hkust-zhiyao/RTLLM
 import json
 import os
 import re
+import shutil
 import tempfile
 import warnings
 from collections import defaultdict
@@ -53,11 +54,14 @@ class RTLLM(TaskExtension):
     DATASET_NAME = None
 
     def __init__(self, **kwargs):
-        super().__init__(stop_words=[], requires_execution=False)
+        super().__init__(stop_words=[], requires_execution=True)
         kwargs = kwargs.get("kwargs", {})
         self.model = kwargs.get("model")
+        self.simulator = kwargs.get("simulator", "icarus")
+
         self.path_temporary_files = kwargs.get("path_temporary_files")
         self.path_dataset_test = kwargs.get("path_dataset_test")
+        self.generate_report = kwargs.get("generate_report", False)
         prompt = kwargs.get("prompt", None)
         self.prompt = prompt if prompt is None else None
 
@@ -265,7 +269,9 @@ class RTLLM(TaskExtension):
         ) as f:
             f.write(generation.encode("utf-8"))
             f.flush()
-            result = eval_rtllm(Path(f.name), Path(test_path), Path(ref_path))
+            result = eval_rtllm(
+                Path(f.name), Path(test_path), Path(ref_path), self.simulator
+            )
         return result
 
     def _evaluate_syn_ppa(
@@ -351,7 +357,7 @@ class RTLLM(TaskExtension):
             list of str containing refrences
         :return: dict[str: float]
         """
-        records = list()
+        reports = defaultdict(dict)
         correct_syntax, correct_func, correct_synthesis, total = [], [], [], []
 
         # Dynamically read PPA from golden solutions
@@ -380,7 +386,7 @@ class RTLLM(TaskExtension):
                 n_correct_func += int(result["func_passed"])
                 n_correct_synthesis += int(result["synthesis_passed"])
 
-                records.append(result)
+                reports[problem_id][f"generation_{j+1}"] = result["func_passed"]
 
             correct_syntax.append(n_correct_syntax)
             correct_func.append(n_correct_func)
@@ -402,5 +408,18 @@ class RTLLM(TaskExtension):
         # Calculate PPA score
         ppa = self._compute_ppa(ppa_data, C, len(references))
         ret.update(ppa)
+
+        if self.generate_report:
+            json_path = self.load_generations_path
+            output_dir = Path(os.path.dirname(json_path)) / "report.json"
+            with open(output_dir, "w") as f:
+                json.dump(reports, f, indent=4)
+
+        # Cleanup PPA generated problems dir
+        if self.load_generations_path is not None:
+            json_path = self.load_generations_path
+            output_dir = Path(os.path.dirname(json_path)) / "generated_problems"
+            if output_dir.exists() and output_dir.is_dir():
+                shutil.rmtree(output_dir)
 
         return ret

@@ -41,9 +41,10 @@ class VerilogEvalCodeComplete(TaskExtension):
     DATASET_NAME = None
 
     def __init__(self, **kwargs):
-        super().__init__(stop_words=[], requires_execution=False)
+        super().__init__(stop_words=[], requires_execution=True)
         kwargs = kwargs.get("kwargs", {})
         self.model = kwargs.get("model")
+        self.simulator = kwargs.get("simulator", "icarus")
 
         # Set-up basic params
         self.debug = False
@@ -54,6 +55,7 @@ class VerilogEvalCodeComplete(TaskExtension):
         assert (
             self.examples >= 0 and self.examples <= 4
         ), "Few shot supported range is 0-4."
+        self.generate_report = kwargs.get("generate_report", False)
 
         # Make sure we have access to the dataset and the repo
         path_verilog_eval_repo = os.path.join(os.path.dirname(__file__), "verilog-eval")
@@ -313,7 +315,9 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
         ) as f:
             f.write(generation.encode("utf-8"))
             f.flush()
-            result = eval_verilog_eval(Path(f.name), Path(test_path), Path(ref_path))
+            result = eval_verilog_eval(
+                Path(f.name), Path(test_path), Path(ref_path), self.simulator
+            )
         return result
 
     def _evaluate_syn_ppa(
@@ -398,7 +402,7 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
             list of str containing refrences
         :return: dict[str: float]
         """
-        records = list()
+        reports = defaultdict(list)
         correct_syntax, correct_func, correct_synthesis, total = [], [], [], []
 
         # Dynamically read PPA from golden solutions
@@ -423,7 +427,14 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
                 n_correct_func += int(result["func_passed"])
                 n_correct_synthesis += int(result["synthesis_passed"])
 
-                records.append(result)
+                reports[problem_id].append(
+                    {
+                        f"generation_{j+1}": result["func_passed"],
+                        "error": (
+                            result["passfail"] if not result["func_passed"] else None
+                        ),
+                    }
+                )
 
             correct_syntax.append(n_correct_syntax)
             correct_func.append(n_correct_func)
@@ -446,6 +457,19 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
         ppa = self._compute_ppa(ppa_data, C, len(references))
         ret.update(ppa)
 
+        if self.generate_report:
+            json_path = self.load_generations_path
+            output_dir = Path(os.path.dirname(json_path)) / "report.json"
+            with open(output_dir, "w") as f:
+                json.dump(reports, f, indent=4)
+
+        # Cleanup PPA generated problems dir
+        if self.load_generations_path is not None:
+            json_path = self.load_generations_path
+            output_dir = Path(os.path.dirname(json_path)) / "generated_problems"
+            if output_dir.exists() and output_dir.is_dir():
+                shutil.rmtree(output_dir)
+
         return ret
 
 
@@ -454,9 +478,10 @@ class VerilogEvalRTLToSpecification(TaskExtension):
     DATASET_NAME = None
 
     def __init__(self, **kwargs):
-        super().__init__(stop_words=[], requires_execution=False)
+        super().__init__(stop_words=[], requires_execution=True)
         kwargs = kwargs.get("kwargs", {})
         self.model = kwargs.get("model")
+        self.simulator = kwargs.get("simulator", "icarus")
 
         # Set-up basic params
         self.debug = False
@@ -465,6 +490,7 @@ class VerilogEvalRTLToSpecification(TaskExtension):
         self.prompt = kwargs.get("prompt", None)
         self.examples = kwargs.get("few_shot", 0)
         assert 0 <= self.examples <= 4, "Few shot supported range is 0-4."
+        self.generate_report = kwargs.get("generate_report", False)
 
         # Make sure we have access to the dataset and the repo
         path_verilog_eval_repo = os.path.join(os.path.dirname(__file__), "verilog-eval")
@@ -733,7 +759,9 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
         ) as f:
             f.write(generation.encode("utf-8"))
             f.flush()
-            result = eval_verilog_eval(Path(f.name), Path(test_path), Path(ref_path))
+            result = eval_verilog_eval(
+                Path(f.name), Path(test_path), Path(ref_path), self.simulator
+            )
         return result
 
     def _evaluate_syn_ppa(
@@ -818,7 +846,7 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
             list of str containing refrences
         :return: dict[str: float]
         """
-        records = list()
+        reports = defaultdict(list)
         correct_syntax, correct_func, correct_synthesis, total = [], [], [], []
 
         # Dynamically read PPA from golden solutions
@@ -843,7 +871,14 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
                 n_correct_func += int(result["func_passed"])
                 n_correct_synthesis += int(result["synthesis_passed"])
 
-                records.append(result)
+                reports[problem_id].append(
+                    {
+                        f"generation_{j+1}": result["func_passed"],
+                        "error": (
+                            result["passfail"] if not result["func_passed"] else None
+                        ),
+                    }
+                )
 
             correct_syntax.append(n_correct_syntax)
             correct_func.append(n_correct_func)
@@ -865,5 +900,18 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
         # Calculate PPA score
         ppa = self._compute_ppa(ppa_data, C, len(references))
         ret.update(ppa)
+
+        if self.generate_report:
+            json_path = self.load_generations_path
+            output_dir = Path(os.path.dirname(json_path)) / "report.json"
+            with open(output_dir, "w") as f:
+                json.dump(reports, f, indent=4)
+
+        # Cleanup PPA generated problems dir
+        if self.load_generations_path is not None:
+            json_path = self.load_generations_path
+            output_dir = Path(os.path.dirname(json_path)) / "generated_problems"
+            if output_dir.exists() and output_dir.is_dir():
+                shutil.rmtree(output_dir)
 
         return ret

@@ -53,6 +53,7 @@ class VeriGen(TaskExtension):
         # get the arguments
         kwargs = kwargs.get("kwargs", {})
         self.model = kwargs.get("model")
+        self.simulator = kwargs.get("simulator", "icarus")
         self.path_model = kwargs.get("path_model")
         self.prompt = kwargs.get("prompt")
         few_shot = kwargs.get("few_shot")
@@ -60,9 +61,6 @@ class VeriGen(TaskExtension):
         path_dataset_test = kwargs.get("path_dataset_test")
         self.path_temporary_files = kwargs.get("path_temporary_files")
         self.metric_output_path = kwargs.get("metric_output_path")
-
-        # Check if the arguments are provided
-        print
 
         # Set-up basic params
         if not self.prompt:
@@ -300,7 +298,7 @@ class VeriGen(TaskExtension):
             f.write(generation.encode("utf-8"))
             f.flush()
             result = eval_script_verigen(
-                Path(f.name), Path(test_path), Path(ref_path), self.debug
+                Path(f.name), Path(test_path), Path(ref_path), self.simulator
             )
         return result
 
