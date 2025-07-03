@@ -68,7 +68,7 @@ For more details about our work, refer to our [ArXiv paper](https://arxiv.org/ab
 
 ## News
 
-- **[2025-06-12]** TuRTLe now supports Verilator as a simulator to check for Syntax and Functionality
+- **[2025-07-03]** TuRTLe now supports Verilator as a simulator to check for Syntax and Functionality
 - **[2025-06-12]** We add support for multi-node inference with Ray and the configurations for bigger models
 - **[2025-05-19]** The project’s source code is now publicly released. We’d love to hear your feedback, so give it a try!
 - **[2025-03-31]** Our paper *"TuRTLe: A Unified Evaluation of LLMs for RTL Generation"* is now available on [ArXiv](https://arxiv.org/abs/2504.01986)!
