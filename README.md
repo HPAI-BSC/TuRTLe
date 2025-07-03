@@ -153,13 +153,18 @@ python turtle/run.py [--benchmark <config_file>] [--model <model_name>] [--run_a
 
 If the configuration file includes both `singularity_image` and `slurm_config`, TuRTLe will automatically generate and execute a Slurm script to run the benchmark using the specified Singularity image.
 
-#### Parameters
+#### Core Parameters
 
 - `--benchmark`: Name of the .yml file in `turtle/configs/` with the configurations of the benchmark to run (e.g., `rtlrepo`, `rtllm_v2.0`, `verilog_eval_cc`, `verilog_eval_rtl`, `verigen`).
 - `--model`: Specify a particular model to run. If not provided, all models in the configuration file will be executed.
 - `--run_all`: Use this flag to run all benchmarks against all models.
-- `--generation_only`: Use this flag only compute generations.
-- `--evaluation_only`: Use this flag to run only the evaluation phase.
+
+#### Additional Parameters
+
+Due to the dual-image setup, one for inference and another including EDA tools (e.g., Icarus Verilog, Verilator, Yosys, OpenLane), you can control each phase of the pipeline separately:
+
+- `--generation_only`: Use this flag to only perform inference.
+- `--evaluation_only`: Use this flag to only perform evaluation. We load the generations automatically from the YAML `metric_output_path` variable
 
 #### Examples
 

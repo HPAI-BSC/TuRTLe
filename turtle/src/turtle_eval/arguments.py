@@ -4,12 +4,14 @@ from typing import Optional
 
 try:
     from bigcode_eval.arguments import EvalArguments
-except ModuleNotFoundError: # the evaluation image does not have the pypi package
+except ModuleNotFoundError:  # the evaluation image does not have the pypi package
+
     @dataclass
     class EvalArguments:
         """
         Configuration for running the evaluation.
         """
+
         prefix: Optional[str] = field(
             default="",
             metadata={
@@ -27,7 +29,8 @@ except ModuleNotFoundError: # the evaluation image does not have the pypi packag
             default=0, metadata={"help": "Top-k parameter used for generation."}
         )
         top_p: Optional[float] = field(
-            default=0.95, metadata={"help": "Top-p parameter used for nucleus sampling."}
+            default=0.95,
+            metadata={"help": "Top-p parameter used for nucleus sampling."},
         )
         n_samples: Optional[int] = field(
             default=1,
@@ -39,6 +42,7 @@ except ModuleNotFoundError: # the evaluation image does not have the pypi packag
         seed: Optional[int] = field(
             default=0, metadata={"help": "Random seed used for evaluation."}
         )
+
 
 from utils.task_updater import TaskUpdater
 
@@ -226,6 +230,18 @@ class ExtendedWorkflowArguments(EvalArguments):
         default="2.0",
         metadata={"help": "RTLLM benchmark version. Can be either 2.0 or 1.1"},
     )
+    generate_report: Optional[bool] = field(
+        default=None,
+        metadata={
+            "help": "Whether to generate a report of PASS / FAIL for STX and FNC or not."
+        },
+    )
+    simulator: Optional[str] = field(
+        default="icarus",
+        metadata={
+            "help": "The simulator you want to use. It can be either `icarus` or `verilator`"
+        },
+    )
 
     def __post_init__(self):
         # Access to metadata to force theevaluation of the lambda function
@@ -275,14 +291,11 @@ class ExtendedVLLMArguments(EvalArguments):
         default=4, metadata={"help": "Number of tensor parallel replicas."}
     )
     ip: Optional[str] = field(
-        default=None,
-        metadata={"help":"IP of the vLLM inference server."}
+        default=None, metadata={"help": "IP of the vLLM inference server."}
     )
     port: Optional[str] = field(
-        default=None,
-        metadata={"help":"Port of the vLLM inference server."}
+        default=None, metadata={"help": "Port of the vLLM inference server."}
     )
-
 
 
 @dataclass
@@ -337,4 +350,3 @@ class ExtendedGenerationArguments(EvalArguments):
             + "tokens."
         },
     )
-

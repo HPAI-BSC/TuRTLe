@@ -133,6 +133,18 @@ class TurtleCommandBuilder:
         if path_temporary_files:
             params.append(f"--path_temporary_files {path_temporary_files}")
 
+        rtllm_version = self.benchmark_config.get("rtllm_version")
+        if rtllm_version:
+            params.append(f"--rtllm_version {rtllm_version}")
+
+        generate_report = self.benchmark_config.get("generate_report")
+        if generate_report:
+            params.append(f"--generate_report {generate_report}")
+
+        simulator = self.benchmark_config.get("simulator")
+        if simulator:
+            params.append(f"--simulator {simulator}")
+
         return params
 
     def build_command(self, model: str) -> str:
@@ -157,5 +169,11 @@ class TurtleCommandBuilder:
         ]
 
         # Combine all parts into the final command
-        full_command = ( execution_command + " " + " ".join(global_params) + " " + " ".join(dynamic_params))
+        full_command = (
+            execution_command
+            + " "
+            + " ".join(global_params)
+            + " "
+            + " ".join(dynamic_params)
+        )
         return full_command + '"'
