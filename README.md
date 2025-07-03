@@ -58,10 +58,11 @@ Benchmarks implemented so far are:
 
 Open-source EDA tools integrated:
 
-- [ICARUS Verilog](https://github.com/steveicarus/iverilog): syntax and functionality
+- [Icarus Verilog](https://github.com/steveicarus/iverilog): syntax and functionality
+- [Verilator](https://www.veripool.org/verilator/): syntax and functionality
 - [Yosys](https://github.com/YosysHQ/yosys): synthesis
 - [OpenROAD](https://github.com/The-OpenROAD-Project/OpenROAD): PPA
-- [OpenLane](https://github.com/The-OpenROAD-Project/OpenLane): to integrate Yosis and OpenROAD
+- [OpenLane](https://github.com/The-OpenROAD-Project/OpenLane): to integrate YoSys and OpenROAD
 
 For more details about our work, refer to our [ArXiv paper](https://arxiv.org/abs/2504.01986). Here you have a diagram of the high-level structure of the framework:
 ![TuRTLe diagram](images/TuRTLe_diagram.png)
