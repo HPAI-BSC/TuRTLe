@@ -1,0 +1,113 @@
+## NOTICE
+
+This product includes software developed by third parties.
+
+Below is a list of third-party components used in the TuRTLe project, along with their licenses and intended usage:
+
+---
+
+### Main Dependencies
+
+* **torch (≥2.4.0)**
+  License: BSD-3-Clause
+  Usage: Deep learning framework
+
+* **vllm (0.5.4)**
+  License: Apache License 2.0
+  Usage: High-throughput and memory-efficient inference engine
+
+* **vllm\_flash\_attn**
+  License: Apache License 2.0
+  Usage: Accelerated attention mechanism for transformers
+
+* **transformers (≥4.44.1)**
+  License: Apache License 2.0
+  Usage: State-of-the-art machine learning models
+
+* **datasets (2.6.1 - 3.0.0)**
+  License: Apache License 2.0
+  Usage: Dataset management for ML pipelines
+
+* **evaluate (≥0.3.0)**
+  License: Apache License 2.0
+  Usage: Model evaluation tools
+
+* **pyext (0.7)**
+  License: MIT License
+  Usage: Lightweight Python extension toolkit
+
+* **mosestokenizer (1.0.0)**
+  License: LGPL-2.1
+  Usage: Tokenization using Moses tools
+
+* **huggingface\_hub (≥0.11.1)**
+  License: Apache License 2.0
+  Usage: Integration with Hugging Face model repository
+
+* **fsspec (≥2023.12.2)**
+  License: BSD-3-Clause
+  Usage: Filesystem interface for cloud and local storage
+
+* **fuzzywuzzy (0.18.0)**
+  License: GPL-2.0
+  Usage: Fuzzy string matching
+
+* **python-Levenshtein (0.27.1)**
+  License: GPL-2.0
+  Usage: String similarity metrics
+
+* **pydantic (2.11.3)**
+  License: MIT License
+  Usage: Data validation and settings management
+
+* **tqdm**
+  License: MIT and Mozilla Public License 2.0
+  Usage: Progress bars for loops and CLI
+
+* **numpy**
+  License: BSD-3-Clause
+  Usage: Numerical computing library
+
+---
+
+### Python Standard Library
+
+These modules are part of the Python standard library and are licensed under the Python Software Foundation License (PSF):
+
+`os`, `sys`, `json`, `re`, `math`, `time`, `argparse`, `logging`, `warnings`, `shutil`,
+`tempfile`, `subprocess`, `multiprocessing`, `itertools`, `collections`, `pathlib`,
+`datetime`, `dataclasses`, `typing`, `abc`, `fnmatch`, `random`, `inspect`,
+`importlib`, `pprint`, `fcntl`, `signal`
+
+---
+
+### Additional External Dependencies
+
+* **openai**
+  License: MIT License
+  Usage: Client for OpenAI API
+
+* **yaml**
+  License: MIT License
+  Usage: YAML configuration handling
+
+* **bigcode\_eval**
+  License: Apache License 2.0
+  Usage: Code evaluation framework
+
+---
+
+### TuRTLe Project License
+
+This project is licensed under the **Apache License 2.0**.
+
+---
+
+### License Summaries
+
+* **Apache-2.0**: Permissive license allowing use, modification, and distribution with attribution.
+* **BSD-3-Clause**: Permissive license with minimal restrictions.
+* **MIT**: Very permissive license, commonly used in open source.
+* **LGPL-2.1**: Copyleft license that allows linking under specific conditions.
+* **GPL-2.0**: Strong copyleft license requiring derivative works to be distributed under the same license.
+* **PSF**: Compatible with GPL, governs Python’s standard library.
