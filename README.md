@@ -141,10 +141,6 @@ Finally, we recommend using Singularity for containerization on HPC environments
 - **singularity_image**: path to your singularity image.
 - For each model, specify a **slurm_config** from `turtle/configs/slurm.yml` with the slurm directives to run the benchmark.
 
-### Quick Demo
-
-Coming soon.
-
 ### Running the Project
 
 To execute the project, use the `turtle/run.py` script with the appropriate arguments. Below are the details of the available parameters:
@@ -157,7 +153,7 @@ If the configuration file includes both `singularity_image` and `slurm_config`, 
 
 #### Core Parameters
 
-- `--benchmark`: Name of the .yml file in `turtle/configs/` with the configurations of the benchmark to run (e.g., `rtlrepo`, `rtllm_v2.0`, `verilog_eval_cc`, `verilog_eval_rtl`, `verigen`).
+- `--benchmark`: Name of the .yml file in `turtle/configs/` with the configurations of the benchmark to run (e.g., `rtlrepo`, `rtllm`, `verilog_eval_cc`, `verilog_eval_rtl`, `verigen`).
 - `--model`: Specify a particular model to run. If not provided, all models in the configuration file will be executed.
 - `--run_all`: Use this flag to run all benchmarks against all models.
 
