@@ -193,13 +193,15 @@ The process to implement a benchmark is very similar to the one described by [bi
 ## Citation
 
 ```
-@misc{garciagasulla2025turtleunifiedevaluationllms,
+@inproceedings{garciagasulla2025turtleunifiedevaluationllms,
       title={TuRTLe: A Unified Evaluation of LLMs for RTL Generation}, 
       author={Dario Garcia-Gasulla and Gokcen Kestor and Emanuele Parisi and Miquel Albert\'i-Binimelis and Cristian Gutierrez and Razine Moundir Ghorab and Orlando Montenegro and Bernat Homs and Miquel Moreto},
+      booktitle = {Proceedings of the 2025 ACM/IEEE International Symposium on Machine Learning for CAD},
+      series = {MLCAD '25}
       year={2025},
-      eprint={2504.01986},
-      archivePrefix={arXiv},
-      primaryClass={cs.AR},
+      publisher = {Association for Computing Machinery},
+      address = {New York, NY, USA},
+      location = {Santa Cruz, CA, USA},
       url={https://arxiv.org/abs/2504.01986}, 
 }
 ```
