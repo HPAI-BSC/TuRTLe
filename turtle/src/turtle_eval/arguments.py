@@ -103,6 +103,12 @@ class ExtendedModelArgument(EvalArguments):
             "help": "Use a model with custom code, this requires executing code by the author of the model."
         },
     )
+    tokenizer: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "Specify tokenizer, by defualt this is disabled and we use the same tokenizer as the model, but some cases such as Magistral do not include a tokenizer."
+        },
+    )
     precision: Optional[str] = field(
         default="fp32", metadata={"help": "Model precision, from: fp32, fp16 or bf16"}
     )

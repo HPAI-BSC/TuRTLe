@@ -98,7 +98,7 @@ def main():
         if args.left_padding:
             # left padding is required for some models like chatglm3-6b
             tokenizer = AutoTokenizer.from_pretrained(
-                args.model,
+                args.tokenizer if args.tokenizer is not None else args.model,
                 trust_remote_code=args.trust_remote_code,
                 use_auth_token=args.use_auth_token,
                 padding_side="left",
@@ -106,7 +106,7 @@ def main():
         else:
             # used by default for most models
             tokenizer = AutoTokenizer.from_pretrained(
-                args.model,
+                args.tokenizer if args.tokenizer is not None else args.model,
                 trust_remote_code=args.trust_remote_code,
                 use_auth_token=args.use_auth_token,
                 truncation_side="left",
@@ -147,6 +147,7 @@ def main():
         else:
             model = LLM(
                 model=args.model,
+                tokenizer=args.tokenizer if args.tokenizer is not None else args.model,
                 tensor_parallel_size=4,
                 trust_remote_code=args.trust_remote_code,
                 dtype=dict_precisions[args.precision],
