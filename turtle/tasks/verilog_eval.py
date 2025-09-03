@@ -6,6 +6,7 @@ https://arxiv.org/abs/2309.07544
 VerlogEval benchmark implemented by HPAI team at Barcelona Supercomputing Center (BSC).
 Homepage: https://github.com/NVlabs/verilog-eval
 """
+
 import json
 import os
 import re
@@ -52,9 +53,9 @@ class VerilogEvalCodeComplete(TaskExtension):
         self.task_name = "code-complete-iccad2023"
         self.prompt = kwargs.get("prompt", None)
         self.examples = kwargs.get("few_shot")
-        assert (
-            self.examples >= 0 and self.examples <= 4
-        ), "Few shot supported range is 0-4."
+        assert self.examples >= 0 and self.examples <= 4, (
+            "Few shot supported range is 0-4."
+        )
         self.generate_report = kwargs.get("generate_report", False)
 
         # Make sure we have access to the dataset and the repo
@@ -115,9 +116,9 @@ class VerilogEvalCodeComplete(TaskExtension):
             return ""
         filename = f"verilog-example-prefix_{self.task_name}_{self.examples}-shot.txt"
         file = os.path.join(self.path_examples, filename)
-        assert (
-            os.path.exists(file) == True
-        ), f"Fewshot example for n_shot = {self.examples} not found or possible duplicate."
+        assert os.path.exists(file) == True, (
+            f"Fewshot example for n_shot = {self.examples} not found or possible duplicate."
+        )
         with open(file) as fd:
             contents = fd.read()
         return "\n" + contents
@@ -126,9 +127,9 @@ class VerilogEvalCodeComplete(TaskExtension):
         ext = "sv" if suffix in ["test", "ref"] else "txt"
         regex = re.compile(rf"^Prob\d+_{task_id}_{suffix}\.{ext}$")
         matching_files = [f for f in os.listdir(self.path_dataset) if regex.match(f)]
-        assert (
-            len(matching_files) == 1
-        ), f"Problem for task_id = {task_id} not found or possible duplicate. {matching_files}"
+        assert len(matching_files) == 1, (
+            f"Problem for task_id = {task_id} not found or possible duplicate. {matching_files}"
+        )
         file = os.path.join(self.path_dataset, matching_files[0])
         return file
 
@@ -199,7 +200,11 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
         :return: str
         """
         # For reasoning models, we keep only the final answer
-        if "</think>" in generation:
+        if "assistantfinal" in generation:
+            delimiter = "assistantfinal"
+            reasoning, generation = generation.rsplit(delimiter, 1)
+            reasoning = reasoning.strip()
+        elif "</think>" in generation:
             delimiter = "</think>"
             reasoning, generation = generation.rsplit(delimiter, 1)
             reasoning = reasoning.strip()
@@ -328,7 +333,7 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
                 self.base_gen_dir,
                 "generated_problems",
                 problem_id,
-                f"generation_{generation_index+1}",
+                f"generation_{generation_index + 1}",
             )
         )
         openlane_result = run_openlane_for_generation(
@@ -429,7 +434,7 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
 
                 reports[problem_id].append(
                     {
-                        f"generation_{j+1}": result["func_passed"],
+                        f"generation_{j + 1}": result["func_passed"],
                         "error": (
                             result["passfail"] if not result["func_passed"] else None
                         ),
@@ -547,9 +552,9 @@ class VerilogEvalRTLToSpecification(TaskExtension):
             return ""
         filename = f"verilog-example-prefix_{self.task_name}_{self.examples}-shot.txt"
         file = os.path.join(self.path_examples, filename)
-        assert (
-            os.path.exists(file) == True
-        ), f"Fewshot example for n_shot = {self.examples} not found or possible duplicate."
+        assert os.path.exists(file) == True, (
+            f"Fewshot example for n_shot = {self.examples} not found or possible duplicate."
+        )
         with open(file) as fd:
             contents = fd.read()
         return "\n" + contents
@@ -558,9 +563,9 @@ class VerilogEvalRTLToSpecification(TaskExtension):
         ext = "sv" if suffix in ["test", "ref"] else "txt"
         regex = re.compile(rf"^Prob\d+_{task_id}_{suffix}\.{ext}$")
         matching_files = [f for f in os.listdir(self.path_dataset) if regex.match(f)]
-        assert (
-            len(matching_files) == 1
-        ), f"Problem for task_id = {task_id} not found or possible duplicate. {matching_files}"
+        assert len(matching_files) == 1, (
+            f"Problem for task_id = {task_id} not found or possible duplicate. {matching_files}"
+        )
         file = os.path.join(self.path_dataset, matching_files[0])
         return file
 
@@ -624,7 +629,11 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
         :return: str
         """
         # For reasoning models, we keep only the final answer
-        if "</think>" in generation:
+        if "assistantfinal" in generation:
+            delimiter = "assistantfinal"
+            reasoning, generation = generation.rsplit(delimiter, 1)
+            reasoning = reasoning.strip()
+        elif "</think>" in generation:
             delimiter = "</think>"
             reasoning, generation = generation.rsplit(delimiter, 1)
             reasoning = reasoning.strip()
@@ -772,7 +781,7 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
                 self.base_gen_dir,
                 "generated_problems",
                 problem_id,
-                f"generation_{generation_index+1}",
+                f"generation_{generation_index + 1}",
             )
         )
         openlane_result = run_openlane_for_generation(
@@ -873,7 +882,7 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
 
                 reports[problem_id].append(
                     {
-                        f"generation_{j+1}": result["func_passed"],
+                        f"generation_{j + 1}": result["func_passed"],
                         "error": (
                             result["passfail"] if not result["func_passed"] else None
                         ),

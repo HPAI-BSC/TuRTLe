@@ -6,6 +6,7 @@ https://arxiv.org/pdf/2212.11140
 VeriGen benchmark implemented by HPAI team at Barcelona Supercomputing Center (BSC).
 Homepage: https://github.com/shailja-thakur/VGen
 """
+
 import json
 import os
 import re
@@ -120,9 +121,9 @@ class VeriGen(TaskExtension):
             return ""
         filename = f"verigen-example-prefix_{self.task_name}_{self.examples}-shot.txt"
         file = os.path.join(self.path_examples, filename)
-        assert (
-            os.path.exists(file) == True
-        ), f"Fewshot example for n_shot = {self.examples} not found or possible duplicate."
+        assert os.path.exists(file) == True, (
+            f"Fewshot example for n_shot = {self.examples} not found or possible duplicate."
+        )
         with open(file) as fd:
             contents = fd.read()
         return "\n" + contents
@@ -192,7 +193,6 @@ class VeriGen(TaskExtension):
                     conversation, tokenize=False, add_generation_prompt=True
                 )
                 ret += "<think>\n"
-                # ret += "\n<think></think>\n"
             except ValueError:
                 print(f"Warning: {self.model} does not has a tokenizer template.")
 
@@ -212,21 +212,20 @@ class VeriGen(TaskExtension):
         :return: str
         """
         # For reasoning models, we keep only the final answer
-        if "</think>" in generation:
-            self._printHelper("STRIP GENERATION", generation)
+        if "assistantfinal" in generation:
+            delimiter = "assistantfinal"
+            reasoning, generation = generation.rsplit(delimiter, 1)
+            reasoning = reasoning.strip()
+        elif "</think>" in generation:
             delimiter = "</think>"
             reasoning, generation = generation.rsplit(delimiter, 1)
             reasoning = reasoning.strip()
-            self._printHelper("REASONING", reasoning)
         else:
             reasoning = "None"
 
         prompt = self.get_prompt(self.dataset[idx])
         task_id = self.dataset[idx]["task_id"]
         raw_prompt = self.get_file(task_id, "")
-        self._printHelper("PROMPT", prompt)
-        self._printHelper("RAW PROMPT", raw_prompt)
-        self._printHelper("RAW GENERATION", generation)
 
         generation = raw_prompt + generation
 
@@ -310,7 +309,7 @@ class VeriGen(TaskExtension):
                 self.base_gen_dir,
                 "generated_problems",
                 "answer_" + problem_id,
-                f"generation_{generation_index+1}",
+                f"generation_{generation_index + 1}",
             )
         )
         openlane_result = run_openlane_for_generation(

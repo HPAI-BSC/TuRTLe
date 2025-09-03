@@ -6,6 +6,7 @@ https://arxiv.org/abs/2308.05345
 RTLLM benchmark implemented by HPAI team at Barcelona Supercomputing Center (BSC).
 Homepage: https://github.com/hkust-zhiyao/RTLLM
 """
+
 import json
 import os
 import re
@@ -133,7 +134,6 @@ class RTLLM(TaskExtension):
             ret = tokenizer.apply_chat_template(
                 conversation, tokenize=False, add_generation_prompt=True
             )
-            ret += "<think>\n"
         except ValueError:
             print(f"Warning: {self.model} does not has a tokenizer template.")
             ret = full_prompt.strip()
@@ -144,9 +144,9 @@ class RTLLM(TaskExtension):
         folder_path = os.path.join(self.path_rtllm_repo, doc["folder_path"])
         regex = re.compile(r"^verified_.*\.v$")
         matching_files = [f for f in os.listdir(folder_path) if regex.match(f)]
-        assert (
-            len(matching_files) == 1
-        ), f"Golden solution not found or possible duplicate. Found files: {matching_files}"
+        assert len(matching_files) == 1, (
+            f"Golden solution not found or possible duplicate. Found files: {matching_files}"
+        )
         file_path = os.path.join(folder_path, matching_files[0])
         return file_path
 
@@ -155,9 +155,12 @@ class RTLLM(TaskExtension):
         return self.get_file(self.get_reference_path(doc))
 
     def postprocess_generation(self, generation, idx):
-
         # For reasoning models, we keep only the final answer
-        if "</think>" in generation:
+        if "assistantfinal" in generation:
+            delimiter = "assistantfinal"
+            reasoning, generation = generation.rsplit(delimiter, 1)
+            reasoning = reasoning.strip()
+        elif "</think>" in generation:
             delimiter = "</think>"
             reasoning, generation = generation.rsplit(delimiter, 1)
             reasoning = reasoning.strip()
@@ -282,7 +285,7 @@ class RTLLM(TaskExtension):
                 self.base_gen_dir,
                 "generated_problems",
                 "verified_" + problem_id,
-                f"generation_{generation_index+1}",
+                f"generation_{generation_index + 1}",
             )
         )
         openlane_result = run_openlane_for_generation(
@@ -386,7 +389,7 @@ class RTLLM(TaskExtension):
                 n_correct_func += int(result["func_passed"])
                 n_correct_synthesis += int(result["synthesis_passed"])
 
-                reports[problem_id][f"generation_{j+1}"] = result["func_passed"]
+                reports[problem_id][f"generation_{j + 1}"] = result["func_passed"]
 
             correct_syntax.append(n_correct_syntax)
             correct_func.append(n_correct_func)
