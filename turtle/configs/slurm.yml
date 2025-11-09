@@ -1,12 +1,26 @@
 configurations:
+  - type: general-partition
+    account: your_account
+    qos: your_qos
+    output: slurm_output/job_%j.out
+    error: slurm_output/job_%j.err
+    nodes: 1
+    cpus-per-task: 112
+    time: "02:00:00"
+    exclusive: true
   - type: general-single-node-small
+    account: your_account
+    qos: your_qos
     output: slurm_output/job_%j.out
     error: slurm_output/job_%j.err
     nodes: 1
     cpus-per-task: 80
-    time: "08:00:00"
+    time: "02:00:00"
     gres: gpu:4
+    exclusive: true
   - type: general-single-node-large
+    account: your_account
+    qos: your_qos
     output: slurm_output/job_%j.out
     error: slurm_output/job_%j.err
     nodes: 1
@@ -15,14 +29,14 @@ configurations:
     gres: gpu:4
     exclusive: true
   - type: general-multi-node
-    account: bsc70
-    qos: normal
+    account: your_account
+    qos: your_qos
     output: slurm_output/job_%j.out
     error: slurm_output/job_%j.err
-    nodes: 8
+    nodes: 4
     cpus-per-task: 80
     ntasks-per-node: 1
-    time: "06:00:00"
+    time: "02:00:00"
     gres: gpu:4
     exclusive: true
     env:

@@ -1,0 +1,44 @@
+Bootstrap: docker
+From: vllm/vllm-openai:v0.8.5
+
+%post
+    apt-get update
+    apt-get install -y --no-install-recommends git
+    rm -rf /var/lib/apt/lists/*
+
+    # update transformers
+    pip install --force-reinstall --no-cache-dir \
+        "git+https://github.com/huggingface/transformers.git@main"
+
+    # turtle core libs
+    pip install --no-cache-dir \
+        accelerate \
+        datasets \
+        evaluate \
+        fsspec \
+        huggingface_hub \
+        mosestokenizer \
+        peft \
+        protobuf \
+        py7zr \
+        requests \
+        rouge-score \
+        sentencepiece \
+        seqeval \
+        termcolor \
+        numpy \
+        pandas
+
+    # bigcode
+    git clone https://github.com/bigcode-project/bigcode-evaluation-harness.git
+    cd bigcode-evaluation-harness
+    pip install --no-deps -e .
+    cd ..
+    rm -rf bigcode-evaluation-harness
+
+    # avoid opencv annoying error
+    pip uninstall -y opencv-python opencv-python-headless opencv-contrib-python || true
+    pip install --no-cache-dir opencv-python
+
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*

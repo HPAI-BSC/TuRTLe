@@ -1,6 +1,7 @@
 
 import math
 import sys
+import os
 
 
 def stable_divide(A,B):
@@ -17,7 +18,7 @@ def stable_divide(A,B):
     return ratio_m * (2.0 ** exponent_diff)
 
 
-def compute_ppa_score(C, g, n_problems, metric):
+def compute_ppa_score(C, g, n_problems, metric, results_dir):
     """
     C (dict): A dictionary where keys are elements of mathcal{C}, and values are lists of p_{i,j} values.
     g (dict): A dictionary where keys are elements of mathcal{C}, and values are g_i values.
@@ -35,20 +36,24 @@ def compute_ppa_score(C, g, n_problems, metric):
         for x in S_i:
             # analize PPA
             if x > 2*g[i]: # bad values
-                print('*********BAD VALUE**********')
-                print(f'S_{i} generations {metric}:')
-                print(S_i)
-                print(f'Reference value: {g[i]}')
+                with open(os.path.join(results_dir, "bad_ppa.txt"), "a") as log_file:
+                    log_file.write('*********BAD VALUE**********\n')
+                    log_file.write(f'S_{i} generations {metric}:\n')
+                    log_file.write(f'x: {x} in S_i: {S_i}\n')
+                    log_file.write(f'Reference value: {g[i]}\n\n')
             elif x < g[i]: # better than human reference
-                print('*********BETTER THAN HUMAN**********')
-                print(f'S_{i} generations {metric}:')
-                print(S_i)
-                print(f'Reference value: {g[i]}')
+                with open(os.path.join(results_dir, "better_than_human.txt"), "a") as log_file:
+                    log_file.write('*********BETTER THAN HUMAN**********\n')
+                    log_file.write(f'S_{i} generations {metric}:\n')
+                    log_file.write(f'x: {x} in S_i: {S_i}\n')
+                    log_file.write(f'Reference value: {g[i]}\n\n')
             # Compute PPA
             if x < 0:
-                print(f'\tS_{i} before filtering: {S_i}')
-                print(f'Discarding negative value {x} from {i}. Could be OpenLane error')
-                print(f'\tReference value: {g[i]}')
+                with open(os.path.join(results_dir, "error_ppa.txt"), "a") as log_file:
+                    log_file.write('*********NEGATIVE VALUE**********\n')
+                    log_file.write(f'\tS_{i} before filtering: {S_i}. Metric: {metric}\n')
+                    log_file.write(f'Discarding negative value {x}. Could be OpenLane error\n')
+                    log_file.write(f'\tReference value: {g[i]}\n\n')
             elif x > 2*g[i]:
                 filtered_S_i.append(2*g[i]) # worst result is twice the golden solution
             else:

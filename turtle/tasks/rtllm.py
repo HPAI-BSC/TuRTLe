@@ -1,24 +1,29 @@
 # This template file is adapted from: https://github.com/EleutherAI/lm-evaluation-harness/blob/master/templates/new_task.py
 
 """
-RTLLM: An Open-Source Benchmark for Design RTL Generation with Large Language Model
-https://arxiv.org/abs/2308.05345
-RTLLM benchmark implemented by HPAI team at Barcelona Supercomputing Center (BSC).
-Homepage: https://github.com/hkust-zhiyao/RTLLM
+VerilogEval: Evaluating Large Language Models for Verilog Code Generation
+https://arxiv.org/abs/2309.07544
+VerlogEval benchmark implemented by HPAI team at Barcelona Supercomputing Center (BSC).
+Homepage: https://github.com/NVlabs/verilog-eval
 """
 
 import json
 import os
 import re
-import shutil
 import tempfile
+import shutil
 import warnings
 from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
-from datasets import load_from_disk
+from datasets import load_from_disk, load_dataset
 from metrics.code_eval import estimate_pass_at_k
+from metrics.code_eval import (
+    compute_perplexities,
+    compute_min_k,
+    compute_min_k_veriContaminated,
+)
 from metrics.eval_verilog import eval_rtllm
 from metrics.openlane_unified import (
     create_problem_structure,
@@ -28,25 +33,16 @@ from metrics.ppa_score import compute_ppa_score
 from src.turtle_eval.base import TaskExtension
 from transformers import AutoTokenizer
 
+
 os.environ["HF_ALLOW_CODE_EVAL"] = "1"
 
 _CITATION = """
-@inproceedings{lu2024rtllm,
-  author={Lu, Yao and Liu, Shang and Zhang, Qijun and Xie, Zhiyao},
-  booktitle={2024 29th Asia and South Pacific Design Automation Conference (ASP-DAC)}, 
-  title={RTLLM: An Open-Source Benchmark for Design RTL Generation with Large Language Model}, 
-  year={2024},
-  pages={722-727},
-  organization={IEEE}
-  }
-
-@inproceedings{liu2024openllm,
-  title={OpenLLM-RTL: Open Dataset and Benchmark for LLM-Aided Design RTL Generation(Invited)},
-  author={Liu, Shang and Lu, Yao and Fang, Wenji and Li, Mengming and Xie, Zhiyao},
-  booktitle={Proceedings of 2024 IEEE/ACM International Conference on Computer-Aided Design (ICCAD)},
-  year={2024},
-  organization={ACM}
-  }
+@inproceedings{liu2023verilogeval,
+  title={{VerilogEval:} Evaluating Large Language Models for Verilog Code Generation},
+  author={Liu, Mingjie and Pinckney, Nathaniel and Khailany, Brucek and Ren, Haoxing},
+  booktitle={2023 IEEE/ACM International Conference on Computer-Aided Design (ICCAD)}, 
+  year={2023}
+}
 """
 
 
@@ -55,34 +51,67 @@ class RTLLM(TaskExtension):
     DATASET_NAME = None
 
     def __init__(self, **kwargs):
-        super().__init__(stop_words=[], requires_execution=True)
+        super().__init__(stop_words=[], requires_execution=False)
         kwargs = kwargs.get("kwargs", {})
         self.model = kwargs.get("model")
-        self.simulator = kwargs.get("simulator", "icarus")
+        self.tokenizer = kwargs.get("tokenizer")
+        self.simulator = kwargs.get("simulator")
 
         self.path_temporary_files = kwargs.get("path_temporary_files")
-        self.path_dataset_test = kwargs.get("path_dataset_test")
-        self.generate_report = kwargs.get("generate_report", False)
+        rtllm_version = kwargs.get("rtllm_version")
         prompt = kwargs.get("prompt", None)
-        self.prompt = prompt if prompt is None else None
+        self.metric_output_path = kwargs.get("metric_output_path")
+        self.prompt = kwargs.get("prompt", "")
 
         # Set-up basic params
         self.debug = True
 
         # Make sure we have access to the dataset and the repo
-        self.path_rtllm_repo = os.path.join(os.path.dirname(__file__), "RTLLM")
-        if not os.path.exists(self.path_rtllm_repo):
-            raise ValueError(
-                f"Path to `RTLLM` repo not found.\n`{self.path_rtllm_repo}` does not exists."
-            )
+        path_rtllm_repo = os.path.join(os.path.dirname(__file__), "RTLLM")
+        if not os.path.exists(path_rtllm_repo):
+            raise ValueError(f"Path to `RTLLM` repo not found.\n`{path_rtllm_repo}` does not exists.")
+        self.path_dataset = path_rtllm_repo
+        self.generate_report = kwargs.get("generate_report", False)
 
-        self.dataset = load_from_disk(self.path_dataset_test)
+        # Added for perplexity
+        self.compute_ppl_only = kwargs.get("compute_ppl_only", False)
+        self.kwargs = kwargs
+
+        # Try to load dataset: HuggingFace Hub first, then local GPFS, then fail
+        if rtllm_version == "1.1":
+            hf_dataset_name = "ggcristian/RTLLM-v1.1"
+            local_path = (
+                "/chips-design/bigcode/datasets/RTLLM-v1.1"
+            )
+        elif rtllm_version == "2.0":
+            hf_dataset_name = "ggcristian/RTLLM-v2.0"
+            local_path = (
+                "/chips-design/bigcode/datasets/RTLLM-v2.0"
+            )
+        else:
+            raise ValueError("Please, provide rtllm_version flag.")
+
+        # Try HuggingFace Hub first
+        try:
+            print(f"Attempting to load dataset from HuggingFace Hub: {hf_dataset_name}")
+            self.dataset = load_dataset(hf_dataset_name, verification_mode="no_checks")
+            print(f"Successfully loaded dataset from HuggingFace Hub")
+        except Exception as e:
+            print(f"Failed to load from HuggingFace Hub: {e}")
+            # Try local path
+            if os.path.exists(local_path):
+                print(f"Loading dataset from local path: {local_path}")
+                self.dataset = load_from_disk(local_path)
+            else:
+                raise FileNotFoundError(
+                    f"Dataset not found on HuggingFace Hub ({hf_dataset_name}) or local path ({local_path})"
+                )
 
         # setup directories for (later-on) computing the PPA
         self.load_generations_path = kwargs.get("load_generations_path", None)
         if self.load_generations_path is not None:
             json_path = self.load_generations_path
-            output_dir = Path(os.path.dirname(json_path) + "/")
+            output_dir = Path(os.path.dirname(json_path)).resolve()
             _ = create_problem_structure(output_dir, json_path, mode="rtllm")
             self.base_gen_dir = output_dir
             self.debug = False
@@ -90,17 +119,9 @@ class RTLLM(TaskExtension):
     # TODO: Delete this, just a helper function that will print contents generated for debug purposes
     def _printHelper(self, title: str, content: str):
         if self.debug:
-            print(
-                "\n"
-                + "-" * 30
-                + title
-                + "-" * 30
-                + "\n"
-                + content
-                + "\n"
-                + "-" * 70
-                + "\n"
-            )
+            # fmt: off
+            print("\n" + "-" * 30 + title + "-" * 30 + "\n" + content + "\n" + "-" * 70 + "\n")
+            # fmt: on
 
     def get_dataset(self):
         """Returns dataset for the task or an iterable of any object, that get_prompt can handle"""
@@ -116,15 +137,21 @@ class RTLLM(TaskExtension):
         return contents
 
     def get_prompt(self, doc):
+        full_prompt = self.get_file(
+            os.path.join(self.path_dataset, doc["folder_path"], "design_description.txt")
+        )
+
+        # API models
+        # we assume that closed source models apply already a chat template
+        if self.tokenizer is None:
+            return full_prompt.strip()
+
+        # Local models
+        # apply a chat template
         tokenizer = AutoTokenizer.from_pretrained(self.model, trust_remote_code=True)
         if tokenizer.chat_template is None:
             if self.prompt == "deepseek":
                 tokenizer.chat_template = "{% if not add_generation_prompt is defined %}\n{% set add_generation_prompt = false %}\n{% endif %}\n{%- set ns = namespace(found=false) -%}\n{%- for message in messages -%}\n    {%- if message['role'] == 'system' -%}\n        {%- set ns.found = true -%}\n    {%- endif -%}\n{%- endfor -%}\n{{bos_token}}{%- if not ns.found -%}\n{{'You are an AI programming assistant, utilizing the Deepseek Coder model, developed by Deepseek Company, and you only answer questions related to computer science. For politically sensitive questions, security and privacy issues, and other non-computer science questions, you will refuse to answer\\n'}}\n{%- endif %}\n{%- for message in messages %}\n    {%- if message['role'] == 'system' %}\n{{ message['content'] }}\n    {%- else %}\n        {%- if message['role'] == 'user' %}\n{{'### Instruction:\\n' + message['content'] + '\\n'}}\n        {%- else %}\n{{'### Response:\\n' + message['content'] + '\\n<|EOT|>\\n'}}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{% if add_generation_prompt %}\n{{'### Response:'}}\n{% endif %}"
-        full_prompt = self.get_file(
-            os.path.join(
-                self.path_dataset, doc["folder_path"], "design_description.txt"
-            )
-        )
         conversation = [
             {"role": "user", "content": full_prompt.strip()},
         ]
@@ -132,16 +159,17 @@ class RTLLM(TaskExtension):
         # in that case we return the raw prompt
         try:
             ret = tokenizer.apply_chat_template(
-                conversation, tokenize=False, add_generation_prompt=True
+                conversation, tokenize=False, add_generation_prompt=True, thinking=True
             )
         except ValueError:
             print(f"Warning: {self.model} does not has a tokenizer template.")
             ret = full_prompt.strip()
+        self._printHelper("PROMPT", ret)
         return ret
 
     def get_reference_path(self, doc):
         # as we did with VerilogEval impl we use regex
-        folder_path = os.path.join(self.path_rtllm_repo, doc["folder_path"])
+        folder_path = os.path.join(self.path_dataset, doc["folder_path"])
         regex = re.compile(r"^verified_.*\.v$")
         matching_files = [f for f in os.listdir(folder_path) if regex.match(f)]
         assert len(matching_files) == 1, (
@@ -156,8 +184,12 @@ class RTLLM(TaskExtension):
 
     def postprocess_generation(self, generation, idx):
         # For reasoning models, we keep only the final answer
-        if "assistantfinal" in generation:
+        if "assistantfinal" in generation:  # gpt-oss
             delimiter = "assistantfinal"
+            reasoning, generation = generation.rsplit(delimiter, 1)
+            reasoning = reasoning.strip()
+        elif "</seed:think>" in generation:  # seed-oss-36b
+            delimiter = "</seed:think>"
             reasoning, generation = generation.rsplit(delimiter, 1)
             reasoning = reasoning.strip()
         elif "</think>" in generation:
@@ -231,11 +263,10 @@ class RTLLM(TaskExtension):
         output_lines.append("")
 
         generation = "\n".join(output_lines)
-
         if "```verilog" in generation:
-            # just to fallback to the next case to avoid duplicated logic
-            generation = generation.replace("```verilog", "```")
-
+            generation = generation.replace(
+                "```verilog", "```"
+            )  # just to fallback to the next case to avoid duplicated logic
         if "```" in generation:
             # Regex taken from Langchain-rust repo: https://github.com/Abraxas-365/langchain-rust/blob/60c71258d8a40c278f2867f6b4d3871265f6e638/src/output_parsers/markdown_parser.rs#L13
             pattern = re.compile(r"```(?:\w+)?\s*([\s\S]+?)\s*```")
@@ -243,14 +274,18 @@ class RTLLM(TaskExtension):
             if match:
                 generation = match.group(1)
 
+        cwd = os.getcwd()
+        test_path_abs = os.path.join(
+            self.path_dataset, self.dataset["train"][idx]["folder_path"], "testbench.v"
+        )
+        ref_path_abs = self.get_reference_path(self.dataset["train"][idx])
+        test_path_rel = os.path.relpath(test_path_abs, cwd)
+        ref_path_rel = os.path.relpath(ref_path_abs, cwd)
+
         return {
             "prompt": self.get_prompt(self.dataset["train"][idx]),
-            "test_path": os.path.join(
-                self.path_rtllm_repo,
-                self.dataset["train"][idx]["folder_path"],
-                "testbench.v",
-            ),
-            "ref_path": self.get_reference_path(self.dataset["train"][idx]),
+            "test_path": test_path_rel,
+            "ref_path": ref_path_rel,
             "reasoning": reasoning,
             "generation": generation,
         }
@@ -267,19 +302,15 @@ class RTLLM(TaskExtension):
         return data
 
     def _evaluate_stx_fnc(self, generation: str, test_path: str, ref_path: str) -> dict:
-        with tempfile.NamedTemporaryFile(
-            suffix=".sv", delete=True, dir=self.path_temporary_files
-        ) as f:
+        with tempfile.NamedTemporaryFile(suffix=".sv", delete=True, dir=self.path_temporary_files) as f:
             f.write(generation.encode("utf-8"))
             f.flush()
             result = eval_rtllm(
-                Path(f.name), Path(test_path), Path(ref_path), self.simulator
+                Path(f.name), Path(test_path), Path(ref_path), simulator=self.simulator, flag=True
             )
         return result
 
-    def _evaluate_syn_ppa(
-        self, result: dict, problem_id: str, generation_index: int, C: defaultdict
-    ) -> dict:
+    def _evaluate_syn_ppa(self, result: dict, problem_id: str, generation_index: int, C: defaultdict) -> dict:
         gen_dir = Path(
             os.path.join(
                 self.base_gen_dir,
@@ -292,17 +323,14 @@ class RTLLM(TaskExtension):
             gen_dir,
             problem_id,
             "model_name",
+            pdk_root=None,
         )
 
-        if (
-            openlane_result["status"] == "Success"
-        ):  # If metrics could be generated, synthesis passed
+        if openlane_result["status"] == "Success":  # If metrics could be generated, synthesis passed
             result["synthesis_passed"] = True
             C["area"][problem_id].append(openlane_result["metrics"]["area"])
             C["power"][problem_id].append(openlane_result["metrics"]["power"])
-            C["performance"][problem_id].append(
-                openlane_result["metrics"]["performance"]
-            )
+            C["performance"][problem_id].append(openlane_result["metrics"]["performance"])
 
         result.update(
             {
@@ -312,15 +340,11 @@ class RTLLM(TaskExtension):
         )
         return result, C
 
-    def _compute_pass_k(
-        self, correct: np.ndarray, total: np.ndarray, ks: list[int]
-    ) -> dict:
+    def _compute_pass_k(self, correct: np.ndarray, total: np.ndarray, ks: list[int]) -> dict:
         results = {}
         for k in ks:
             if (total >= k).all():
-                results[f"pass@{k}"] = round(
-                    estimate_pass_at_k(total, correct, k).mean() * 100, 2
-                )
+                results[f"pass@{k}"] = round(estimate_pass_at_k(total, correct, k).mean() * 100, 2)
         return results
 
     def _compute_ppa(self, ppa_data: list[dict], C: dict, n: int) -> dict:
@@ -332,11 +356,19 @@ class RTLLM(TaskExtension):
             g["power"][short_name] = entry["power"]
             g["performance"][short_name] = entry["performance"]
 
-        raw_power = compute_ppa_score(C["power"], g["power"], n, "power")
-        raw_performance = compute_ppa_score(
-            C["performance"], g["performance"], n, "performance"
-        )
-        raw_area = compute_ppa_score(C["area"], g["area"], n, "area")
+        # Auxiliar files to study extreme generation cases
+        base_dir = os.path.dirname(self.metric_output_path)
+        bad_ppa_path = os.path.join(base_dir, "bad_ppa.txt")
+        better_than_human_path = os.path.join(base_dir, "better_than_human.txt")
+        error_ppa_path = os.path.join(base_dir, "error_ppa.txt")
+
+        for file_path in [bad_ppa_path, better_than_human_path, error_ppa_path]:
+            with open(file_path, "w") as f:
+                pass
+
+        raw_power = compute_ppa_score(C["power"], g["power"], n, "power", base_dir)
+        raw_performance = compute_ppa_score(C["performance"], g["performance"], n, "performance", base_dir)
+        raw_area = compute_ppa_score(C["area"], g["area"], n, "area", base_dir)
 
         # Values are \in (0,2], where higher is worse
         # We want to flip the values and scale them to [0,100]
@@ -377,9 +409,16 @@ class RTLLM(TaskExtension):
                 ref_path = generations[i][j]["ref_path"]
                 generation = generations[i][j]["generation"]
 
-                problem_id = (
-                    os.path.basename(ref_path).split("verified_")[-1].split(".")[0]
-                )
+                # handle both relative and absolute paths
+                if "bigcode-evaluation-harness/" in test_path:
+                    test_path = test_path.split("bigcode-evaluation-harness/", 1)[1]
+                if "bigcode-evaluation-harness/" in ref_path:
+                    ref_path = ref_path.split("bigcode-evaluation-harness/", 1)[1]
+
+                test_path = os.path.join(os.getcwd(), test_path)
+                ref_path = os.path.join(os.getcwd(), ref_path)
+
+                problem_id = os.path.basename(ref_path).split("verified_")[-1].split(".")[0]
 
                 result = self._evaluate_stx_fnc(generation, test_path, ref_path)
                 if result["func_passed"] and problem_id in ppa_ids:
@@ -399,13 +438,9 @@ class RTLLM(TaskExtension):
         # Calculate pass@k (adapted from VerilogEval v1 repo)
         ks = [1, 5, 20]
         ret = {
-            "syntax": self._compute_pass_k(
-                np.array(correct_syntax), np.array(total), ks
-            ),
+            "syntax": self._compute_pass_k(np.array(correct_syntax), np.array(total), ks),
             "func": self._compute_pass_k(np.array(correct_func), np.array(total), ks),
-            "synthesis": self._compute_pass_k(
-                np.array(correct_synthesis), np.array(total), ks
-            ),
+            "synthesis": self._compute_pass_k(np.array(correct_synthesis), np.array(total), ks),
         }
 
         # Calculate PPA score

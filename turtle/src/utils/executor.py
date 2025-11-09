@@ -47,9 +47,7 @@ class WorkflowExecutor:
         """
         return self.file_handler.load_yaml(file_path)
 
-    def build_singularity_commands(
-        self, task_image_list: list[tuple[str, str]]
-    ) -> dict[str, str]:
+    def build_singularity_commands(self, task_image_list: list[tuple[str, str]]) -> dict[str, str]:
         """Build a dictionary of Singularity commands for each task.
 
         Args:
@@ -65,9 +63,7 @@ class WorkflowExecutor:
             )
         return commands
 
-    def build_docker_commands(
-        self, task_image_list: list[tuple[str, str]]
-    ) -> dict[str, str]:
+    def build_docker_commands(self, task_image_list: list[tuple[str, str]]) -> dict[str, str]:
         """Build a dictionary of Docker commands for each task.
 
         Args:
@@ -131,9 +127,11 @@ class WorkflowExecutor:
         """
         from jinja2 import Environment, FileSystemLoader
 
-        # get current working directory
-        path_template = "template"
-        new_path = Path(__file__).parent.parent / path_template
+        base = Path(__file__).parent.parent
+        path_template = base / "template"
+
+        benchmark = dictionary["task"]
+        model = dictionary["model_name"]
 
         # generate_only flag
         if self.args and self.args.generation_only is True:
@@ -141,12 +139,22 @@ class WorkflowExecutor:
                 dictionary["turtle_commands"][:-1] + " " + "--generation_only" + '"'
             )
 
-        env = Environment(loader=FileSystemLoader(new_path))
+        env = Environment(
+            loader=FileSystemLoader(str(path_template)),
+            keep_trailing_newline=True,
+        )
+
+        template_dir = path_template / benchmark
         template = env.get_template("multinode.sh.j2")
+        rendered = template.render(dictionary)
 
-        rendered_template = template.render(dictionary)
+        output_dir = template_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
 
-        return rendered_template
+        output_path = output_dir / f"{model}.sh"
+        output_path.write_text(rendered, encoding="utf-8")
+
+        return rendered
 
     # End of multi-node execution
 
@@ -157,29 +165,24 @@ class WorkflowExecutor:
         Returns:
             - result: CompletedProcess object containing the result of the command
         """
+        # print(command)
         try:
             result = subprocess.run(
                 command,
                 shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
                 text=True,
             )
 
             if result.returncode != 0:
                 self.logger.error(f"Command failed (exit code {result.returncode})")
-                self.logger.error(f"Error output: {result.stderr.strip()}")
             else:
                 self.logger.info("Command executed successfully")
-                self.logger.debug(f"Command output: {result.stdout.strip()}")
 
             return result
         except Exception as e:
             self.logger.exception(f"Exception while executing command: {str(e)}")
             # Create a dummy result to return in case of exception
-            return subprocess.CompletedProcess(
-                args=command, returncode=1, stdout="", stderr=str(e)
-            )
+            return subprocess.CompletedProcess(args=command, returncode=1, stdout="", stderr=str(e))
 
     def run_job(
         self,
@@ -207,16 +210,18 @@ class WorkflowExecutor:
             - CompletedProcess with execution results
         """
         self.logger.info(f"JOB START TIME: {time.ctime()}")
+
+        if slurm_confgs == "api":
+            self.logger.info("API execution mode detected - running locally without SLURM")
+            clean_command = turtle_command.strip('"')
+            return self.run_command(clean_command)
+
         if self.args and self.args.generation_only is True:
             turtle_command = turtle_command[:-1] + " " + "--generation_only" + '"'
 
         if slurm_command != "":
-            modified_slurm_command = slurm_command.replace(
-                "--cpus-per-task", "--cpus_per_task"
-            )
-            modified_slurm_command = modified_slurm_command.replace(
-                "--ntasks-per-node", "--ntasks_per_node"
-            )
+            modified_slurm_command = slurm_command.replace("--cpus-per-task", "--cpus_per_task")
+            modified_slurm_command = modified_slurm_command.replace("--ntasks-per-node", "--ntasks_per_node")
             dictionary = self.parse_sbatch_string(modified_slurm_command)
             # Add task, singularity image, and model path to the dictionary
             dictionary["slurm_enabled"] = True
@@ -227,15 +232,13 @@ class WorkflowExecutor:
         if singularity_image:
             dictionary["singularity_enabled"] = True
             dictionary["singularity_image"] = singularity_image
-            if (self.args and self.args.evaluate_only is True) and benchmark_config[
-                0
-            ].get("evaluation_image", False):
+            if (self.args and self.args.evaluation_only is True) and benchmark_config[0].get(
+                "evaluation_image", False
+            ):
                 singularity_command = singularity_command.replace(
                     singularity_image, benchmark_config[0].get("evaluation_image")
                 )
-                dictionary["singularity_image"] = benchmark_config[0].get(
-                    "evaluation_image"
-                )
+                dictionary["singularity_image"] = benchmark_config[0].get("evaluation_image")
                 if dictionary.get("slurm_enabled", False):
                     slurm_command = re.sub(r"--nodes=\d+", "--nodes=1", slurm_command)
 
@@ -245,7 +248,9 @@ class WorkflowExecutor:
         dictionary["metric_output_path"] = benchmark_config[0].get("metric_output_path")
 
         string1, string2 = turtle_commands.split("--model", 1)
-        new_turtle_commands = f"{string1.strip()} --ip ${{head_node_ip}} --port ${{vllm_port}} --model{string2}"
+        new_turtle_commands = (
+            f"{string1.strip()} --ip ${{head_node_ip}} --port ${{vllm_port}} --model{string2}"
+        )
 
         dictionary["turtle_commands"] = new_turtle_commands
 
@@ -253,10 +258,7 @@ class WorkflowExecutor:
         dictionary.update(self._setup_environment(slurm_confgs))
 
         # The idea is that when we run an evaluation only command, there is no need to go for a multi-node setup
-        print(self.args.evaluate_only)
-        if "multi-node" in type_job and (
-            self.args and self.args.evaluate_only is not True
-        ):
+        if "multi-node" in type_job and (self.args and self.args.evaluation_only is not True):
             # 1. Fill jinja2 template with
             multinode_command = self.build_multinode_commands(dictionary)
 
@@ -265,9 +267,7 @@ class WorkflowExecutor:
             temp_folder = Path(__file__).parent.parent / path_template
 
             # 2. Create a temporary file to store the script
-            with tempfile.NamedTemporaryFile(
-                mode="w", suffix=".sh", dir=temp_folder, delete=False
-            ) as f:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".sh", dir=temp_folder, delete=False) as f:
                 f.write(multinode_command)
                 script_path = f.name
 
@@ -279,18 +279,6 @@ class WorkflowExecutor:
                 f"sbatch {script_path}'"
             )
         else:
-            # Note if we include the evaluation flag we must:
-            # - Remove generation_only flag
-            # - Substitute the load-generations-path by the save-generations-path
-            # In normal scenarios this should not be needed, but we are using two images, one for inference, another to eval
-            if self.args and self.args.evaluate_only is True:
-                turtle_command = turtle_command.replace(
-                    "--save_generations True", "--save_generations False"
-                )
-                turtle_command = turtle_command.replace(
-                    "--save_generations_path", "--load_generations_path"
-                )
-
             # Single-node SLURM execution
             full_cmd = (
                 f"{slurm_command} --wrap="
@@ -316,9 +304,7 @@ class WorkflowExecutor:
         filtered_config = config_dict.copy()
 
         # Find the model with the matching name
-        matching_models = [
-            model for model in config_dict["models"] if model["name"] == model_name
-        ]
+        matching_models = [model for model in config_dict["models"] if model["name"] == model_name]
 
         if not matching_models:
             raise ValueError(f"Model '{model_name}' not found in configuration")
@@ -340,17 +326,13 @@ class WorkflowExecutor:
         if not self.args.run_all:
             config_path = (self.CONFIGS_DIR / self.args.benchmark).with_suffix(".yml")
             if not config_path.exists():
-                self.logger.error(
-                    f"Error: The benchmark config file '{config_path}' does not exist."
-                )
+                self.logger.error(f"Error: The benchmark config file '{config_path}' does not exist.")
                 return []
             else:
                 if self.args.model:
                     # finde into the benchmark config dictionary the name of model
                     flag_model = 0
-                    benchmark_config = self.load_yaml_config(config_path)["benchmark"][
-                        0
-                    ]
+                    benchmark_config = self.load_yaml_config(config_path)["benchmark"][0]
                     for model in benchmark_config.get("models", []):
                         if model.get("name") == self.args.model:
                             flag_model += 1
@@ -401,22 +383,14 @@ class WorkflowExecutor:
             if "singularity_image" in item
         ]
         if filter_singularity:
-            singularity_commands = self.build_singularity_commands(
-                filter_singularity
-            ).get(_task)
-        else:
-            singularity_commands = None
+            singularity_commands = self.build_singularity_commands(filter_singularity)
 
-        """
         # check docker configs
         filter_docker = [
-            (item["task"], item["docker_image"])
-            for item in benchmark_config
-            if "docker_image" in item
+            (item["task"], item["docker_image"]) for item in benchmark_config if "docker_image" in item
         ]
         if filter_docker:
             docker_commands = self.build_docker_commands(filter_docker)
-        """
 
         total_jobs = 0
         all_job_ids = []
@@ -438,14 +412,16 @@ class WorkflowExecutor:
 
                     # If slurm config command dictionary is not empty
                     if slurm_configs_commands:
-                        slurm_commands = slurm_configs_commands.get(
-                            model.get("slurm_config")
-                        )
+                        slurm_commands = slurm_configs_commands.get(model.get("slurm_config"))
                     else:
                         slurm_commands = ""
 
                     # Build the command required for turtle
                     turtle_command = builder.build_command(model=model.get("name"))
+
+                    # Add generation_only flag if present in args
+                    if self.args and self.args.generation_only:
+                        turtle_command = turtle_command.rstrip('"') + ' --generation_only"'
 
                     # send job
                     result = self.run_job(
