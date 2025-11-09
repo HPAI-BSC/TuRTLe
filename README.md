@@ -63,7 +63,6 @@ export TURTLE_API_KEY=sk-or-...
 uv run turtle/src/turtle.py --use-api \
     --model google/gemini-2.5-flash \
     --task rtllm \
-    --use_api \
     --max_tokens 18432 \
     --temperature 0.2 \
     --top_p 0.95 \
