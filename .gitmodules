@@ -1,9 +1,3 @@
 [submodule "bigcode-evaluation-harness"]
 	path = bigcode-evaluation-harness
 	url = https://github.com/bigcode-project/bigcode-evaluation-harness.git
-[submodule "turtle/tasks/verilog-eval"]
-	path = turtle/tasks/verilog-eval
-	url = https://github.com/NVlabs/verilog-eval.git
-[submodule "turtle/tasks/rtllm"]
-	path = turtle/tasks/rtllm
-	url = https://github.com/hkust-zhiyao/RTLLM

@@ -279,23 +279,6 @@ class WorkflowExecutor:
                 f"sbatch {script_path}'"
             )
         else:
-            # Note if we include the evaluation flag we must:
-            # - Remove generation_only flag
-            # - Substitute the load-generations-path by the save-generations-path
-            # - Perform evaluation on GPP
-            # In normal scenarios this should not be needed, but we are using two images, one for inference, another to eval
-            if self.args and self.args.evaluation_only is True:
-                slurm_command = re.sub(r"--qos=\S+", "--qos=gp_bsccs", slurm_command)
-                slurm_command = re.sub(r"--gres=gpu:\d+", "", slurm_command)
-                slurm_command = re.sub(r"#SBATCH\s+--exclusive", "", slurm_command)
-                slurm_command = re.sub(
-                    r"--cpus-per-task=\d+",
-                    "--cpus-per-task=80",
-                    slurm_command,
-                )
-                turtle_command = turtle_command.replace("--save_generations True", "--save_generations False")
-                turtle_command = turtle_command.replace("--save_generations_path", "--load_generations_path")
-
             # Single-node SLURM execution
             full_cmd = (
                 f"{slurm_command} --wrap="

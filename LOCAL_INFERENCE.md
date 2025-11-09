@@ -9,7 +9,6 @@ This guide covers how to run TuRTLe on local GPU machines or HPC clusters using 
 - [HPC Environment Requirements](#hpc-environment-requirements)
 - [Installation](#installation)
 - [Running on HPC with SLURM](#running-on-hpc-with-slurm)
-- [Running Locally with vLLM](#running-locally-with-vllm)
 
 ## HPC Environment Requirements
 
@@ -18,10 +17,6 @@ For HPC cluster execution, TuRTLe currently relies on:
 - **Singularity**: Container platform for HPC environments
 
 ## Installation
-
-> [!WARNING]
-> **Dependencies Notice**
-> **vLLM** currently supports up to **Python 3.12**. Ensure that your Python version does not exceed this limit to avoid compatibility issues.
 
 ### 1. Clone the repository
 
@@ -56,15 +51,15 @@ cd TuRTLe/bigcode-evaluation-harness/
 pip install -e .
 ```
 
-### 5. Install EDA Tools (not required for single line completion benchmarks)
+### 5. EDA Tools for Evaluation
 
-To install **OpenLane**, follow the instructions provided in the [OpenLane Installation Guide](https://openlane2.readthedocs.io/en/latest/getting_started/installation_overview.html).
+For evaluation, TuRTLe uses a Docker image that includes all necessary EDA tools (OpenLane, Verilator, Icarus Verilog). You can use this Docker image directly on your HPC cluster or pull it locally:
 
-To install **ICARUS Verilog** on Windows check the [Icarus Verilog Windows download page](https://bleyer.org/icarus/). To install it on Linux execute:
 ```bash
-sudo apt-get update
-sudo apt-get install iverilog
+docker pull ggcr0/turtle-eval:2.3.4
 ```
+
+For more details on using Docker for evaluation, see the main [README.md](README.md#evaluate-with-docker).
 
 ## Running on HPC with SLURM
 
