@@ -36,20 +36,6 @@ TuRTLe is a framework to assess LLMs across key RTL generation tasks systematica
 
 For more details about our work, refer to our [ArXiv paper](https://arxiv.org/abs/2504.01986).
 
-## Table of Contents
-
-- [News](#news)
-- [Leaderboard](#leaderboard)
-- [Quick Start](#quick-start)
-  - [Inference](#inference)
-  - [Evaluate with Docker](#evaluate-with-docker)
-- [Advanced Usage](#advanced-usage)
-  - [Local/Cluster Inference](#localcluster-inference)
-  - [Add Your Benchmark](#add-your-benchmark)
-- [Citation](#citation)
-- [Contact](#contact)
-- [Acknowledgments](#acknowledgments)
-
 ## News
 
 - **[2025-11-09]** We release TuRTLe v2 with API inference support and local Docker-based evaluation for easy reproducibility
