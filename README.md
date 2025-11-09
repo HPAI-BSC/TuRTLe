@@ -86,7 +86,7 @@ docker run --rm -v $(pwd):/work -w /work ggcr0/turtle-eval:2.3.4 \
     --task rtllm \
     --model gemini-2.5-flash \
     --n_samples 5 \
-    --load_generations_path ./results/gemini-2.5-flash/rtllm.jsonl
+    --load_generations_path ./results/gemini-2.5-flash/rtllm.json
 ```
 
 This will automatically pull the Docker image with all the EDA tooling and evaluate your designs for syntax, functionality, synthesis, and PPA metrics.
