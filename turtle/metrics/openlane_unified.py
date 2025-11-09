@@ -413,11 +413,26 @@ def find_latest_run_metrics(folder_path):
 def run_openlane_for_generation(gen_dir, problem_name, model_name, pdk_root=None):
     """Run OpenLane for a single generation and check if it completes successfully."""
     print(f"\nProcessing {model_name} / {problem_name} / {gen_dir.name}...")
+
+    if pdk_root is None:
+        # NOTE(cristian): in the new docker image I made for the API, I included the PDK
+        # on an ENV VAR, this is why we first check that and then we fallback to MN5
+        pdk_candidates = [
+            os.environ.get("PDK_ROOT"),
+            "/chips-design/openlane2/.volare",
+            "/opt/pdk/.volare",
+        ]
+        pdk_root = next((p for p in pdk_candidates if p and os.path.exists(p)), None)
+
+        if pdk_root is None:
+            raise ValueError(
+                "Please set PDK_ROOT environment variable or ensure PDK is installed."
+            )
+
     original_dir = os.getcwd()
     os.chdir(gen_dir)
-    
+
     try:
-        # Build the command with conditional PDK root
         command = ["openlane"]
         if pdk_root:
             command.extend(["--pdk-root", pdk_root])

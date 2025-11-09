@@ -262,9 +262,7 @@ def eval_rtllm(path: Path, test: Path, ref: Path, simulator: str, flag: bool = F
     return result_dict
 
 
-def eval_script_verigen(
-    path: Path, test: Path, ref: Path, simulator: str, flag: bool = False
-):
+def eval_script_verigen(path: Path, test: Path, ref: Path, simulator: str, flag: bool):
     assert simulator in [
         "icarus",
         "verilator",

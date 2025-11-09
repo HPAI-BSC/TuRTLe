@@ -2,7 +2,12 @@ import json
 import random
 
 import numpy as np
-import torch
+
+try:
+    import torch
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
 
 from .utils import PrompBatcher, complete_code
 
@@ -15,8 +20,9 @@ def set_seed(seed=77)-> None:
     """
     random.seed(seed)
     np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
+    if TORCH_AVAILABLE:
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
 
 
 def get_generations(
@@ -51,7 +57,7 @@ def get_generations(
             )
         return generations[:n_tasks]
 
-    if task.stop_words and tokenizer.eos_token:
+    if task.stop_words and tokenizer and tokenizer.eos_token:
         task.stop_words.append(tokenizer.eos_token)    
 
     if args.instruction_tokens:

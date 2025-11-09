@@ -10,6 +10,7 @@ Homepage: https://github.com/NVlabs/verilog-eval
 import json
 import os
 import re
+import shutil
 import tempfile
 from collections import defaultdict
 from pathlib import Path
@@ -42,20 +43,22 @@ class VerilogEvalCodeComplete(TaskExtension):
     DATASET_NAME = None
 
     def __init__(self, **kwargs):
-        super().__init__(stop_words=[], requires_execution=True)
+        super().__init__(stop_words=[], requires_execution=False)
         kwargs = kwargs.get("kwargs", {})
         self.model = kwargs.get("model")
+        self.tokenizer = kwargs.get("tokenizer", None)
         self.simulator = kwargs.get("simulator", "icarus")
+        self.metric_output_path = kwargs.get("metric_output_path")
+
+        print(f"Using sim: {self.simulator}")
 
         # Set-up basic params
-        self.debug = False
+        self.debug = True
         self.path_temporary_files = kwargs.get("path_temporary_files")
         self.task_name = "code-complete-iccad2023"
-        self.prompt = kwargs.get("prompt", None)
+        self.prompt = kwargs.get("prompt", "")
         self.examples = kwargs.get("few_shot")
-        assert self.examples >= 0 and self.examples <= 4, (
-            "Few shot supported range is 0-4."
-        )
+        assert self.examples >= 0 and self.examples <= 4, "Few shot supported range is 0-4."
         self.generate_report = kwargs.get("generate_report", False)
 
         # Make sure we have access to the dataset and the repo
@@ -65,16 +68,14 @@ class VerilogEvalCodeComplete(TaskExtension):
                 f"Path to `verilog_eval` repo not found.\n`{path_verilog_eval_repo}` does not exists."
             )
 
-        self.path_dataset = os.path.join(
-            path_verilog_eval_repo, "dataset_code-complete-iccad2023"
-        )
+        self.path_dataset = os.path.join(path_verilog_eval_repo, "dataset_code-complete-iccad2023")
         self.path_examples = os.path.join(path_verilog_eval_repo, "scripts")
 
         # setup directories for (later-on) computing the PPA
         self.load_generations_path = kwargs.get("load_generations_path", None)
         if self.load_generations_path is not None:
             json_path = self.load_generations_path
-            output_dir = Path(os.path.dirname(json_path) + "/")
+            output_dir = Path(os.path.dirname(json_path)).resolve()
             _ = create_problem_structure(output_dir, json_path)
             self.base_gen_dir = output_dir
             self.debug = False
@@ -82,28 +83,16 @@ class VerilogEvalCodeComplete(TaskExtension):
     # TODO: Delete this, just a helper function that will print contents generated for debug purposes
     def _printHelper(self, title: str, content: str):
         if self.debug:
-            print(
-                "\n"
-                + "-" * 30
-                + title
-                + "-" * 30
-                + "\n"
-                + content
-                + "\n"
-                + "-" * 70
-                + "\n"
-            )
+            # fmt: off
+            print("\n" + "-" * 30 + title + "-" * 30 + "\n" + content + "\n" + "-" * 70 + "\n")
+            # fmt: on
 
     def get_dataset(self):
         """Returns dataset for the task or an iterable of any object, that get_prompt can handle"""
         # VerilogEval has no official release of HF dataset, so we must build it locally from the repo
         ids = set()
         for file in os.listdir(self.path_dataset):
-            if (
-                not os.path.isdir(file)
-                and file.startswith("Prob")
-                and file.split(".")[-1] != "sv"
-            ):
+            if not os.path.isdir(file) and file.startswith("Prob") and file.split(".")[-1] != "sv":
                 # ProbXXX_<task_id>_<other>
                 task_id = file.split("_", 1)[1].rsplit("_", 1)[0]
                 ids.add(task_id)
@@ -140,13 +129,9 @@ class VerilogEvalCodeComplete(TaskExtension):
         return contents
 
     def get_prompt(self, doc):
-        tokenizer = AutoTokenizer.from_pretrained(self.model, trust_remote_code=True)
-        if tokenizer.chat_template is None:
-            if self.prompt == "deepseek":
-                tokenizer.chat_template = "{% if not add_generation_prompt is defined %}\n{% set add_generation_prompt = false %}\n{% endif %}\n{%- set ns = namespace(found=false) -%}\n{%- for message in messages -%}\n    {%- if message['role'] == 'system' -%}\n        {%- set ns.found = true -%}\n    {%- endif -%}\n{%- endfor -%}\n{{bos_token}}{%- if not ns.found -%}\n{{'You are an AI programming assistant, utilizing the Deepseek Coder model, developed by Deepseek Company, and you only answer questions related to computer science. For politically sensitive questions, security and privacy issues, and other non-computer science questions, you will refuse to answer\\n'}}\n{%- endif %}\n{%- for message in messages %}\n    {%- if message['role'] == 'system' %}\n{{ message['content'] }}\n    {%- else %}\n        {%- if message['role'] == 'user' %}\n{{'### Instruction:\\n' + message['content'] + '\\n'}}\n        {%- else %}\n{{'### Response:\\n' + message['content'] + '\\n<|EOT|>\\n'}}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{% if add_generation_prompt %}\n{{'### Response:'}}\n{% endif %}"
-            elif self.prompt == "codellama":
-                tokenizer.chat_template = "{% if messages[0]['role'] == 'system' %}{% set loop_messages = messages[1:] %}{% set system_message = messages[0]['content'] %}{% else %}{% set loop_messages = messages %}{% set system_message = false %}{% endif %}{% for message in loop_messages %}{% if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}{{ raise_exception('Conversation roles must alternate user/assistant/user/assistant/...') }}{% endif %}{% if loop.index0 == 0 and system_message != false %}{% set content = '<<SYS>>\\n' + system_message + '\\n<</SYS>>\\n\\n' + message['content'] %}{% else %}{% set content = message['content'] %}{% endif %}{% if message['role'] == 'user' %}{{ bos_token + '[INST] ' + content | trim + ' [/INST]' }}{% elif message['role'] == 'assistant' %}{{ ' '  + content | trim + ' ' + eos_token }}{% endif %}{% endfor %}"
-
+        """
+        Implementation reference: https://github.com/NVlabs/verilog-eval/blob/508a4df32187ceb77945fe4a40b940e4b6dc3024/scripts/sv-generate#L278-L308
+        """
         system_msg = """
 You only complete chats with syntax correct Verilog code. End the Verilog module code completion with 'endmodule'. Do not include module, input and output definitions.
 """
@@ -170,6 +155,17 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
         full_prompt += self.fewshot_examples()
         full_prompt += prompt_prefix + prefixed_prompt
 
+        if self.tokenizer is None:
+            return full_prompt
+
+        tokenizer = AutoTokenizer.from_pretrained(self.model, trust_remote_code=True)
+        if tokenizer and tokenizer.chat_template is None:
+            if self.prompt == "deepseek":
+                tokenizer.chat_template = "{% if not add_generation_prompt is defined %}\n{% set add_generation_prompt = false %}\n{% endif %}\n{%- set ns = namespace(found=false) -%}\n{%- for message in messages -%}\n    {%- if message['role'] == 'system' -%}\n        {%- set ns.found = true -%}\n    {%- endif -%}\n{%- endfor -%}\n{{bos_token}}{%- if not ns.found -%}\n{{'You are an AI programming assistant, utilizing the Deepseek Coder model, developed by Deepseek Company, and you only answer questions related to computer science. For politically sensitive questions, security and privacy issues, and other non-computer science questions, you will refuse to answer\\n'}}\n{%- endif %}\n{%- for message in messages %}\n    {%- if message['role'] == 'system' %}\n{{ message['content'] }}\n    {%- else %}\n        {%- if message['role'] == 'user' %}\n{{'### Instruction:\\n' + message['content'] + '\\n'}}\n        {%- else %}\n{{'### Response:\\n' + message['content'] + '\\n<|EOT|>\\n'}}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{% if add_generation_prompt %}\n{{'### Response:'}}\n{% endif %}"
+            elif self.prompt == "codellama":
+                tokenizer.chat_template = "{% if messages[0]['role'] == 'system' %}{% set loop_messages = messages[1:] %}{% set system_message = messages[0]['content'] %}{% else %}{% set loop_messages = messages %}{% set system_message = false %}{% endif %}{% for message in loop_messages %}{% if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}{{ raise_exception('Conversation roles must alternate user/assistant/user/assistant/...') }}{% endif %}{% if loop.index0 == 0 and system_message != false %}{% set content = '<<SYS>>\\n' + system_message + '\\n<</SYS>>\\n\\n' + message['content'] %}{% else %}{% set content = message['content'] %}{% endif %}{% if message['role'] == 'user' %}{{ bos_token + '[INST] ' + content | trim + ' [/INST]' }}{% elif message['role'] == 'assistant' %}{{ ' '  + content | trim + ' ' + eos_token }}{% endif %}{% endfor %}"
+
+
         # Note: the original implementation does not include the
         # system_msg as the LLM's template sys msg; so we do the same
         conversation = [
@@ -178,9 +174,8 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
 
         try:
             ret = tokenizer.apply_chat_template(
-                conversation, tokenize=False, add_generation_prompt=True
+                conversation, tokenize=False, add_generation_prompt=True, thinking=True
             )
-            ret += "<think>\n"
         except ValueError:
             print(f"Warning: {self.model} does not have a tokenizer template.")
             ret = full_prompt
@@ -200,16 +195,24 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
         :return: str
         """
         # For reasoning models, we keep only the final answer
-        if "assistantfinal" in generation:
+        if "assistantfinal" in generation:  # gpt-oss
+            self._printHelper("STRIP GENERATION", generation)
             delimiter = "assistantfinal"
             reasoning, generation = generation.rsplit(delimiter, 1)
             reasoning = reasoning.strip()
+        elif "</seed:think>" in generation:  # seed-oss-36b
+            delimiter = "</seed:think>"
+            reasoning, generation = generation.rsplit(delimiter, 1)
+            reasoning = reasoning.strip()
         elif "</think>" in generation:
+            self._printHelper("STRIP GENERATION", generation)
             delimiter = "</think>"
             reasoning, generation = generation.rsplit(delimiter, 1)
             reasoning = reasoning.strip()
         else:
             reasoning = None
+
+        self._printHelper("STRIP GENERATION", generation)
 
         task_id = self.dataset[idx]["task_id"]
         resp_content = generation
@@ -285,9 +288,7 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
             output_lines.append("// VERILOG-EVAL: abnormal backticks count")
             output_lines.append("")
         if found_module:
-            output_lines.append(
-                "// VERILOG-EVAL: errant inclusion of module definition"
-            )
+            output_lines.append("// VERILOG-EVAL: errant inclusion of module definition")
             output_lines.append("")
         if not found_endmodule:
             output_lines.append("// VERILOG-EVAL: endmodule not found")
@@ -295,10 +296,17 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
 
         output_lines.append("")
 
+        # Use relative paths
+        cwd = os.getcwd()
+        test_path_abs = self.get_path(task_id, suffix="test")
+        ref_path_abs = self.get_path(task_id, suffix="ref")
+        test_path_rel = os.path.relpath(test_path_abs, cwd)
+        ref_path_rel = os.path.relpath(ref_path_abs, cwd)
+
         return {
             "prompt": self.get_prompt(self.dataset[idx]),
-            "test_path": self.get_path(task_id, suffix="test"),
-            "ref_path": self.get_path(task_id, suffix="ref"),
+            "test_path": test_path_rel,
+            "ref_path": ref_path_rel,
             "reasoning": reasoning,
             "generation": "\n".join(output_lines),
         }
@@ -315,13 +323,15 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
         return data
 
     def _evaluate_stx_fnc(self, generation: str, test_path: str, ref_path: str) -> dict:
-        with tempfile.NamedTemporaryFile(
-            suffix=".sv", delete=True, dir=self.path_temporary_files
-        ) as f:
+        with tempfile.NamedTemporaryFile(suffix=".sv", delete=True, dir=self.path_temporary_files) as f:
             f.write(generation.encode("utf-8"))
             f.flush()
             result = eval_verilog_eval(
-                Path(f.name), Path(test_path), Path(ref_path), self.simulator
+                Path(f.name),
+                Path(test_path),
+                Path(ref_path),
+                simulator=self.simulator,
+                flag=True,
             )
         return result
 
@@ -340,17 +350,14 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
             gen_dir,
             problem_id,
             "model_name",
+            pdk_root=None,
         )
 
-        if (
-            openlane_result["status"] == "Success"
-        ):  # If metrics could be generated, synthesis passed
+        if openlane_result["status"] == "Success":  # If metrics could be generated, synthesis passed
             result["synthesis_passed"] = True
             C["area"][problem_id].append(openlane_result["metrics"]["area"])
             C["power"][problem_id].append(openlane_result["metrics"]["power"])
-            C["performance"][problem_id].append(
-                openlane_result["metrics"]["performance"]
-            )
+            C["performance"][problem_id].append(openlane_result["metrics"]["performance"])
 
         result.update(
             {
@@ -360,15 +367,11 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
         )
         return result, C
 
-    def _compute_pass_k(
-        self, correct: np.ndarray, total: np.ndarray, ks: list[int]
-    ) -> dict:
+    def _compute_pass_k(self, correct: np.ndarray, total: np.ndarray, ks: list[int]) -> dict:
         results = {}
         for k in ks:
             if (total >= k).all():
-                results[f"pass@{k}"] = round(
-                    estimate_pass_at_k(total, correct, k).mean() * 100, 2
-                )
+                results[f"pass@{k}"] = round(estimate_pass_at_k(total, correct, k).mean() * 100, 2)
         return results
 
     def _compute_ppa(self, ppa_data: list[dict], C: dict, n: int) -> dict:
@@ -379,11 +382,19 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
             g["power"][name] = entry["power"]
             g["performance"][name] = entry["performance"]
 
-        raw_power = compute_ppa_score(C["power"], g["power"], n, "power")
-        raw_performance = compute_ppa_score(
-            C["performance"], g["performance"], n, "performance"
-        )
-        raw_area = compute_ppa_score(C["area"], g["area"], n, "area")
+        # Auxiliar files to study extreme generation cases
+        base_dir = os.path.dirname(self.metric_output_path)
+        bad_ppa_path = os.path.join(base_dir, "bad_ppa.txt")
+        better_than_human_path = os.path.join(base_dir, "better_than_human.txt")
+        error_ppa_path = os.path.join(base_dir, "error_ppa.txt")
+
+        for file_path in [bad_ppa_path, better_than_human_path, error_ppa_path]:
+            with open(file_path, "w") as f:
+                pass
+
+        raw_power = compute_ppa_score(C["power"], g["power"], n, "power", base_dir)
+        raw_performance = compute_ppa_score(C["performance"], g["performance"], n, "performance", base_dir)
+        raw_area = compute_ppa_score(C["area"], g["area"], n, "area", base_dir)
 
         # Values are \in (0,2], where higher is worse
         # We want to flip the values and scale them to [0,100]
@@ -435,9 +446,7 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
                 reports[problem_id].append(
                     {
                         f"generation_{j + 1}": result["func_passed"],
-                        "error": (
-                            result["passfail"] if not result["func_passed"] else None
-                        ),
+                        "error": (result["passfail"] if not result["func_passed"] else None),
                     }
                 )
 
@@ -449,13 +458,9 @@ You only complete chats with syntax correct Verilog code. End the Verilog module
         # Calculate pass@k (adapted from VerilogEval v1 repo)
         ks = [1, 5, 20]
         ret = {
-            "syntax": self._compute_pass_k(
-                np.array(correct_syntax), np.array(total), ks
-            ),
+            "syntax": self._compute_pass_k(np.array(correct_syntax), np.array(total), ks),
             "func": self._compute_pass_k(np.array(correct_func), np.array(total), ks),
-            "synthesis": self._compute_pass_k(
-                np.array(correct_synthesis), np.array(total), ks
-            ),
+            "synthesis": self._compute_pass_k(np.array(correct_synthesis), np.array(total), ks),
         }
 
         # Calculate PPA score
@@ -483,16 +488,18 @@ class VerilogEvalRTLToSpecification(TaskExtension):
     DATASET_NAME = None
 
     def __init__(self, **kwargs):
-        super().__init__(stop_words=[], requires_execution=True)
+        super().__init__(stop_words=[], requires_execution=False)
         kwargs = kwargs.get("kwargs", {})
         self.model = kwargs.get("model")
+        self.tokenizer = kwargs.get("tokenizer", None)
         self.simulator = kwargs.get("simulator", "icarus")
+        self.metric_output_path = kwargs.get("metric_output_path")
 
         # Set-up basic params
-        self.debug = False
+        self.debug = True
         self.path_temporary_files = kwargs.get("path_temporary_files")
         self.task_name = "spec-to-rtl"
-        self.prompt = kwargs.get("prompt", None)
+        self.prompt = kwargs.get("prompt", "")
         self.examples = kwargs.get("few_shot", 0)
         assert 0 <= self.examples <= 4, "Few shot supported range is 0-4."
         self.generate_report = kwargs.get("generate_report", False)
@@ -510,7 +517,7 @@ class VerilogEvalRTLToSpecification(TaskExtension):
         self.load_generations_path = kwargs.get("load_generations_path", None)
         if self.load_generations_path is not None:
             json_path = self.load_generations_path
-            output_dir = Path(os.path.dirname(json_path) + "/")
+            output_dir = Path(os.path.dirname(json_path)).resolve()
             _ = create_problem_structure(output_dir, json_path)
             self.base_gen_dir = output_dir
             self.debug = False
@@ -518,28 +525,16 @@ class VerilogEvalRTLToSpecification(TaskExtension):
     # TODO: Delete this, just a helper function that will print contents generated for debug purposes
     def _printHelper(self, title: str, content: str):
         if self.debug:
-            print(
-                "\n"
-                + "-" * 30
-                + title
-                + "-" * 30
-                + "\n"
-                + content
-                + "\n"
-                + "-" * 70
-                + "\n"
-            )
+            # fmt: off
+            print("\n" + "-" * 30 + title + "-" * 30 + "\n" + content + "\n" + "-" * 70 + "\n")
+            # fmt: on
 
     def get_dataset(self):
         """Returns dataset for the task or an iterable of any object, that get_prompt can handle"""
         # VerilogEval has no official release of HF dataset, so we must build it locally from the repo
         ids = set()
         for file in os.listdir(self.path_dataset):
-            if (
-                not os.path.isdir(file)
-                and file.startswith("Prob")
-                and file.split(".")[-1] != "sv"
-            ):
+            if not os.path.isdir(file) and file.startswith("Prob") and file.split(".")[-1] != "sv":
                 # ProbXXX_<task_id>_<other>
                 task_id = file.split("_", 1)[1].rsplit("_", 1)[0]
                 ids.add(task_id)
@@ -576,13 +571,9 @@ class VerilogEvalRTLToSpecification(TaskExtension):
         return contents
 
     def get_prompt(self, doc):
-        tokenizer = AutoTokenizer.from_pretrained(self.model, trust_remote_code=True)
-        if tokenizer.chat_template is None:
-            if self.prompt == "deepseek":
-                tokenizer.chat_template = "{% if not add_generation_prompt is defined %}\n{% set add_generation_prompt = false %}\n{% endif %}\n{%- set ns = namespace(found=false) -%}\n{%- for message in messages -%}\n    {%- if message['role'] == 'system' -%}\n        {%- set ns.found = true -%}\n    {%- endif -%}\n{%- endfor -%}\n{{bos_token}}{%- if not ns.found -%}\n{{'You are an AI programming assistant, utilizing the Deepseek Coder model, developed by Deepseek Company, and you only answer questions related to computer science. For politically sensitive questions, security and privacy issues, and other non-computer science questions, you will refuse to answer\\n'}}\n{%- endif %}\n{%- for message in messages %}\n    {%- if message['role'] == 'system' %}\n{{ message['content'] }}\n    {%- else %}\n        {%- if message['role'] == 'user' %}\n{{'### Instruction:\\n' + message['content'] + '\\n'}}\n        {%- else %}\n{{'### Response:\\n' + message['content'] + '\\n<|EOT|>\\n'}}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{% if add_generation_prompt %}\n{{'### Response:'}}\n{% endif %}"
-            elif self.prompt == "codellama":
-                tokenizer.chat_template = "{% if messages[0]['role'] == 'system' %}{% set loop_messages = messages[1:] %}{% set system_message = messages[0]['content'] %}{% else %}{% set loop_messages = messages %}{% set system_message = false %}{% endif %}{% for message in loop_messages %}{% if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}{{ raise_exception('Conversation roles must alternate user/assistant/user/assistant/...') }}{% endif %}{% if loop.index0 == 0 and system_message != false %}{% set content = '<<SYS>>\\n' + system_message + '\\n<</SYS>>\\n\\n' + message['content'] %}{% else %}{% set content = message['content'] %}{% endif %}{% if message['role'] == 'user' %}{{ bos_token + '[INST] ' + content | trim + ' [/INST]' }}{% elif message['role'] == 'assistant' %}{{ ' '  + content | trim + ' ' + eos_token }}{% endif %}{% endfor %}"
-
+        """
+        Implementation reference: https://github.com/NVlabs/verilog-eval/blob/508a4df32187ceb77945fe4a40b940e4b6dc3024/scripts/sv-generate#L278-L308
+        """
         system_msg = """
 You are a Verilog RTL designer that only writes code using correct Verilog syntax.
 """
@@ -598,6 +589,17 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
         full_prompt = full_prompt.rstrip() + "\n" + prompt_no_explain_suffix
         full_prompt += "\nAnswer:\n"
 
+        if self.tokenizer is None:
+            return full_prompt
+
+
+        tokenizer = AutoTokenizer.from_pretrained(self.model, trust_remote_code=True)
+        if tokenizer.chat_template is None:
+            if self.prompt == "deepseek":
+                tokenizer.chat_template = "{% if not add_generation_prompt is defined %}\n{% set add_generation_prompt = false %}\n{% endif %}\n{%- set ns = namespace(found=false) -%}\n{%- for message in messages -%}\n    {%- if message['role'] == 'system' -%}\n        {%- set ns.found = true -%}\n    {%- endif -%}\n{%- endfor -%}\n{{bos_token}}{%- if not ns.found -%}\n{{'You are an AI programming assistant, utilizing the Deepseek Coder model, developed by Deepseek Company, and you only answer questions related to computer science. For politically sensitive questions, security and privacy issues, and other non-computer science questions, you will refuse to answer\\n'}}\n{%- endif %}\n{%- for message in messages %}\n    {%- if message['role'] == 'system' %}\n{{ message['content'] }}\n    {%- else %}\n        {%- if message['role'] == 'user' %}\n{{'### Instruction:\\n' + message['content'] + '\\n'}}\n        {%- else %}\n{{'### Response:\\n' + message['content'] + '\\n<|EOT|>\\n'}}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{% if add_generation_prompt %}\n{{'### Response:'}}\n{% endif %}"
+            elif self.prompt == "codellama":
+                tokenizer.chat_template = "{% if messages[0]['role'] == 'system' %}{% set loop_messages = messages[1:] %}{% set system_message = messages[0]['content'] %}{% else %}{% set loop_messages = messages %}{% set system_message = false %}{% endif %}{% for message in loop_messages %}{% if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}{{ raise_exception('Conversation roles must alternate user/assistant/user/assistant/...') }}{% endif %}{% if loop.index0 == 0 and system_message != false %}{% set content = '<<SYS>>\\n' + system_message + '\\n<</SYS>>\\n\\n' + message['content'] %}{% else %}{% set content = message['content'] %}{% endif %}{% if message['role'] == 'user' %}{{ bos_token + '[INST] ' + content | trim + ' [/INST]' }}{% elif message['role'] == 'assistant' %}{{ ' '  + content | trim + ' ' + eos_token }}{% endif %}{% endfor %}"
+
         # Note: the original implementation does not include the
         # system_msg as the LLM's template sys msg; so we do the same
         conversation = [
@@ -606,9 +608,9 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
 
         try:
             ret = tokenizer.apply_chat_template(
-                conversation, tokenize=False, add_generation_prompt=True
+                conversation, tokenize=False, add_generation_prompt=True, thinking=True
             )
-            ret += "<think>\n"
+            # ret += "<think>\n"
         except ValueError:
             print(f"Warning: {self.model} does not have a tokenizer template.")
             ret = full_prompt
@@ -629,16 +631,23 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
         :return: str
         """
         # For reasoning models, we keep only the final answer
-        if "assistantfinal" in generation:
+        if "assistantfinal" in generation:  # gpt-oss
+            self._printHelper("STRIP GENERATION", generation)
             delimiter = "assistantfinal"
             reasoning, generation = generation.rsplit(delimiter, 1)
             reasoning = reasoning.strip()
+        elif "</seed:think>" in generation:  # seed-oss-36b
+            delimiter = "</seed:think>"
+            reasoning, generation = generation.rsplit(delimiter, 1)
+            reasoning = reasoning.strip()
         elif "</think>" in generation:
+            self._printHelper("STRIP GENERATION", generation)
             delimiter = "</think>"
             reasoning, generation = generation.rsplit(delimiter, 1)
             reasoning = reasoning.strip()
         else:
             reasoning = None
+        self._printHelper("STRIP GENERATION", generation)
 
         task_id = self.dataset[idx]["task_id"]
         resp_content = generation
@@ -680,9 +689,7 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
                 elif line.rstrip().endswith("[DONE]"):
                     found_code_lines.append(line.rstrip().replace("[DONE]", ""))
                     found_code_end = True
-                elif (
-                    "[DONE]" in line
-                ):  # For Llama 3.1 8B, [DONE] is followed by comments
+                elif "[DONE]" in line:  # For Llama 3.1 8B, [DONE] is followed by comments
                     found_code_end = True
                 else:
                     found_code_lines.append(line)
@@ -743,10 +750,19 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
             if match:
                 generation = match.group(1)
 
+        self._printHelper("FINAL GENERATION", generation)
+
+        # Use relative paths 
+        cwd = os.getcwd()
+        test_path_abs = self.get_path(task_id=task_id, suffix="test")
+        ref_path_abs = self.get_path(task_id=task_id, suffix="ref")
+        test_path_rel = os.path.relpath(test_path_abs, cwd)
+        ref_path_rel = os.path.relpath(ref_path_abs, cwd)
+
         return {
             "prompt": self.get_prompt(self.dataset[idx]),
-            "test_path": self.get_path(task_id=task_id, suffix="test"),
-            "ref_path": self.get_path(task_id=task_id, suffix="ref"),
+            "test_path": test_path_rel,
+            "ref_path": ref_path_rel,
             "reasoning": reasoning,
             "generation": generation,
         }
@@ -763,13 +779,15 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
         return data
 
     def _evaluate_stx_fnc(self, generation: str, test_path: str, ref_path: str) -> dict:
-        with tempfile.NamedTemporaryFile(
-            suffix=".sv", delete=True, dir=self.path_temporary_files
-        ) as f:
+        with tempfile.NamedTemporaryFile(suffix=".sv", delete=True, dir=self.path_temporary_files) as f:
             f.write(generation.encode("utf-8"))
             f.flush()
             result = eval_verilog_eval(
-                Path(f.name), Path(test_path), Path(ref_path), self.simulator
+                Path(f.name),
+                Path(test_path),
+                Path(ref_path),
+                simulator=self.simulator,
+                flag=True,
             )
         return result
 
@@ -788,17 +806,14 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
             gen_dir,
             problem_id,
             "model_name",
+            pdk_root=None,
         )
 
-        if (
-            openlane_result["status"] == "Success"
-        ):  # If metrics could be generated, synthesis passed
+        if openlane_result["status"] == "Success":  # If metrics could be generated, synthesis passed
             result["synthesis_passed"] = True
             C["area"][problem_id].append(openlane_result["metrics"]["area"])
             C["power"][problem_id].append(openlane_result["metrics"]["power"])
-            C["performance"][problem_id].append(
-                openlane_result["metrics"]["performance"]
-            )
+            C["performance"][problem_id].append(openlane_result["metrics"]["performance"])
 
         result.update(
             {
@@ -808,15 +823,11 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
         )
         return result, C
 
-    def _compute_pass_k(
-        self, correct: np.ndarray, total: np.ndarray, ks: list[int]
-    ) -> dict:
+    def _compute_pass_k(self, correct: np.ndarray, total: np.ndarray, ks: list[int]) -> dict:
         results = {}
         for k in ks:
             if (total >= k).all():
-                results[f"pass@{k}"] = round(
-                    estimate_pass_at_k(total, correct, k).mean() * 100, 2
-                )
+                results[f"pass@{k}"] = round(estimate_pass_at_k(total, correct, k).mean() * 100, 2)
         return results
 
     def _compute_ppa(self, ppa_data: list[dict], C: dict, n: int) -> dict:
@@ -827,11 +838,19 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
             g["power"][name] = entry["power"]
             g["performance"][name] = entry["performance"]
 
-        raw_power = compute_ppa_score(C["power"], g["power"], n, "power")
-        raw_performance = compute_ppa_score(
-            C["performance"], g["performance"], n, "performance"
-        )
-        raw_area = compute_ppa_score(C["area"], g["area"], n, "area")
+        # Auxiliar files to study extreme generation cases
+        base_dir = os.path.dirname(self.metric_output_path)
+        bad_ppa_path = os.path.join(base_dir, "bad_ppa.txt")
+        better_than_human_path = os.path.join(base_dir, "better_than_human.txt")
+        error_ppa_path = os.path.join(base_dir, "error_ppa.txt")
+
+        for file_path in [bad_ppa_path, better_than_human_path, error_ppa_path]:
+            with open(file_path, "w") as f:
+                pass
+
+        raw_power = compute_ppa_score(C["power"], g["power"], n, "power", base_dir)
+        raw_performance = compute_ppa_score(C["performance"], g["performance"], n, "performance", base_dir)
+        raw_area = compute_ppa_score(C["area"], g["area"], n, "area", base_dir)
 
         # Values are \in (0,2], where higher is worse
         # We want to flip the values and scale them to [0,100]
@@ -883,9 +902,7 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
                 reports[problem_id].append(
                     {
                         f"generation_{j + 1}": result["func_passed"],
-                        "error": (
-                            result["passfail"] if not result["func_passed"] else None
-                        ),
+                        "error": (result["passfail"] if not result["func_passed"] else None),
                     }
                 )
 
@@ -897,13 +914,9 @@ Enclose your code with [BEGIN] and [DONE]. Only output the code snippet and do N
         # Calculate pass@k (adapted from VerilogEval v1 repo)
         ks = [1, 5, 20]
         ret = {
-            "syntax": self._compute_pass_k(
-                np.array(correct_syntax), np.array(total), ks
-            ),
+            "syntax": self._compute_pass_k(np.array(correct_syntax), np.array(total), ks),
             "func": self._compute_pass_k(np.array(correct_func), np.array(total), ks),
-            "synthesis": self._compute_pass_k(
-                np.array(correct_synthesis), np.array(total), ks
-            ),
+            "synthesis": self._compute_pass_k(np.array(correct_synthesis), np.array(total), ks),
         }
 
         # Calculate PPA score

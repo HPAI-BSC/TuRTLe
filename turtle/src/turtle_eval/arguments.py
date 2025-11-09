@@ -25,9 +25,7 @@ except ModuleNotFoundError:  # the evaluation image does not have the pypi packa
         temperature: Optional[float] = field(
             default=0.2, metadata={"help": "Sampling temperature used for generation."}
         )
-        top_k: Optional[int] = field(
-            default=0, metadata={"help": "Top-k parameter used for generation."}
-        )
+        top_k: Optional[int] = field(default=0, metadata={"help": "Top-k parameter used for generation."})
         top_p: Optional[float] = field(
             default=0.95,
             metadata={"help": "Top-p parameter used for nucleus sampling."},
@@ -36,12 +34,8 @@ except ModuleNotFoundError:  # the evaluation image does not have the pypi packa
             default=1,
             metadata={"help": "Number of completions to generate for each sample."},
         )
-        eos: Optional[str] = field(
-            default="<|endoftext|>", metadata={"help": "end of sentence token."}
-        )
-        seed: Optional[int] = field(
-            default=0, metadata={"help": "Random seed used for evaluation."}
-        )
+        eos: Optional[str] = field(default="<|endoftext|>", metadata={"help": "end of sentence token."})
+        seed: Optional[int] = field(default=0, metadata={"help": "Random seed used for evaluation."})
 
 
 from utils.task_updater import TaskUpdater
@@ -71,9 +65,9 @@ def pattern_match(patterns: list, source_list: list) -> str:
         for matching in fnmatch.filter(source_list, pattern):
             task_names.add(matching)
     if len(task_names) > 1:
-        raise ValueError(
-            f"This repo only supports one task at a time but received {len(task_names)} tasks"
-        )
+        raise ValueError(f"This repo only supports one task at a time but received {len(task_names)} tasks")
+    if len(task_names) == 0:
+        raise ValueError(f"Task {patterns} not recognized. Available tasks are: {source_list}")
     return list(task_names)[0]
 
 
@@ -87,9 +81,7 @@ class ExtendedModelArgument(EvalArguments):
     # Model Arguments
     model: str = field(
         default=None,
-        metadata={
-            "help": "Model to evaluate, provide a repo name in Hugging Face hub or a local path"
-        },
+        metadata={"help": "Model to evaluate, provide a repo name in Hugging Face hub or a local path"},
     )
     use_auth_token: Optional[bool] = field(
         default=True,
@@ -110,11 +102,30 @@ class ExtendedModelArgument(EvalArguments):
         },
     )
     precision: Optional[str] = field(
-        default="fp32", metadata={"help": "Model precision, from: fp32, fp16 or bf16"}
+        default="bf16", metadata={"help": "Model precision, from: fp32, fp16 or bf16"}
     )
     left_padding: Optional[bool] = field(
         default=False,
         metadata={"help": "Force left padding, needed for models like chatglm3-6b"},
+    )
+    provider: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "OpenRouter provider to enforce (e.g., 'google-vertex', 'OpenAI'). Only used in API mode."
+        },
+    )
+    use_api: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "Force API inference mode. When enabled, the model is treated as an API endpoint (e.g., OpenRouter) instead of a local model."
+        },
+    )
+    reasoning_effort: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "Reasoning effort level for OpenRouter API models that support reasoning tokens. "
+            "Can be 'low', 'medium', or 'high'. Only used with OpenRouter (openrouter.ai) base URL."
+        },
     )
 
 
@@ -127,9 +138,7 @@ class ExtendedWorkflowArguments(EvalArguments):
 
     tasks: str = field(
         default=None,
-        metadata={
-            "help": lambda: f"Evaluation tasks from {get_task_updater().ALL_TASKS}"
-        },
+        metadata={"help": lambda: f"Evaluation tasks from {get_task_updater().ALL_TASKS}"},
     )
     instruction_tokens: Optional[str] = field(
         default=None,
@@ -166,9 +175,7 @@ class ExtendedWorkflowArguments(EvalArguments):
     )
     limit_start: Optional[int] = field(
         default=0,
-        metadata={
-            "help": "Optional offset to start from when limiting the number of samples"
-        },
+        metadata={"help": "Optional offset to start from when limiting the number of samples"},
     )
     postprocess: Optional[bool] = field(
         default=True,
@@ -178,9 +185,7 @@ class ExtendedWorkflowArguments(EvalArguments):
     )
     allow_code_execution: Optional[bool] = field(
         default=True,
-        metadata={
-            "help": "Allow code evaluation to execute external/untrusted Python code on your machine"
-        },
+        metadata={"help": "Allow code evaluation to execute external/untrusted Python code on your machine"},
     )
     generation_only: Optional[bool] = field(
         default=False, metadata={"help": "Do code generation but no evaluation"}
@@ -202,9 +207,7 @@ class ExtendedWorkflowArguments(EvalArguments):
             + "If False, only the test dataset is used."
         },
     )
-    few_shot: Optional[int] = field(
-        default=0, metadata={"help": "Fewshot param for VerilogEval tasks ICL."}
-    )
+    few_shot: Optional[int] = field(default=0, metadata={"help": "Fewshot param for VerilogEval tasks ICL."})
     syntax_path: Optional[str] = field(
         default=None,
         metadata={
@@ -215,15 +218,11 @@ class ExtendedWorkflowArguments(EvalArguments):
     path_data_benchmark: Optional[str] = field(
         default=None, metadata={"help": "Path to the benchmark data directory"}
     )
-    path_dataset_test: Optional[str] = field(
-        default=None, metadata={"help": "Path to the test dataset"}
-    )
+    path_dataset_test: Optional[str] = field(default=None, metadata={"help": "Path to the test dataset"})
     path_temporary_files: Optional[str] = field(
         default=None, metadata={"help": "Path for temporary files storage"}
     )
-    base_path_models: Optional[str] = field(
-        default=None, metadata={"help": "Path to the models directory"}
-    )
+    base_path_models: Optional[str] = field(default=None, metadata={"help": "Path to the models directory"})
     max_length_generation: Optional[int] = field(
         default=512,
         metadata={"help": "Maximum length of generated sequence (prompt+generation)"},
@@ -238,23 +237,23 @@ class ExtendedWorkflowArguments(EvalArguments):
     )
     generate_report: Optional[bool] = field(
         default=None,
-        metadata={
-            "help": "Whether to generate a report of PASS / FAIL for STX and FNC or not."
-        },
+        metadata={"help": "Whether to generate a report of PASS / FAIL for STX and FNC or not."},
+    )
+    compute_ppl_only: Optional[bool] = field(
+        default=False,
+        metadata={"help": "Evaluate metrics that only require token logprobabilities."},
     )
     simulator: Optional[str] = field(
         default="icarus",
-        metadata={
-            "help": "The simulator you want to use. It can be either `icarus` or `verilator`"
-        },
+        metadata={"help": "The simulator you want to use. It can be either `icarus` or `verilator`"},
     )
 
     def __post_init__(self):
         # Access to metadata to force theevaluation of the lambda function
         if callable(self.__dataclass_fields__["tasks"].metadata["help"]):
-            self.__dataclass_fields__["tasks"].metadata["help"] = (
-                self.__dataclass_fields__["tasks"].metadata["help"]()
-            )
+            self.__dataclass_fields__["tasks"].metadata["help"] = self.__dataclass_fields__["tasks"].metadata[
+                "help"
+            ]()
         # if hasattr(self, "file_handler") and self.file_handler is not None:
         #     task_updater = get_task_updater(self.file_handler)
         #     self.__dataclass_fields__["tasks"].metadata["help"] = (
@@ -271,7 +270,7 @@ class ExtendedVLLMArguments(EvalArguments):
 
     # VLLM Arguments
     gpu_memory_utilization: Optional[float] = field(
-        default=0.95, metadata={"help": "Proportion of GPU memory to reserve for vllm"}
+        default=0.9, metadata={"help": "Proportion of GPU memory to reserve for vllm"}
     )
     swap_space: Optional[int] = field(
         default=64, metadata={"help": "RAM memory to reserve for excess GPU pages"}
@@ -296,12 +295,8 @@ class ExtendedVLLMArguments(EvalArguments):
     tensor_parallel_size: Optional[int] = field(
         default=4, metadata={"help": "Number of tensor parallel replicas."}
     )
-    ip: Optional[str] = field(
-        default=None, metadata={"help": "IP of the vLLM inference server."}
-    )
-    port: Optional[str] = field(
-        default=None, metadata={"help": "Port of the vLLM inference server."}
-    )
+    ip: Optional[str] = field(default=None, metadata={"help": "IP of the vLLM inference server."})
+    port: Optional[str] = field(default=None, metadata={"help": "Port of the vLLM inference server."})
 
 
 @dataclass

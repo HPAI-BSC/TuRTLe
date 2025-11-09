@@ -47,21 +47,26 @@ class VeriGen(TaskExtension):
     DATASET_NAME = None
 
     def __init__(self, **kwargs):
-        super().__init__(
-            stop_words=["endmodule", "endmodulemodule"], requires_execution=False
-        )
+        super().__init__(stop_words=["endmodule", "endmodulemodule"], requires_execution=False)
 
         # get the arguments
         kwargs = kwargs.get("kwargs", {})
         self.model = kwargs.get("model")
-        self.simulator = kwargs.get("simulator", "icarus")
+        self.tokenizer = kwargs.get("tokenizer")
         self.path_model = kwargs.get("path_model")
         self.prompt = kwargs.get("prompt")
+        self.simulator = kwargs.get("simulator", "icarus")
+
         few_shot = kwargs.get("few_shot")
-        path_data_benchmark = kwargs.get("path_data_benchmark")
-        path_dataset_test = kwargs.get("path_dataset_test")
+        default_vgen_path = os.path.join(os.path.dirname(__file__), "Vgen")
+        default_dataset_path = os.path.join(default_vgen_path, "Dataset/test")
+        path_data_benchmark = kwargs.get("path_data_benchmark") or default_vgen_path
+        path_dataset_test = kwargs.get("path_dataset_test") or default_dataset_path
         self.path_temporary_files = kwargs.get("path_temporary_files")
         self.metric_output_path = kwargs.get("metric_output_path")
+        self.generate_report = kwargs.get("generate_report", False)
+
+        print(f"Using sim {self.simulator}")
 
         # Set-up basic params
         if not self.prompt:
@@ -74,23 +79,18 @@ class VeriGen(TaskExtension):
         # Make sure we have access to the dataset and the repo
         path_verigen_repo = path_data_benchmark
         if not os.path.exists(path_verigen_repo):
-            raise ValueError(
-                "Path to `verigen` repo not found.\n`{path_verigen_repo}` does not exists."
-            )
+            raise ValueError(f"Path to `verigen` repo not found.\n`{path_verigen_repo}` does not exist.")
         self.path_dataset = os.path.join(path_verigen_repo, "Benchmark")
-        # self.path_examples = os.path.join(path_verigen_repo, "scripts")
         self.dataset = load_from_disk(path_dataset_test)
         # Only process prompts with intermediate level of detail
-        self.dataset = [
-            entry for entry in self.dataset if "prompt2" in entry["task_id"]
-        ]
+        self.dataset = [entry for entry in self.dataset if "prompt2" in entry["task_id"]]
 
         # setup directories for (later-on) computing the PPA
         self.load_generations_path = kwargs.get("load_generations_path", None)
         print(f"self.load_generations_path: {self.load_generations_path}")
         if self.load_generations_path is not None:
             json_path = self.load_generations_path
-            output_dir = Path(os.path.dirname(json_path) + "/")
+            output_dir = Path(os.path.dirname(json_path)).resolve()
             _ = create_problem_structure(output_dir, json_path)
             self.base_gen_dir = output_dir
         else:
@@ -99,17 +99,7 @@ class VeriGen(TaskExtension):
     # TODO: Delete this, just a helper function that will print contents generated for debug purposes
     def _printHelper(self, title: str, content: str):
         if self.debug:
-            print(
-                "\n"
-                + "-" * 30
-                + title
-                + "-" * 30
-                + "\n"
-                + content
-                + "\n"
-                + "-" * 70
-                + "\n"
-            )
+            print("\n" + "-" * 30 + title + "-" * 30 + "\n" + content + "\n" + "-" * 70 + "\n")
 
     def get_dataset(self):
         """Returns dataset for the task or an iterable of any object, that get_prompt can handle"""
@@ -133,18 +123,14 @@ class VeriGen(TaskExtension):
         try:
             folder_name, file_base = task_id.split("-", 1)
         except ValueError:
-            raise ValueError(
-                f"Invalid task_id format: {task_id}. Expected format is 'folder-file'."
-            )
+            raise ValueError(f"Invalid task_id format: {task_id}. Expected format is 'folder-file'.")
 
         # Build the full path to the folder
         folder_path = os.path.join(self.path_dataset, folder_name)
 
         # Check if the folder exists
         if not os.path.isdir(folder_path):
-            raise FileNotFoundError(
-                f"The folder '{folder_name}' does not exist in the dataset path."
-            )
+            raise FileNotFoundError(f"The folder '{folder_name}' does not exist in the dataset path.")
 
         # Buiild the patern of search according to whether there is a suffix or not
         if suffix:
@@ -159,9 +145,7 @@ class VeriGen(TaskExtension):
 
         # Check that exists only one file that matches the pattern
         if len(matching_files) == 0:
-            raise FileNotFoundError(
-                f"No file found matching the pattern in folder '{folder_name}'."
-            )
+            raise FileNotFoundError(f"No file found matching the pattern in folder '{folder_name}'.")
         elif len(matching_files) > 1:
             raise ValueError(
                 f"Multiple files found matching the pattern in folder '{folder_name}': {matching_files}"
@@ -181,22 +165,18 @@ class VeriGen(TaskExtension):
         ret = self.get_file(doc["task_id"], "")
 
         # Only apply chat template for reasoning models
-        if self.prompt == "reasoning":
+        if self.tokenizer is not None and self.prompt == "reasoning":
             try:
-                tokenizer = AutoTokenizer.from_pretrained(
-                    self.model, trust_remote_code=True
-                )
+                tokenizer = AutoTokenizer.from_pretrained(self.model, trust_remote_code=True)
                 conversation = [
                     {"role": "user", "content": ret},
                 ]
                 ret = tokenizer.apply_chat_template(
                     conversation, tokenize=False, add_generation_prompt=True
                 )
-                ret += "<think>\n"
             except ValueError:
                 print(f"Warning: {self.model} does not has a tokenizer template.")
 
-        self._printHelper("PROMPT", ret)
         return ret
 
     def get_reference(self, doc):
@@ -212,8 +192,13 @@ class VeriGen(TaskExtension):
         :return: str
         """
         # For reasoning models, we keep only the final answer
-        if "assistantfinal" in generation:
+        if "assistantfinal" in generation:  # gpt-oss
+            self._printHelper("STRIP GENERATION", generation)
             delimiter = "assistantfinal"
+            reasoning, generation = generation.rsplit(delimiter, 1)
+            reasoning = reasoning.strip()
+        elif "</seed:think>" in generation:  # seed-oss-36b
+            delimiter = "</seed:think>"
             reasoning, generation = generation.rsplit(delimiter, 1)
             reasoning = reasoning.strip()
         elif "</think>" in generation:
@@ -226,6 +211,9 @@ class VeriGen(TaskExtension):
         prompt = self.get_prompt(self.dataset[idx])
         task_id = self.dataset[idx]["task_id"]
         raw_prompt = self.get_file(task_id, "")
+        self._printHelper("PROMPT", prompt)
+        self._printHelper("RAW PROMPT", raw_prompt)
+        self._printHelper("RAW GENERATION", generation)
 
         generation = raw_prompt + generation
 
@@ -259,11 +247,18 @@ class VeriGen(TaskExtension):
 
         self._printHelper("POST PROCESS GENERATION", generation)
 
+        # Use relative paths
+        cwd = os.getcwd()
+        test_path_abs = self.get_path(task_id, suffix="tb")
+        ref_path_abs = self.get_path(task_id, suffix="answer")
+        test_path_rel = os.path.relpath(test_path_abs, cwd)
+        ref_path_rel = os.path.relpath(ref_path_abs, cwd)
+
         return {
             "task_id": task_id,
             "prompt": prompt,
-            "test_path": self.get_path(task_id, suffix="tb"),
-            "ref_path": self.get_path(task_id, suffix="answer"),
+            "test_path": test_path_rel,
+            "ref_path": ref_path_rel,
             "reasoning": reasoning,
             "generation": generation,
         }
@@ -271,9 +266,7 @@ class VeriGen(TaskExtension):
     # Convert numpy arrays to lists for serialization
     def convert_ndarrays_to_lists(self, obj):
         if isinstance(obj, dict):
-            return {
-                key: self.convert_ndarrays_to_lists(value) for key, value in obj.items()
-            }
+            return {key: self.convert_ndarrays_to_lists(value) for key, value in obj.items()}
         elif isinstance(obj, np.ndarray):
             return obj.tolist()
         else:
@@ -291,19 +284,19 @@ class VeriGen(TaskExtension):
         return data
 
     def _evaluate_stx_fnc(self, generation: str, test_path: str, ref_path: str) -> dict:
-        with tempfile.NamedTemporaryFile(
-            suffix=".sv", delete=True, dir=self.path_temporary_files
-        ) as f:
+        with tempfile.NamedTemporaryFile(suffix=".sv", delete=True, dir=self.path_temporary_files) as f:
             f.write(generation.encode("utf-8"))
             f.flush()
             result = eval_script_verigen(
-                Path(f.name), Path(test_path), Path(ref_path), self.simulator
+                Path(f.name),
+                Path(test_path),
+                Path(ref_path),
+                self.simulator,
+                self.debug,
             )
         return result
 
-    def _evaluate_syn_ppa(
-        self, result: dict, problem_id: str, generation_index: int, C: defaultdict
-    ) -> dict:
+    def _evaluate_syn_ppa(self, result: dict, problem_id: str, generation_index: int, C: defaultdict) -> dict:
         gen_dir = Path(
             os.path.join(
                 self.base_gen_dir,
@@ -316,17 +309,14 @@ class VeriGen(TaskExtension):
             gen_dir,
             problem_id,
             "model_name",
+            pdk_root=None,
         )
 
-        if openlane_result[
-            "metrics"
-        ]:  # If metrics could be generated, synthesis passed
+        if openlane_result["metrics"]:  # If metrics could be generated, synthesis passed
             result["synthesis_passed"] = True
             C["area"][problem_id].append(openlane_result["metrics"]["area"])
             C["power"][problem_id].append(openlane_result["metrics"]["power"])
-            C["performance"][problem_id].append(
-                openlane_result["metrics"]["performance"]
-            )
+            C["performance"][problem_id].append(openlane_result["metrics"]["performance"])
 
         result.update(
             {
@@ -336,15 +326,11 @@ class VeriGen(TaskExtension):
         )
         return result
 
-    def _compute_pass_k(
-        self, correct: np.ndarray, total: np.ndarray, ks: list[int]
-    ) -> dict:
+    def _compute_pass_k(self, correct: np.ndarray, total: np.ndarray, ks: list[int]) -> dict:
         results = {}
         for k in ks:
             if (total >= k).all():
-                results[f"pass@{k}"] = round(
-                    estimate_pass_at_k(total, correct, k).mean() * 100, 2
-                )
+                results[f"pass@{k}"] = round(estimate_pass_at_k(total, correct, k).mean() * 100, 2)
         return results
 
     def _compute_ppa(self, ppa_data: list[dict], C: dict, n: int) -> dict:
@@ -367,9 +353,7 @@ class VeriGen(TaskExtension):
                 pass
 
         raw_power = compute_ppa_score(C["power"], g["power"], n, "power", base_dir)
-        raw_performance = compute_ppa_score(
-            C["performance"], g["performance"], n, "performance", base_dir
-        )
+        raw_performance = compute_ppa_score(C["performance"], g["performance"], n, "performance", base_dir)
         raw_area = compute_ppa_score(C["area"], g["area"], n, "area", base_dir)
 
         # Values are \in (0,2], where higher is worse
@@ -409,9 +393,7 @@ class VeriGen(TaskExtension):
                 ref_path = generations[i][j]["ref_path"]
                 generation = generations[i][j]["generation"]
 
-                problem_id = (
-                    os.path.basename(ref_path).split("answer_")[-1].split(".")[0]
-                )
+                problem_id = os.path.basename(ref_path).split("answer_")[-1].split(".")[0]
 
                 self._printHelper("TEST PATH", test_path)
                 self._printHelper("REF PATH", ref_path)
@@ -436,13 +418,9 @@ class VeriGen(TaskExtension):
         # Calculate pass@k (adapted from VerilogEval v1 repo)
         ks = [1, 5, 20]
         ret = {
-            "syntax": self._compute_pass_k(
-                np.array(correct_syntax), np.array(total), ks
-            ),
+            "syntax": self._compute_pass_k(np.array(correct_syntax), np.array(total), ks),
             "func": self._compute_pass_k(np.array(correct_func), np.array(total), ks),
-            "synthesis": self._compute_pass_k(
-                np.array(correct_synthesis), np.array(total), ks
-            ),
+            "synthesis": self._compute_pass_k(np.array(correct_synthesis), np.array(total), ks),
         }
 
         # Calculate PPA score

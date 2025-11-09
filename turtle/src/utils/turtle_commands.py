@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Dict, List, Optional
 
 
@@ -26,7 +27,7 @@ class TurtleCommandBuilder:
         return:
             The launcher command list of strings.
         """
-        command_ = '"python -u turtle/src/turtle.py'
+        command_ = '"python3 -u turtle/src/turtle.py'
 
         return command_
 
@@ -42,27 +43,17 @@ class TurtleCommandBuilder:
         params = []
 
         # 1. Validte the benchmark configuration
-        if not hasattr(self, "benchmark_config") or not isinstance(
-            self.benchmark_config, dict
-        ):
-            raise ValueError(
-                "Configuration is not valid. Please check the benchmark configuration."
-            )
+        if not hasattr(self, "benchmark_config") or not isinstance(self.benchmark_config, dict):
+            raise ValueError("Configuration is not valid. Please check the benchmark configuration.")
 
         # 2. find the specific model configuration
         model_config = next(
-            (
-                m
-                for m in self.benchmark_config.get("models", [])
-                if m.get("name") == model_name
-            ),
+            (m for m in self.benchmark_config.get("models", []) if m.get("name") == model_name),
             None,
         )
 
         if not model_config:
-            raise ValueError(
-                f"Model '{model_name}' was not found in the benchmark configuration."
-            )
+            raise ValueError(f"Model '{model_name}' was not found in the benchmark configuration.")
 
         # 3. Adding task name to de list
         task_name = self.benchmark_config.get("task")
@@ -103,7 +94,8 @@ class TurtleCommandBuilder:
                     params.append(f"--{key} {value}")
                     continue
                 else:
-                    params.append(f"--{key} ")
+                    # Handle all other boolean parameters
+                    params.append(f"--{key} {value}")
                     continue
 
             # behavior for list values
@@ -141,6 +133,10 @@ class TurtleCommandBuilder:
         if generate_report:
             params.append(f"--generate_report {generate_report}")
 
+        compute_ppl_only = self.benchmark_config.get("compute_ppl_only")
+        if compute_ppl_only:
+            params.append(f"--compute_ppl_only {compute_ppl_only}")
+
         simulator = self.benchmark_config.get("simulator")
         if simulator:
             params.append(f"--simulator {simulator}")
@@ -169,11 +165,5 @@ class TurtleCommandBuilder:
         ]
 
         # Combine all parts into the final command
-        full_command = (
-            execution_command
-            + " "
-            + " ".join(global_params)
-            + " "
-            + " ".join(dynamic_params)
-        )
+        full_command = execution_command + " " + " ".join(global_params) + " " + " ".join(dynamic_params)
         return full_command + '"'
