@@ -33,7 +33,7 @@ pip install uv
 ## Clone the Repository
 
 ```bash
-git clone https://github.com/HPAI-BSC/TuRTLe.git
+git clone --recursive https://github.com/HPAI-BSC/TuRTLe.git
 cd TuRTLe
 ```
 
