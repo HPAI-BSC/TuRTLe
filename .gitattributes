@@ -1,2 +1,3 @@
 turtle/tasks/RTLLM/** linguist-vendored
 turtle/tasks/verilog-eval/** linguist-vendored
+turtle/tasks/VGen/** linguist-vendored
