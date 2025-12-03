@@ -128,7 +128,7 @@ If you have any inquiries or wish to collaborate: hpai@bsc.es
 
 This work was born as a fork of [bigcode-evaluation-harness](https://github.com/bigcode-project/bigcode-evaluation-harness) and [vllm-code-harness](https://github.com/iNeil77/vllm-code-harness), and has grown to its own framework for RTL code generation evaluation. We remain grateful to these projects.
 
-We acknowledge the open-source EDA tools: [LibreLane](https://github.com/librelane/librelane), [Icarus Verilog](https://github.com/steveicarus/iverilog), [Verilator](https://www.veripool.org/verilator/), [Yosys](https://github.com/YosysHQ/yosys), and [OpenROAD](https://github.com/The-OpenROAD-Project/OpenROAD).
+We acknowledge the open-source EDA tools: [Icarus Verilog](https://github.com/steveicarus/iverilog), [Verilator](https://www.veripool.org/verilator/), [Yosys](https://github.com/YosysHQ/yosys), [OpenROAD](https://github.com/The-OpenROAD-Project/OpenROAD) and [LibreLane](https://github.com/librelane/librelane).
 
 We also thank the authors of the benchmarks integrated in TuRTLe: [VerilogEval](https://github.com/NVlabs/verilog-eval), [RTLLM](https://github.com/hkust-zhiyao/RTLLM), [VGen](https://github.com/shailja-thakur/VGen), and [RTL-Repo](https://github.com/AUCOHL/RTL-Repo).
 
