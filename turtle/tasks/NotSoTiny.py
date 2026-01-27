@@ -89,8 +89,24 @@ class NotSoTiny(TaskExtension):
         return conv
 
     def get_reference(self, doc):
-        """Get the reference solution content."""
-        return doc["golden_module"]
+        """Get the golden solution content."""
+        # Replaces golden module with prompted module from "prompt"
+        # to get the full modules.v file with the golden module inplace
+        prompt = doc["prompt"]
+        golden_module = doc["golden_module"]
+
+        # Extract the module name from the golden module (in case it's generic)
+        module_match = re.search(r'module\s+(\w+)\s*\(', golden_module)
+        if not module_match:
+            raise ValueError("Could not find module name in golden module")
+
+        module_name = module_match.group(1)
+        pattern = rf'module\s+{module_name}\s*\([^)]*\);\s*//\s*>>>\s*Module Implementation Begin.*?//\s*<<<\s*Module Implementation End\s*endmodule'
+
+        # Replace with the golden module
+        golden_solution = re.sub(pattern, golden_module.strip(), prompt, flags=re.DOTALL)
+
+        return golden_solution
 
     def postprocess_generation(self, generation, idx):
         """
@@ -170,12 +186,14 @@ class NotSoTiny(TaskExtension):
 
         return {
             "prompt": self.datadet[idx]["prompt"],
-            "golden_solution": self.datadet[idx]["golden_solution"],
+            "golden_module": self.datadet[idx]["golden_module"],
             "reasoning": reasoning,
             "generation": complete_module,  # Complete module with implementation filled in
         }
 
-    def _evaluate_stx_fnc(self, generation: str, golden_solution: str, task_id: str, id: str) -> dict:
+    def _evaluate_stx_fnc(
+        self, generation: str, golden_solution: str, task_id: str, id: str
+    ) -> dict:
         with (
             tempfile.NamedTemporaryFile(
                 suffix=".v", delete=True, dir=self.path_temporary_files
@@ -209,13 +227,13 @@ class NotSoTiny(TaskExtension):
     async def _evaluate_stx_async(
         self,
         generation: str,
-        ref_path: str,
+        golden_solution: str,
         task_id: str,
         id: Optional[str],
     ) -> dict:
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
-            None, self._evaluate_stx_fnc, generation, ref_path, task_id, id
+            None, self._evaluate_stx_fnc, generation, golden_solution, task_id, id
         )
 
     def process_results(self, generations, references):
@@ -230,7 +248,7 @@ class NotSoTiny(TaskExtension):
             flat_tasks = []
             task_metadata = []  # Store task_id for each evaluation
 
-            for task_idx, gens in enumerate(generations):
+            for task_idx, (gens, refs) in enumerate(zip(generations, references)):
                 if task_idx >= len(self.dataset):
                     print(
                         f"Warning: task_idx {task_idx} exceeds dataset size {len(self.dataset)}"
@@ -238,11 +256,11 @@ class NotSoTiny(TaskExtension):
                     continue
 
                 task_id = self.dataset[task_idx]["task_id"]
-                for gen_idx, g in enumerate(gens):
+                for gen_idx, (g, golden_solution) in enumerate(zip(gens, refs)):
                     flat_tasks.append(
                         self._evaluate_stx_async(
                             g["generation"],
-                            g["ref_path"],
+                            golden_solution,
                             task_id=task_id,
                             id=f"{task_id}_gen{gen_idx}",
                         )
