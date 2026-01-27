@@ -18,7 +18,7 @@ import yaml
 
 
 def eval_notsotiny_generation(
-    file_path: Path, ref_path: Path, id: str, debug: bool = False
+        file_path: Path, ref_path: Path, task_id: str, id: str, debug: bool = False
 ) -> Dict[str, Any]:
     """
     Evaluate NotSoTiny Verilog generation with syntax/functionality/equivalence separation.
@@ -74,7 +74,7 @@ def eval_notsotiny_generation(
     # Get project directory from test path
     project_dir = ref_path.parent if ref_path.is_dir() else ref_path.parent.parent
 
-    equiv_result = run_equivalence_check(file_path, Path(ref_path), project_dir, debug)
+    equiv_result = run_equivalence_check(file_path, Path(ref_path), project_dir, task_id, debug)
     result["equiv_passed"] = equiv_result["equiv_passed"]
     result["equiv_error"] = equiv_result["error_message"]
     result["top_module"] = equiv_result["top_module"]
@@ -276,7 +276,7 @@ def clean_error_message(message: str) -> str:
 
 
 def run_equivalence_check(
-    generated_file: Path, reference_file: Path, project_dir: Path, debug: bool = False
+        generated_file: Path, reference_file: Path, project_dir: Path, task_id: str, debug: bool = False
 ) -> Dict[str, Any]:
     """
     Run formal equivalence check using EQY/Yosys.
@@ -307,8 +307,7 @@ def run_equivalence_check(
     }
 
     try:
-        # Find top module from info.yaml
-        top_module = find_top_module_from_project(project_dir, debug)
+        top_module = task_id.replace("task_", "")
         result["top_module"] = top_module
 
         if not top_module:

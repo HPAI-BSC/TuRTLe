@@ -21,10 +21,7 @@ import pandas as pd
 from turtle.metrics.code_eval import estimate_pass_at_k
 from turtle.metrics.eval_notsotiny import eval_notsotiny_generation
 from turtle.src.turtle_eval.base import TaskExtension
-from transformers import AutoTokenizer, AutoConfig
 
-
-os.environ["HF_ALLOW_CODE_EVAL"] = "1"
 
 _CITATION = """
 @misc{ghorab2025notsotinylargelivingbenchmark,
@@ -44,23 +41,14 @@ class NotSoTiny(TaskExtension):
     DATASET_NAME = None
 
     def __init__(self, **kwargs):
-        super().__init__(stop_words=[], requires_execution=False)
+        super().__init__(stop_words=[], requires_execution=True)
         kwargs = kwargs.get("kwargs", {})
         self.model = kwargs.get("model")
 
         # Set-up basic params
-        self.debug = True
+        self.debug = False
         self.path_temporary_files = kwargs.get("path_temporary_files")
-        self.task_name = "NotSoTiny"
-        self.prompt = kwargs.get("prompt", None)
-        self.examples = kwargs.get("few_shot", 0)
         self.load_generations_path = kwargs.get("load_generations_path", None)
-        self.response_length = kwargs.get("max_length_generation", -1)
-
-        # Added for perplexity
-        self.metric_output_path = kwargs.get("metric_output_path")
-        self.compute_ppl_only = kwargs.get("compute_ppl_only", False)
-        self.kwargs = kwargs
 
         # Dataset
         self.dataset = load_dataset("HPAI-BSC/NotSoTiny-25-12", split="train")
@@ -187,7 +175,7 @@ class NotSoTiny(TaskExtension):
             "generation": complete_module,  # Complete module with implementation filled in
         }
 
-    def _evaluate_stx_fnc(self, generation: str, golden_solution: str, id: str) -> dict:
+    def _evaluate_stx_fnc(self, generation: str, golden_solution: str, task_id: str, id: str) -> dict:
         with (
             tempfile.NamedTemporaryFile(
                 suffix=".v", delete=True, dir=self.path_temporary_files
@@ -203,7 +191,7 @@ class NotSoTiny(TaskExtension):
             f_sol.flush()
 
             result = eval_notsotiny_generation(
-                Path(f_gen.name), Path(f_sol.name), id, self.debug
+                Path(f_gen.name), Path(f_sol.name), task_id, id, self.debug
             )
         return result
 
@@ -222,11 +210,12 @@ class NotSoTiny(TaskExtension):
         self,
         generation: str,
         ref_path: str,
+        task_id: str,
         id: Optional[str],
     ) -> dict:
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
-            None, self._evaluate_stx_fnc, generation, ref_path, id
+            None, self._evaluate_stx_fnc, generation, ref_path, task_id, id
         )
 
     def process_results(self, generations, references):
@@ -254,6 +243,7 @@ class NotSoTiny(TaskExtension):
                         self._evaluate_stx_async(
                             g["generation"],
                             g["ref_path"],
+                            task_id=task_id,
                             id=f"{task_id}_gen{gen_idx}",
                         )
                     )
