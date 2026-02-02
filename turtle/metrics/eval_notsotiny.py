@@ -18,7 +18,7 @@ import yaml
 
 
 def eval_notsotiny_generation(
-        file_path: Path, ref_path: Path, task_id: str, id: str, debug: bool = False
+        file_path: Path, ref_path: Path, task_id: str, id: str, top_module_name: str, debug: bool = False
 ) -> Dict[str, Any]:
     """
     Evaluate NotSoTiny Verilog generation with syntax/functionality/equivalence separation.
@@ -26,7 +26,9 @@ def eval_notsotiny_generation(
     Args:
         file_path: Path to the generated Verilog file
         ref_path: Path to the reference solution
-        id: Task identifier
+        task_id: Task identifier
+        id: Unique identifier for this evaluation
+        top_module_name: Name of the top module to check
         debug: Whether to print debug information
 
     Returns:
@@ -74,7 +76,7 @@ def eval_notsotiny_generation(
     # Get project directory from test path
     project_dir = ref_path.parent if ref_path.is_dir() else ref_path.parent.parent
 
-    equiv_result = run_equivalence_check(file_path, Path(ref_path), project_dir, task_id, debug)
+    equiv_result = run_equivalence_check(file_path, Path(ref_path), project_dir, top_module_name, debug)
     result["equiv_passed"] = equiv_result["equiv_passed"]
     result["equiv_error"] = equiv_result["error_message"]
     result["top_module"] = equiv_result["top_module"]
@@ -276,21 +278,22 @@ def clean_error_message(message: str) -> str:
 
 
 def run_equivalence_check(
-        generated_file: Path, reference_file: Path, project_dir: Path, task_id: str, debug: bool = False
+        generated_file: Path, reference_file: Path, project_dir: Path, top_module_name: str, debug: bool = False
 ) -> Dict[str, Any]:
     """
     Run formal equivalence check using EQY/Yosys.
     Both generated_file and reference_file should be complete modules.v files.
-    
-    IMPORTANT: 
-    - Uses 15-minute timeout
-    - If timeout occurs WITHOUT failure, treats as PASS (equiv_passed=True)
-    - Only returns False if EQY explicitly reports non-equivalence or errors
-    - Tracks the method of equivalence determination
-    
+
+    Args:
+        generated_file: Path to the generated Verilog file
+        reference_file: Path to the reference solution
+        project_dir: Path to the project directory
+        top_module_name: Name of the top module to check
+        debug: Whether to print debug information
+
     Returns:
         {
-            "equiv_passed": bool,  # ALWAYS bool, never None
+            "equiv_passed": bool,
             "error_message": str,
             "top_module": str,
             "eqy_return_code": int or "timeout",
@@ -299,19 +302,19 @@ def run_equivalence_check(
     """
 
     result = {
-        "equiv_passed": False,  # Default to False
+        "equiv_passed": False,
         "error_message": "",
         "top_module": None,
         "eqy_return_code": None,
-        "equiv_method": "error",  # Default to error
+        "equiv_method": "error",
     }
 
     try:
-        top_module = task_id.replace("task_", "")
+        top_module = top_module_name
         result["top_module"] = top_module
 
         if not top_module:
-            result["error_message"] = "Could not extract top module from project info.yaml"
+            result["error_message"] = "Top module name not provided"
             result["equiv_passed"] = False
             result["equiv_method"] = "error"
             return result

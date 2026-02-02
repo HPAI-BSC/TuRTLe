@@ -192,7 +192,7 @@ class NotSoTiny(TaskExtension):
         }
 
     def _evaluate_stx_fnc(
-        self, generation: str, golden_solution: str, task_id: str, id: str
+        self, generation: str, golden_solution: str, task_id: str, id: str, top_module_name: str
     ) -> dict:
         with (
             tempfile.NamedTemporaryFile(
@@ -209,7 +209,7 @@ class NotSoTiny(TaskExtension):
             f_sol.flush()
 
             result = eval_notsotiny_generation(
-                Path(f_gen.name), Path(f_sol.name), task_id, id, self.debug
+                Path(f_gen.name), Path(f_sol.name), task_id, id, top_module_name, self.debug
             )
         return result
 
@@ -230,10 +230,11 @@ class NotSoTiny(TaskExtension):
         golden_solution: str,
         task_id: str,
         id: Optional[str],
+        top_module_name: str,
     ) -> dict:
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
-            None, self._evaluate_stx_fnc, generation, golden_solution, task_id, id
+            None, self._evaluate_stx_fnc, generation, golden_solution, task_id, id, top_module_name
         )
 
     def process_results(self, generations, references):
@@ -256,6 +257,7 @@ class NotSoTiny(TaskExtension):
                     continue
 
                 task_id = self.dataset[task_idx]["task_id"]
+                top_module_name = self.dataset[task_idx]["top_module_name"]
                 for gen_idx, (g, golden_solution) in enumerate(zip(gens, refs)):
                     flat_tasks.append(
                         self._evaluate_stx_async(
@@ -263,6 +265,7 @@ class NotSoTiny(TaskExtension):
                             golden_solution,
                             task_id=task_id,
                             id=f"{task_id}_gen{gen_idx}",
+                            top_module_name=top_module_name,
                         )
                     )
                     task_metadata.append(
