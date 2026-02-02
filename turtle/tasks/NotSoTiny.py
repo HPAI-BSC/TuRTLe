@@ -283,7 +283,7 @@ class NotSoTiny(TaskExtension):
             results = await asyncio.gather(*flat_tasks)
 
             # Store detailed results and compute aggregates
-            correct_syntax, correct_equiv, correct_func, total = [], [], [], []
+            correct_syntax, correct_equiv, total = [], [], []
             idx = 0
 
             for task_idx, gens in enumerate(generations):
@@ -337,9 +337,9 @@ class NotSoTiny(TaskExtension):
                     else "0.00%",
                 }
 
-            return correct_syntax, correct_equiv, correct_func, total
+            return correct_syntax, correct_equiv, total
 
-        correct_syntax, correct_equiv, correct_func, total = asyncio.run(
+        correct_syntax, correct_equiv, total = asyncio.run(
             _run_all_flat()
         )
 
@@ -359,9 +359,6 @@ class NotSoTiny(TaskExtension):
                     if sum(total) > 0
                     else "0.00%",
                     "equiv_pass_rate": f"{sum(correct_equiv) / sum(total) * 100:.2f}%"
-                    if sum(total) > 0
-                    else "0.00%",
-                    "func_pass_rate": f"{sum(correct_func) / sum(total) * 100:.2f}%"
                     if sum(total) > 0
                     else "0.00%",
                 },
@@ -389,10 +386,8 @@ class NotSoTiny(TaskExtension):
                             "syntax_pass_count"
                         ],
                         "equiv_pass_count": task_report["summary"]["equiv_pass_count"],
-                        "func_pass_count": task_report["summary"]["func_pass_count"],
                         "syntax_pass_rate": task_report["summary"]["syntax_pass_rate"],
                         "equiv_pass_rate": task_report["summary"]["equiv_pass_rate"],
-                        "func_pass_rate": task_report["summary"]["func_pass_rate"],
                     }
                 )
 
@@ -411,5 +406,4 @@ class NotSoTiny(TaskExtension):
                 np.array(correct_syntax), np.array(total), ks
             ),
             "equiv": self._compute_pass_k(np.array(correct_equiv), np.array(total), ks),
-            "func": self._compute_pass_k(np.array(correct_func), np.array(total), ks),
         }
