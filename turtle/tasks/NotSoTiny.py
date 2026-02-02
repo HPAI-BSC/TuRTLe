@@ -18,9 +18,9 @@ from typing import Optional
 
 import numpy as np
 import pandas as pd
-from turtle.metrics.code_eval import estimate_pass_at_k
-from turtle.metrics.eval_notsotiny import eval_notsotiny_generation
-from turtle.src.turtle_eval.base import TaskExtension
+from metrics.code_eval import estimate_pass_at_k
+from metrics.eval_notsotiny import eval_notsotiny_generation
+from src.turtle_eval.base import TaskExtension
 
 
 _CITATION = """
@@ -44,6 +44,7 @@ class NotSoTiny(TaskExtension):
         super().__init__(stop_words=[], requires_execution=True)
         kwargs = kwargs.get("kwargs", {})
         self.model = kwargs.get("model")
+        self.tokenizer = kwargs.get("tokenizer")
 
         # Set-up basic params
         self.debug = False
@@ -56,14 +57,15 @@ class NotSoTiny(TaskExtension):
         # Filter dataset by shuttle if --shuttle flag is provided
         self.shuttle = kwargs.get("shuttle", None)
         if self.shuttle:
-            available_shuttles = set(self.dataset["shuttle_name"])
-            if self.shuttle not in available_shuttles:
+            self.dataset = self.dataset.filter(
+                lambda x: x["shuttle_name"].startswith(self.shuttle)
+            )
+            if len(self.dataset) == 0:
+                available_shuttles = set(self.dataset["shuttle_name"])
                 raise ValueError(
                     f"Shuttle {self.shuttle} not available. Possible shuttles to choose from: {available_shuttles}"
                 )
-            self.dataset = self.dataset.filter(
-                lambda x: x["shuttle_name"] == self.shuttle
-            )
+
 
     def get_dataset(self):
         """
@@ -82,11 +84,32 @@ class NotSoTiny(TaskExtension):
         """
         Create prompt for LLM to complete the missing Verilog module.
         """
-        conv = [
-            {"role": "system", "content": doc["system_message"]},
-            {"role": "user", "content": doc["prompt"]},
-        ]
-        return conv
+        system_msg = doc["system_message"]
+        user_prompt = doc["prompt"]
+
+        # Combine system message and user prompt
+        full_prompt = f"{system_msg}\n\n{user_prompt}"
+
+        # API models
+        # We assume that closed source models apply already a chat template
+        if self.tokenizer is None:
+            return full_prompt.strip()
+
+        # Local models
+        # Apply a chat template if available
+        from transformers import AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained(self.model, trust_remote_code=True)
+
+        if tokenizer.chat_template is not None:
+            conversation = [
+                {"role": "system", "content": system_msg},
+                {"role": "user", "content": user_prompt},
+            ]
+            full_prompt = tokenizer.apply_chat_template(
+                conversation, tokenize=False, add_generation_prompt=True
+            )
+
+        return full_prompt.strip()
 
     def get_reference(self, doc):
         """Get the golden solution content."""
@@ -104,7 +127,8 @@ class NotSoTiny(TaskExtension):
         pattern = rf'module\s+{module_name}\s*\([^)]*\);\s*//\s*>>>\s*Module Implementation Begin.*?//\s*<<<\s*Module Implementation End\s*endmodule'
 
         # Replace with the golden module
-        golden_solution = re.sub(pattern, golden_module.strip(), prompt, flags=re.DOTALL)
+        # Use lambda to avoid interpreting backslashes in golden_module as regex backreferences
+        golden_solution = re.sub(pattern, lambda m: golden_module.strip(), prompt, flags=re.DOTALL)
 
         return golden_solution
 
@@ -185,8 +209,8 @@ class NotSoTiny(TaskExtension):
         )
 
         return {
-            "prompt": self.datadet[idx]["prompt"],
-            "golden_module": self.datadet[idx]["golden_module"],
+            "prompt": self.dataset[idx]["prompt"],
+            "golden_module": self.dataset[idx]["golden_module"],
             "reasoning": reasoning,
             "generation": complete_module,  # Complete module with implementation filled in
         }

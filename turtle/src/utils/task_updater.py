@@ -55,6 +55,7 @@ class TaskUpdater:
             self.rtllm = import_module("tasks.rtllm")
             self.rtlrepo = import_module("tasks.rtlrepo")
             self.verigen = import_module("tasks.vgen")
+            self.notsotiny = import_module("tasks.NotSoTiny")
         except ImportError as e:
             print(f"Error importing modules: {e}")
             print(f"Current sys.path: {sys.path}")
@@ -69,6 +70,7 @@ class TaskUpdater:
             "rtllm": self.rtllm.RTLLM,
             "RTLRepo": self.rtlrepo.RTLRepo,
             "VeriGen": self.verigen.VeriGen,
+            "notsotiny": self.notsotiny.NotSoTiny,
         }
 
     def _update_all_tasks(self):
