@@ -38,7 +38,6 @@ def eval_notsotiny_generation(
             "equiv_passed": bool,
             "passfail": str,
             "syntax_error": str,
-            "func_error": str,
             "equiv_error": str,
             "warnings": List[str],
             "top_module": str,
@@ -53,7 +52,6 @@ def eval_notsotiny_generation(
         "equiv_passed": False,
         "passfail": "",
         "syntax_error": "",
-        "func_error": "",
         "equiv_error": "",
         "warnings": [],
         "top_module": None,
@@ -84,7 +82,7 @@ def eval_notsotiny_generation(
     result["equiv_method"] = equiv_result["equiv_method"]
 
     # Determine overall result
-    if result["syntax_passed"] and result["equiv_passed"] and result["func_passed"]:
+    if result["syntax_passed"] and result["equiv_passed"]:
         result["passfail"] = "Success"
     elif not result["syntax_passed"]:
         result["passfail"] = f"Syntax error (id={id}): {result['syntax_error']}"

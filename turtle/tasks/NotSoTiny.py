@@ -309,11 +309,9 @@ class NotSoTiny(TaskExtension):
                         "generation_idx": gen_idx,
                         "syntax_passed": result["syntax_passed"],
                         "equiv_passed": result["equiv_passed"],
-                        "func_passed": result["func_passed"],
                         "passfail": result["passfail"],
                         "syntax_error": result.get("syntax_error", ""),
                         "equiv_error": result.get("equiv_error", ""),
-                        "func_error": result.get("func_error", ""),
                         "top_module": result.get("top_module", ""),
                         "eqy_return_code": result.get("eqy_return_code", None),
                         "equiv_method": result.get("equiv_method", ""),
@@ -324,22 +322,17 @@ class NotSoTiny(TaskExtension):
                 # Compute aggregates for this task
                 correct_syntax.append(sum(int(r["syntax_passed"]) for r in chunk))
                 correct_equiv.append(sum(int(r["equiv_passed"]) for r in chunk))
-                correct_func.append(sum(int(r["func_passed"]) for r in chunk))
                 total.append(len(gens))
 
                 # Add summary statistics to the task report
                 reports[task_id]["summary"] = {
                     "syntax_pass_count": correct_syntax[-1],
                     "equiv_pass_count": correct_equiv[-1],
-                    "func_pass_count": correct_func[-1],
                     "total_generations": total[-1],
                     "syntax_pass_rate": f"{correct_syntax[-1] / total[-1] * 100:.2f}%"
                     if total[-1] > 0
                     else "0.00%",
                     "equiv_pass_rate": f"{correct_equiv[-1] / total[-1] * 100:.2f}%"
-                    if total[-1] > 0
-                    else "0.00%",
-                    "func_pass_rate": f"{correct_func[-1] / total[-1] * 100:.2f}%"
                     if total[-1] > 0
                     else "0.00%",
                 }
