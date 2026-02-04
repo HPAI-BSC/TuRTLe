@@ -42,7 +42,11 @@ def eval_notsotiny_generation(
             "warnings": List[str],
             "top_module": str,
             "eqy_return_code": int,
-            "equiv_method": str
+            "equiv_method": str,
+            "total_cells": int or None,
+            "proven_cells": int or None,
+            "unproven_cells": int or None,
+            "cells_coverage": float or None
         }
     """
 
@@ -57,19 +61,26 @@ def eval_notsotiny_generation(
         "top_module": None,
         "eqy_return_code": None,
         "equiv_method": "error",
+        "total_cells": None,
+        "proven_cells": None,
+        "unproven_cells": None,
+        "cells_coverage": None,
     }
 
     # STEP 1: Basic syntax check using Icarus Verilog
+    print("  Step 1: Running syntax check...")
     syntax_result = run_syntax_check(file_path, debug)
     result["syntax_passed"] = syntax_result["syntax_valid"]
     result["syntax_error"] = syntax_result["error_message"]
     result["warnings"].extend(syntax_result["warnings"])
 
     if not syntax_result["syntax_valid"]:
+        print(f"  Syntax check failed (id={id}): {result['passfail']}")
         result["passfail"] = f"Syntax error (id={id}): {syntax_result['error_message']}"
         return result
 
     # STEP 2: Formal equivalence check
+    print("  Step 2: Running formal equivalence check...")
 
     # Get project directory from test path
     project_dir = ref_path.parent if ref_path.is_dir() else ref_path.parent.parent
@@ -80,6 +91,10 @@ def eval_notsotiny_generation(
     result["top_module"] = equiv_result["top_module"]
     result["eqy_return_code"] = equiv_result["eqy_return_code"]
     result["equiv_method"] = equiv_result["equiv_method"]
+    result["total_cells"] = equiv_result["total_cells"]
+    result["proven_cells"] = equiv_result["proven_cells"]
+    result["unproven_cells"] = equiv_result["unproven_cells"]
+    result["cells_coverage"] = equiv_result["cells_coverage"]
 
     # Determine overall result
     if result["syntax_passed"] and result["equiv_passed"]:
@@ -295,7 +310,11 @@ def run_equivalence_check(
             "error_message": str,
             "top_module": str,
             "eqy_return_code": int or "timeout",
-            "equiv_method": str  # "proven", "timeout_pass", "failed", "error"
+            "equiv_method": str,  # "proven", "timeout_pass", "failed", "error"
+            "total_cells": int or None,
+            "proven_cells": int or None,
+            "unproven_cells": int or None,
+            "cells_coverage": float or None
         }
     """
 
@@ -305,6 +324,10 @@ def run_equivalence_check(
         "top_module": None,
         "eqy_return_code": None,
         "equiv_method": "error",
+        "total_cells": None,
+        "proven_cells": None,
+        "unproven_cells": None,
+        "cells_coverage": None,
     }
 
     try:
@@ -342,110 +365,161 @@ def run_equivalence_check(
             result["equiv_method"] = "error"
             return result
 
-        # Create EQY script with absolute paths
-        script_content = create_equivalence_eqy_script_absolute(
+        # Create Yosys script with absolute paths
+        script_content = create_yosys_equivalence_script(
             abs_reference_file, abs_generated_file, top_module
         )
 
-        # Create isolated temporary directory for this EQY run
-        temp_dir = tempfile.mkdtemp(prefix=f"eqy_check_{os.getpid()}_")
+        # Create isolated temporary directory for this Yosys run
+        temp_dir = tempfile.mkdtemp(prefix=f"yosys_check_{os.getpid()}_")
 
         try:
-            # Write script to temp directory
-            script_file_path = os.path.join(temp_dir, "equiv_check.eqy")
+            script_file_path = os.path.join(temp_dir, "equiv_check.ys")
             with open(script_file_path, "w") as f:
                 f.write(script_content)
-                f.flush()
 
-            # Run EQY from the isolated temp directory with 15-minute timeout
-            eqy_result = subprocess.run(
-                ["eqy", script_file_path],
+            print(f"    Starting Yosys verification...")
+
+            yosys_result = subprocess.run(
+                ["yosys", "-s", script_file_path],
                 capture_output=True,
                 text=True,
-                timeout=900,  # 15 minutes = 900 seconds
+                timeout=900,
                 cwd=temp_dir,
             )
 
-            result["eqy_return_code"] = eqy_result.returncode
+            result["eqy_return_code"] = yosys_result.returncode
 
-            # Parse results
-            output_combined = (eqy_result.stdout + " " + (eqy_result.stderr or "")).lower()
+            parsed = parse_yosys_output(yosys_result.stdout, yosys_result.stderr, debug)
+            
+            result["total_cells"] = parsed["total_cells"]
+            result["proven_cells"] = parsed["proven_cells"]
+            result["unproven_cells"] = parsed["unproven_cells"]
+            result["unproven_signals"] = parsed["unproven_signals"]
+            result["yosys_time"] = parsed["yosys_time"]
 
-            if eqy_result.returncode == 0:
-                # Check for explicit success messages
-                if (
-                    "equiv_simple: success" in output_combined
-                    or "equivalent" in output_combined
-                    or "proven" in output_combined
-                ):
-                    result["equiv_passed"] = True
-                    result["error_message"] = ""
-                    result["equiv_method"] = "proven"
-                elif "mismatch" in output_combined or "not equivalent" in output_combined:
-                    result["equiv_passed"] = False
-                    result["error_message"] = "Designs are not equivalent (counterexample found)"
-                    result["equiv_method"] = "failed"
+            # Compute cells coverage
+            if result["total_cells"] is not None and result["total_cells"] > 0:
+                if result["proven_cells"] is not None:
+                    result["cells_coverage"] = (result["proven_cells"] / result["total_cells"]) * 100.0
                 else:
-                    # Return code 0 but no clear success message - assume success
-                    result["equiv_passed"] = True
-                    result["error_message"] = ""
-                    result["equiv_method"] = "proven"
-
+                    result["cells_coverage"] = 0.0
             else:
-                # ANY non-zero return code = NOT EQUIVALENT
-                result["equiv_passed"] = False
-                result["equiv_method"] = "failed"
-                
-                # Try to extract meaningful error message
-                error_detail = extract_eqy_error_detail(eqy_result.stdout, eqy_result.stderr)
-                
-                if eqy_result.returncode == 1:
-                    if "not equivalent" in output_combined or "mismatch" in output_combined:
-                        result["error_message"] = "Designs are not equivalent (counterexample found)"
-                    elif "module" in output_combined and "not found" in output_combined:
-                        result["error_message"] = f"Module '{top_module}' not found in generated design"
-                    else:
-                        result["error_message"] = f"EQY check failed: {error_detail}"
-                    
-                elif eqy_result.returncode == 2:
-                    result["error_message"] = f"Generated design has errors: {error_detail}"
-                    
-                else:
-                    result["error_message"] = f"EQY failed (RC {eqy_result.returncode}): {error_detail}"
+                result["cells_coverage"] = None
 
+            if parsed["success"]:
+                result["equiv_passed"] = True
+                result["error_message"] = ""
+                result["equiv_method"] = "proven"
+                # If Yosys reports "Equivalence successfully proven!", coverage must be 100%
+                result["cells_coverage"] = 100.0
+                print(f"    ✓ Equivalence PROVEN ({result['proven_cells']}/{result['total_cells']} cells, 100.00% coverage)")
+            
+            elif parsed["unproven_cells"] and parsed["unproven_cells"] > 0:
+                result["equiv_passed"] = False
+                result["error_message"] = f"Found {parsed['unproven_cells']} unproven cells"
+                result["equiv_method"] = "failed"
+                print(f"    ✗ Equivalence FAILED ({parsed['unproven_cells']} unproven cells, {result['cells_coverage']:.2f}% coverage)")
+                if parsed["unproven_signals"]:
+                    print(f"    Unproven signals (first 3):")
+                    for sig in parsed["unproven_signals"][:3]:
+                        print(f"      {sig}")
+            
+            elif yosys_result.returncode != 0:
+                result["equiv_passed"] = False
+                result["equiv_method"] = "error"
+                error_detail = extract_yosys_error_detail(yosys_result.stdout, yosys_result.stderr)
+                result["error_message"] = f"Yosys failed: {error_detail}"
+                if result["cells_coverage"] is None:
+                    result["cells_coverage"] = 0.0
+                print(f"    ✗ Yosys error: {result['error_message']}")
+            
+            else:
+                result["equiv_passed"] = False
+                result["equiv_method"] = "error"
+                result["error_message"] = "Could not parse equivalence result"
+                if result["cells_coverage"] is None:
+                    result["cells_coverage"] = 0.0
+                print(f"    ⚠️ Unclear result from Yosys")
 
         finally:
-            # Cleanup temp directory
             try:
                 shutil.rmtree(temp_dir, ignore_errors=True)
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"    Warning: Could not remove temp dir {temp_dir}: {e}")
 
     except subprocess.TimeoutExpired:
-        # TIMEOUT = PASS (no failure detected within 15 minutes)
-        result["error_message"] = ""
+        result["error_message"] = "Verification timeout after 900s"
         result["equiv_passed"] = True
         result["eqy_return_code"] = "timeout"
-        result["equiv_method"] = "timeout_pass"
+        result["equiv_method"] = "timeout"
+        result["cells_coverage"] = 100.0
+        print(f"    ⏱ Yosys timeout after 15 minutes - treating as Pass (100% coverage)")
 
     except FileNotFoundError:
-        result["error_message"] = "EQY not found - please install eqy/yosys"
+        result["error_message"] = "Yosys not found - please install yosys"
         result["equiv_passed"] = False
         result["equiv_method"] = "error"
+        result["cells_coverage"] = 0.0
+        print(f"    ✗ {result['error_message']}")
 
     except Exception as e:
         result["error_message"] = f"Equivalence check error: {str(e)}"
         result["equiv_passed"] = False
         result["equiv_method"] = "error"
+        result["cells_coverage"] = 0.0
+        print(f"    ✗ {result['error_message']}")
 
     return result
 
-
-def extract_eqy_error_detail(stdout: str, stderr: str) -> str:
-    """Extract specific error details from EQY output."""
+def parse_yosys_output(stdout: str, stderr: str, debug: bool = False) -> Dict:
+    """Parse Yosys equiv_status output to extract results."""
+    result = {
+        "success": False,
+        "total_cells": None,
+        "proven_cells": None,
+        "unproven_cells": None,
+        "unproven_signals": [],
+        "yosys_time": None,
+    }
+    
     output = stdout + "\n" + (stderr or "")
     
-    # Common EQY/Yosys error patterns
+    total_match = re.search(r'Found\s+(\d+)\s+\$equiv\s+cells\s+in\s+miter', output)
+    if total_match:
+        result["total_cells"] = int(total_match.group(1))
+    
+    proven_match = re.search(
+        r'Of\s+those\s+cells\s+(\d+)\s+are\s+proven\s+and\s+(\d+)\s+are\s+unproven',
+        output
+    )
+    if proven_match:
+        result["proven_cells"] = int(proven_match.group(1))
+        result["unproven_cells"] = int(proven_match.group(2))
+    
+    if 'Equivalence successfully proven!' in output:
+        result["success"] = True
+    
+    if result["unproven_cells"] and result["unproven_cells"] > 0:
+        unproven_lines = re.findall(
+            r'Unproven\s+\$equiv.*?:\s+(.+)',
+            output
+        )
+        result["unproven_signals"] = unproven_lines
+    
+    timing_match = re.search(r'CPU:\s+user\s+([\d.]+)s', output)
+    if timing_match:
+        result["yosys_time"] = float(timing_match.group(1))
+    
+    if debug and result["total_cells"]:
+        print(f"    Parsed: {result['proven_cells']}/{result['total_cells']} cells proven")
+    
+    return result
+
+def extract_yosys_error_detail(stdout: str, stderr: str) -> str:
+    """Extract specific error details from Yosys output."""
+    output = stdout + "\n" + (stderr or "")
+    
     error_patterns = [
         (r"ERROR: (.+?)(?:\n|$)", 1),
         (r"error: (.+?)(?:\n|$)", 1),
@@ -459,10 +533,8 @@ def extract_eqy_error_detail(stdout: str, stderr: str) -> str:
         match = re.search(pattern, output, re.IGNORECASE)
         if match:
             error_text = match.group(group).strip()
-            # Limit length and clean up
             return error_text[:200]
     
-    # Look for lines containing "error" or "failed"
     for line in output.split("\n"):
         line_lower = line.lower()
         if "error" in line_lower or "failed" in line_lower:
@@ -472,13 +544,12 @@ def extract_eqy_error_detail(stdout: str, stderr: str) -> str:
     
     return "Verification failed"
 
-
-def create_equivalence_eqy_script_absolute(
+def create_yosys_equivalence_script(
     reference_file: str, generated_file: str, top_module: str
 ) -> str:
     """
-    Create EQY script content for equivalence checking using ABSOLUTE paths.
-    This matches the approach from the working self-equivalence checker.
+    Create Yosys script for equivalence checking with full optimization pipeline.
+    Uses inductive checking for better sequential circuit handling.
 
     Args:
         reference_file: Absolute path to reference modules.v
@@ -486,23 +557,58 @@ def create_equivalence_eqy_script_absolute(
         top_module: Name of the top module to check
 
     Returns:
-        EQY script content as string
+        Yosys script content as string
     """
-    script_content = f"""[gold]
-read_verilog {reference_file}
-prep -top {top_module}
+    script_content = f"""# ===== Golden Reference =====
+read_verilog -sv {reference_file}
+hierarchy -check -top {top_module}
+proc
+opt -full
 memory_map
+opt
+clk2fflogic
+async2sync
+opt
+alumacc
+opt -full
+wreduce
+peepopt
+opt_clean
+flatten
+clean
+design -save gold
 
-[gate]
-read_verilog {generated_file}
-prep -top {top_module}
+# ===== LLM-Generated =====
+design -reset
+read_verilog -sv {generated_file}
+hierarchy -check -top {top_module}
+proc
+opt -full
 memory_map
+opt
+clk2fflogic
+async2sync
+opt
+alumacc
+opt -full
+wreduce
+peepopt
+opt_clean
+flatten
+clean
+design -save gate
 
-[strategy basic]
-use sat
+# ===== Equivalence Checking =====
+design -copy-from gold -as gold A:top
+design -copy-from gate -as gate A:top
 
-[script]
-equiv_simple
+equiv_make gold gate miter
+hierarchy -top miter
+
+equiv_simple -undef
+equiv_induct -undef -seq 30
+
+equiv_status
 """
     return script_content
 

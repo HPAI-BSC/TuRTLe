@@ -66,7 +66,6 @@ class NotSoTiny(TaskExtension):
                     f"Shuttle {self.shuttle} not available. Possible shuttles to choose from: {available_shuttles}"
                 )
 
-
     def get_dataset(self):
         """
         Returns dataset for the task.
@@ -98,6 +97,7 @@ class NotSoTiny(TaskExtension):
         # Local models
         # Apply a chat template if available
         from transformers import AutoTokenizer
+
         tokenizer = AutoTokenizer.from_pretrained(self.model, trust_remote_code=True)
 
         if tokenizer.chat_template is not None:
@@ -119,16 +119,18 @@ class NotSoTiny(TaskExtension):
         golden_module = doc["golden_module"]
 
         # Extract the module name from the golden module (in case it's generic)
-        module_match = re.search(r'module\s+(\w+)\s*\(', golden_module)
+        module_match = re.search(r"module\s+(\w+)\s*\(", golden_module)
         if not module_match:
             raise ValueError("Could not find module name in golden module")
 
         module_name = module_match.group(1)
-        pattern = rf'module\s+{module_name}\s*\([^)]*\);\s*//\s*>>>\s*Module Implementation Begin.*?//\s*<<<\s*Module Implementation End\s*endmodule'
+        pattern = rf"module\s+{module_name}\s*\([^)]*\);\s*//\s*>>>\s*Module Implementation Begin.*?//\s*<<<\s*Module Implementation End\s*endmodule"
 
         # Replace with the golden module
         # Use lambda to avoid interpreting backslashes in golden_module as regex backreferences
-        golden_solution = re.sub(pattern, lambda m: golden_module.strip(), prompt, flags=re.DOTALL)
+        golden_solution = re.sub(
+            pattern, lambda m: golden_module.strip(), prompt, flags=re.DOTALL
+        )
 
         return golden_solution
 
@@ -216,7 +218,12 @@ class NotSoTiny(TaskExtension):
         }
 
     def _evaluate_stx_fnc(
-        self, generation: str, golden_solution: str, task_id: str, id: str, top_module_name: str
+        self,
+        generation: str,
+        golden_solution: str,
+        task_id: str,
+        id: str,
+        top_module_name: str,
     ) -> dict:
         with (
             tempfile.NamedTemporaryFile(
@@ -233,7 +240,12 @@ class NotSoTiny(TaskExtension):
             f_sol.flush()
 
             result = eval_notsotiny_generation(
-                Path(f_gen.name), Path(f_sol.name), task_id, id, top_module_name, self.debug
+                Path(f_gen.name),
+                Path(f_sol.name),
+                task_id,
+                id,
+                top_module_name,
+                self.debug,
             )
         return result
 
@@ -258,7 +270,13 @@ class NotSoTiny(TaskExtension):
     ) -> dict:
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
-            None, self._evaluate_stx_fnc, generation, golden_solution, task_id, id, top_module_name
+            None,
+            self._evaluate_stx_fnc,
+            generation,
+            golden_solution,
+            task_id,
+            id,
+            top_module_name,
         )
 
     def process_results(self, generations, references):
@@ -273,7 +291,7 @@ class NotSoTiny(TaskExtension):
             flat_tasks = []
             task_metadata = []  # Store task_id for each evaluation
 
-            for task_idx, (gens, refs) in enumerate(zip(generations, references)):
+            for task_idx, (gens, ref) in enumerate(zip(generations, references)):
                 if task_idx >= len(self.dataset):
                     print(
                         f"Warning: task_idx {task_idx} exceeds dataset size {len(self.dataset)}"
@@ -282,11 +300,11 @@ class NotSoTiny(TaskExtension):
 
                 task_id = self.dataset[task_idx]["task_id"]
                 top_module_name = self.dataset[task_idx]["top_module_name"]
-                for gen_idx, (g, golden_solution) in enumerate(zip(gens, refs)):
+                for gen_idx, g in enumerate(gens):
                     flat_tasks.append(
                         self._evaluate_stx_async(
                             g["generation"],
-                            golden_solution,
+                            ref,
                             task_id=task_id,
                             id=f"{task_id}_gen{gen_idx}",
                             top_module_name=top_module_name,
@@ -322,8 +340,8 @@ class NotSoTiny(TaskExtension):
 
                 # Store detailed results for each generation of this task
                 reports[task_id] = {
-                    "project_name": self.dataset[task_idx]["project_name"],
-                    "module_name": self.dataset[task_idx]["module_name"],
+                    "task_id": task_id,
+                    "top_module_name": self.dataset[task_idx]["top_module_name"],
                     "num_generations": len(gens),
                     "generations": [],
                 }
@@ -340,6 +358,10 @@ class NotSoTiny(TaskExtension):
                         "eqy_return_code": result.get("eqy_return_code", None),
                         "equiv_method": result.get("equiv_method", ""),
                         "warnings": result.get("warnings", []),
+                        "total_cells": result.get("total_cells", None),
+                        "proven_cells": result.get("proven_cells", None),
+                        "unproven_cells": result.get("unproven_cells", None),
+                        "cells_coverage": result.get("cells_coverage", None),
                     }
                     reports[task_id]["generations"].append(generation_result)
 
@@ -363,9 +385,7 @@ class NotSoTiny(TaskExtension):
 
             return correct_syntax, correct_equiv, total
 
-        correct_syntax, correct_equiv, total = asyncio.run(
-            _run_all_flat()
-        )
+        correct_syntax, correct_equiv, total = asyncio.run(_run_all_flat())
 
         # Save detailed report
         if self.load_generations_path:
@@ -400,11 +420,21 @@ class NotSoTiny(TaskExtension):
             csv_path = Path(os.path.dirname(json_path)) / "summary_report.csv"
             csv_data = []
             for task_id, task_report in reports.items():
+                # Calculate average coverage for this task
+                avg_coverage = None
+                if task_report["generations"]:
+                    coverages = [
+                        g["cells_coverage"]
+                        for g in task_report["generations"]
+                        if g["cells_coverage"] is not None
+                    ]
+                    if coverages:
+                        avg_coverage = sum(coverages) / len(coverages)
+
                 csv_data.append(
                     {
                         "task_id": task_id,
-                        "project_name": task_report["project_name"],
-                        "module_name": task_report["module_name"],
+                        "top_module_name": task_report["top_module_name"],
                         "num_generations": task_report["num_generations"],
                         "syntax_pass_count": task_report["summary"][
                             "syntax_pass_count"
@@ -412,6 +442,9 @@ class NotSoTiny(TaskExtension):
                         "equiv_pass_count": task_report["summary"]["equiv_pass_count"],
                         "syntax_pass_rate": task_report["summary"]["syntax_pass_rate"],
                         "equiv_pass_rate": task_report["summary"]["equiv_pass_rate"],
+                        "avg_cells_coverage": f"{avg_coverage:.2f}%"
+                        if avg_coverage is not None
+                        else "N/A",
                     }
                 )
 
