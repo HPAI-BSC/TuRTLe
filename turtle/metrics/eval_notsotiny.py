@@ -140,7 +140,7 @@ def run_syntax_check(file_path: Path, debug: bool = False) -> Dict[str, Any]:
             ],
             capture_output=True,
             text=True,
-            timeout=1300,
+            timeout=600,
         )
 
         syntax_valid = result.returncode == 0
