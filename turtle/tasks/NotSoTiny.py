@@ -124,7 +124,7 @@ class NotSoTiny(TaskExtension):
             raise ValueError("Could not find module name in golden module")
 
         module_name = module_match.group(1)
-        pattern = rf"module\s+{module_name}\s*\([^)]*\);\s*//\s*>>>\s*Module Implementation Begin.*?//\s*<<<\s*Module Implementation End\s*endmodule"
+        pattern = rf"module\s+{module_name}.*?\);\s*//\s*>>>\s*Module Implementation Begin.*?//\s*<<<\s*Module Implementation End\s*endmodule"
 
         # Replace with the golden module
         # Use lambda to avoid interpreting backslashes in golden_module as regex backreferences
@@ -458,9 +458,11 @@ class NotSoTiny(TaskExtension):
             )
 
         ks = [1, 5, 20]
+
         return {
             "syntax": self._compute_pass_k(
                 np.array(correct_syntax), np.array(total), ks
             ),
             "equiv": self._compute_pass_k(np.array(correct_equiv), np.array(total), ks),
         }
+
