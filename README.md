@@ -29,8 +29,10 @@ TuRTLe is a framework to assess LLMs across key RTL generation tasks systematica
 |----------------|---------------|
 | **VerilogEval v2.0** - Spec-to-RTL & Module Completion | **Icarus Verilog** and **Verilator** - STX & FNC |
 | **RTLLM v1.1/v2.0** - Spec-to-RTL | **Yosys** - SYN |
-| **VGen** - Module Completion | **OpenROAD** - PPA |
-| **RTL-Repo** - Single Line Completion | **OpenLane** - PPA |
+| **VGen** - Module Completion | **Yosys** - EQV |
+| **RTL-Repo** - Single Line Completion | **LibreLane** - PPA |
+| **NotSoTiny** - Module Completion | **OpenROAD** - PPA   |
+
 
 </div>
 
@@ -38,6 +40,7 @@ For more details about our work, refer to our [ArXiv paper](https://arxiv.org/ab
 
 ## News
 
+- **[2026-02-10]** We introduce a brand new benchmark for Module Completion, based on Tiny Tapeout with more than 1000 real-world designs
 - **[2025-11-09]** We release TuRTLe v2 with API inference support and local Docker-based evaluation for easy reproducibility
 - **[2025-07-03]** TuRTLe now supports Verilator as a simulator to check for Syntax and Functionality
 - **[2025-06-12]** We add support for multi-node inference with Ray and the configurations for bigger models
