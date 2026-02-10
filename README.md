@@ -36,11 +36,11 @@ TuRTLe is a framework to assess LLMs across key RTL generation tasks systematica
 
 </div>
 
-For more details about our work, refer to our [ArXiv paper](https://arxiv.org/abs/2504.01986).
+For more details about the framework, refer to the associated [TuRTLe paper](https://arxiv.org/abs/2504.01986). For details on the NotSoTiny benchmark, see the corresponding [paper](https://arxiv.org/abs/2512.20823).
 
 ## News
 
-- **[2026-02-10]** We introduce a brand new benchmark for Module Completion, based on Tiny Tapeout with more than 1000 real-world designs
+- **[2026-02-10]** We integrate a brand new benchmark for Module Completion, based on Tiny Tapeout with more than 1,000 real-world designs. Check out the updated leaderboard!
 - **[2025-11-09]** We release TuRTLe v2 with API inference support and local Docker-based evaluation for easy reproducibility
 - **[2025-07-03]** TuRTLe now supports Verilator as a simulator to check for Syntax and Functionality
 - **[2025-06-12]** We add support for multi-node inference with Ray and the configurations for bigger models
@@ -133,5 +133,5 @@ This work was born as a fork of [bigcode-evaluation-harness](https://github.com/
 
 We acknowledge the open-source EDA tools: [Icarus Verilog](https://github.com/steveicarus/iverilog), [Verilator](https://www.veripool.org/verilator/), [Yosys](https://github.com/YosysHQ/yosys), [OpenROAD](https://github.com/The-OpenROAD-Project/OpenROAD) and [LibreLane](https://github.com/librelane/librelane).
 
-We also thank the authors of the benchmarks integrated in TuRTLe: [VerilogEval](https://github.com/NVlabs/verilog-eval), [RTLLM](https://github.com/hkust-zhiyao/RTLLM), [VGen](https://github.com/shailja-thakur/VGen), and [RTL-Repo](https://github.com/AUCOHL/RTL-Repo).
+We also thank the authors of the benchmarks integrated in TuRTLe: [VerilogEval](https://github.com/NVlabs/verilog-eval), [RTLLM](https://github.com/hkust-zhiyao/RTLLM), [VGen](https://github.com/shailja-thakur/VGen), [RTL-Repo](https://github.com/AUCOHL/RTL-Repo) and [NotSoTiny](https://huggingface.co/datasets/HPAI-BSC/NotSoTiny-25-12).
 
