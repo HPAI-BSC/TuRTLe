@@ -58,19 +58,18 @@ TuRTLe supports API-based inference which works out of the box with any OpenAI-c
 #### Inference
 
 ```bash
-export TURTLE_BASE_URL=https://openrouter.ai/api/v1
-export TURTLE_API_KEY=sk-or-...
-uv run turtle/src/turtle.py --use-api \
-    --model google/gemini-2.5-flash \
-    --task rtllm \
-    --max_tokens 18432 \
-    --temperature 0.2 \
-    --top_p 0.95 \
-    --n_samples 5 \
-    --reasoning_effort medium \
-    --save_generations \
-    --save_generations_path './results/gemini-2.5-flash/rtllm.json' \
-    --generation_only
+$ export TURTLE_BASE_URL=https://openrouter.ai/api/v1
+$ export TURTLE_API_KEY=sk-or-v1-...
+$ uv run turtle/src/turtle.py --use-api \
+      --model mistralai/codestral-2508 \
+      --task notsotiny --shuttle tt06 \  # Can be tt06, tt07, tt08, tt09, tt10_ihp_25a, tt10_ihp_02, ttsky25a
+      --temperature 0.2 \
+      --max-tokens 131072 \
+      --top_p 0.95 \
+      --n_samples 1 \
+      --save_generations \
+      --save_generations_path './results/codestral-2508/nst-tt06.jsonl' \
+      --generation_only
 ```
 
 Available tasks: `rtllm`, `verilog_eval_rtl`, `verilog_eval_cc`, `verigen`, `rtlrepo`
@@ -80,12 +79,13 @@ Available tasks: `rtllm`, `verilog_eval_rtl`, `verilog_eval_cc`, `verigen`, `rtl
 Evaluate the generated RTL designs using our bundled EDA tools (OpenLane, Verilator, Icarus Verilog):
 
 ```bash
-docker run --rm -v $(pwd):/work -w /work ggcr0/turtle-eval:2.3.4 \
-    python3 turtle/src/turtle.py --use_api \
-    --task rtllm \
-    --model gemini-2.5-flash \
-    --n_samples 5 \
-    --load_generations_path ./results/gemini-2.5-flash/rtllm.json
+$ docker run --rm -v $(pwd):/work -w /work ggcr0/turtle-eval:2.3.4 \
+        python3 turtle/src/turtle.py \
+        --task notsotiny \
+        --shuttle tt06 \
+        --model mistralai/codestral-2508 \
+        --n_samples 1 \
+        --load_generations_path ./results/codestral-2508/nst-tt06.jsonl
 ```
 
 This will automatically pull the Docker image with all the EDA tooling and evaluate your designs for syntax, functionality, synthesis, and PPA metrics.
