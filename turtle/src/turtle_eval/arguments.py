@@ -127,6 +127,12 @@ class ExtendedModelArgument(EvalArguments):
             "Can be 'low', 'medium', or 'high'. Only used with OpenRouter (openrouter.ai) base URL."
         },
     )
+    shuttle: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "Optional field to provide a specific shuttle to filter NotSoTiny"
+        },
+    )
 
 
 @dataclass

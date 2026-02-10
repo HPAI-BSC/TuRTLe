@@ -1,0 +1,3375 @@
+{
+  "benchmark": "NotSoTiny",
+  "model": "mistralai/codestral-2508",
+  "total_tasks": 108,
+  "total_generations": 108,
+  "overall_summary": {
+    "syntax_pass_rate": "69.44%",
+    "equiv_pass_rate": "17.59%"
+  },
+  "per_task_results": {
+    "tt06-finale_0001": {
+      "task_id": "tt06-finale_0001",
+      "top_module_name": "tt_um_cejmu_riscv",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0001_gen0): 3: error: Port clk (1) of module alu is not declared within module.",
+          "syntax_error": "3: error: Port clk (1) of module alu is not declared within module.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "371: warning: Port 5 (instruction) of alu expects 7 bits, got 17."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0002": {
+      "task_id": "tt06-finale_0002",
+      "top_module_name": "tt_um_cejmu_riscv",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0002_gen0): 106: error: Port clk (1) of module control is not declared within module.",
+          "syntax_error": "106: error: Port clk (1) of module control is not declared within module.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0003": {
+      "task_id": "tt06-finale_0003",
+      "top_module_name": "tt_um_cejmu_riscv",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0003_gen0): 366: error: Port clk (1) of module cpu has no direction declaration.",
+          "syntax_error": "366: error: Port clk (1) of module cpu has no direction declaration.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "388: warning: implicit definition of wire 'clk'.",
+            "389: warning: implicit definition of wire 'reset'.",
+            "400: warning: implicit definition of wire 'data_in'.",
+            "401: warning: implicit definition of wire 'data_valid'.",
+            "408: warning: implicit definition of wire 'mem_req'.",
+            "444: warning: implicit definition of wire 'addr_out'.",
+            "445: warning: implicit definition of wire 'data_out'.",
+            "446: warning: implicit definition of wire 'write_en'.",
+            "397: warning: Port 3 (iword) of control expects 32 bits, got 1."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0004": {
+      "task_id": "tt06-finale_0004",
+      "top_module_name": "tt_um_cejmu_riscv",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0004_gen0): 504: error: Port clk (1) of module instructioncounter is not declared within module.",
+          "syntax_error": "504: error: Port clk (1) of module instructioncounter is not declared within module.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0005": {
+      "task_id": "tt06-finale_0005",
+      "top_module_name": "tt_um_cejmu_riscv",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0005_gen0): 569: error: Port clk (1) of module regs is not declared within module.",
+          "syntax_error": "569: error: Port clk (1) of module regs is not declared within module.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "588: warning: implicit definition of wire 'rs1'.",
+            "589: warning: implicit definition of wire 'rs2'.",
+            "590: warning: implicit definition of wire 'x1'."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0006": {
+      "task_id": "tt06-finale_0006",
+      "top_module_name": "tt_um_cejmu_riscv",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0006_gen0): 946: error: Port clk (1) of module spi_master is not declared within module.",
+          "syntax_error": "946: error: Port clk (1) of module spi_master is not declared within module.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "961: warning: implicit definition of wire 'mode_select'.",
+            "964: warning: implicit definition of wire 'sclk'.",
+            "1020: warning: implicit definition of wire 'data_out'.",
+            "1021: warning: implicit definition of wire 'data_valid'."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0007": {
+      "task_id": "tt06-finale_0007",
+      "top_module_name": "tt_um_cejmu_riscv",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0007_gen0): 1754: error: Port clk (1) of module tt_um_cejmu_riscv has no direction declaration.",
+          "syntax_error": "1754: error: Port clk (1) of module tt_um_cejmu_riscv has no direction declaration.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "1772: warning: implicit definition of wire 'clk'.",
+            "1773: warning: implicit definition of wire 'rst_n'.",
+            "1806: warning: implicit definition of wire 'uo_out'.",
+            "1784: warning: Port 7 (addr) of spi_master expects 16 bits, got 14."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0008": {
+      "task_id": "tt06-finale_0008",
+      "top_module_name": "tt_um_CKPope_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_CKPope_top",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 219,
+          "proven_cells": 219,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0009": {
+      "task_id": "tt06-finale_0009",
+      "top_module_name": "tt_um_CKPope_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0009_gen0): Found 12 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 12 unproven cells",
+          "top_module": "tt_um_CKPope_top",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 155,
+          "proven_cells": 143,
+          "unproven_cells": 12,
+          "cells_coverage": 92.25806451612904
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0010": {
+      "task_id": "tt06-finale_0010",
+      "top_module_name": "tt_um_CKPope_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0010_gen0): Found 10 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 10 unproven cells",
+          "top_module": "tt_um_CKPope_top",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 191,
+          "proven_cells": 181,
+          "unproven_cells": 10,
+          "cells_coverage": 94.76439790575915
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0011": {
+      "task_id": "tt06-finale_0011",
+      "top_module_name": "tt_um_CKPope_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0011_gen0): 335: error: sync_reset is not a valid l-value in tt_um_CKPope_top.buttons.",
+          "syntax_error": "335: error: sync_reset is not a valid l-value in tt_um_CKPope_top.buttons.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0012": {
+      "task_id": "tt06-finale_0012",
+      "top_module_name": "tt_um_CKPope_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_CKPope_top",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 219,
+          "proven_cells": 219,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0013": {
+      "task_id": "tt06-finale_0013",
+      "top_module_name": "tt_um_CKPope_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_CKPope_top",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 219,
+          "proven_cells": 219,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0014": {
+      "task_id": "tt06-finale_0014",
+      "top_module_name": "tt_um_fdc_chip",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0014_gen0): Yosys failed: Output port chip.mux.x (demux) is connected to constants: 1'x",
+          "syntax_error": "",
+          "equiv_error": "Yosys failed: Output port chip.mux.x (demux) is connected to constants: 1'x",
+          "top_module": "tt_um_fdc_chip",
+          "eqy_return_code": 1,
+          "equiv_method": "error",
+          "warnings": [
+            "98: warning: implicit definition of wire 'done'.",
+            "144: warning: returning 'bx for out of bounds array access qclk[-1].",
+            "144: warning: returning 'bx for out of bounds array access qclk[-1]."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": 0.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0015": {
+      "task_id": "tt06-finale_0015",
+      "top_module_name": "tt_um_fdc_chip",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0015_gen0): Found 15 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 15 unproven cells",
+          "top_module": "tt_um_fdc_chip",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "102: warning: implicit definition of wire 'done'.",
+            "148: warning: returning 'bx for out of bounds array access qclk[-1].",
+            "148: warning: returning 'bx for out of bounds array access qclk[-1]."
+          ],
+          "total_cells": 191,
+          "proven_cells": 176,
+          "unproven_cells": 15,
+          "cells_coverage": 92.14659685863874
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0016": {
+      "task_id": "tt06-finale_0016",
+      "top_module_name": "tt_um_fdc_chip",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0016_gen0): Found 15 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 15 unproven cells",
+          "top_module": "tt_um_fdc_chip",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "102: warning: implicit definition of wire 'done'.",
+            "149: warning: returning 'bx for out of bounds array access qclk[-1].",
+            "149: warning: returning 'bx for out of bounds array access qclk[-1]."
+          ],
+          "total_cells": 191,
+          "proven_cells": 176,
+          "unproven_cells": 15,
+          "cells_coverage": 92.14659685863874
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0017": {
+      "task_id": "tt06-finale_0017",
+      "top_module_name": "tt_um_fdc_chip",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0017_gen0): Found 20 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 20 unproven cells",
+          "top_module": "tt_um_fdc_chip",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "130: warning: implicit definition of wire 'done'.",
+            "176: warning: returning 'bx for out of bounds array access qclk[-1].",
+            "176: warning: returning 'bx for out of bounds array access qclk[-1]."
+          ],
+          "total_cells": 145,
+          "proven_cells": 125,
+          "unproven_cells": 20,
+          "cells_coverage": 86.20689655172413
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0018": {
+      "task_id": "tt06-finale_0018",
+      "top_module_name": "tt_um_fdc_chip",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0018_gen0): Found 19 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 19 unproven cells",
+          "top_module": "tt_um_fdc_chip",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "102: warning: implicit definition of wire 'done'.",
+            "148: warning: returning 'bx for out of bounds array access qclk[-1].",
+            "148: warning: returning 'bx for out of bounds array access qclk[-1]."
+          ],
+          "total_cells": 191,
+          "proven_cells": 172,
+          "unproven_cells": 19,
+          "cells_coverage": 90.0523560209424
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0019": {
+      "task_id": "tt06-finale_0019",
+      "top_module_name": "tt_um_fdc_chip",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0019_gen0): Found 25 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 25 unproven cells",
+          "top_module": "tt_um_fdc_chip",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "102: warning: implicit definition of wire 'done'.",
+            "148: warning: returning 'bx for out of bounds array access qclk[-1].",
+            "148: warning: returning 'bx for out of bounds array access qclk[-1]."
+          ],
+          "total_cells": 191,
+          "proven_cells": 166,
+          "unproven_cells": 25,
+          "cells_coverage": 86.91099476439791
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0020": {
+      "task_id": "tt06-finale_0020",
+      "top_module_name": "tt_um_fdc_chip",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0020_gen0): Found 21 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 21 unproven cells",
+          "top_module": "tt_um_fdc_chip",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "99: warning: implicit definition of wire 'done'.",
+            "145: warning: returning 'bx for out of bounds array access qclk[-1].",
+            "145: warning: returning 'bx for out of bounds array access qclk[-1]."
+          ],
+          "total_cells": 24,
+          "proven_cells": 3,
+          "unproven_cells": 21,
+          "cells_coverage": 12.5
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0021": {
+      "task_id": "tt06-finale_0021",
+      "top_module_name": "tt_um_fountaincoder_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0021_gen0): Found 36 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 36 unproven cells",
+          "top_module": "tt_um_fountaincoder_top",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 67,
+          "proven_cells": 31,
+          "unproven_cells": 36,
+          "cells_coverage": 46.26865671641791
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0022": {
+      "task_id": "tt06-finale_0022",
+      "top_module_name": "tt_um_fountaincoder_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0022_gen0): 27: error: index_reg is not a valid l-value in tt_um_fountaincoder_top.",
+          "syntax_error": "27: error: index_reg is not a valid l-value in tt_um_fountaincoder_top.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0023": {
+      "task_id": "tt06-finale_0023",
+      "top_module_name": "tt_um_ALU",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0023_gen0): Found 2 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 2 unproven cells",
+          "top_module": "tt_um_ALU",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 39,
+          "proven_cells": 37,
+          "unproven_cells": 2,
+          "cells_coverage": 94.87179487179486
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0024": {
+      "task_id": "tt06-finale_0024",
+      "top_module_name": "tt_um_ALU",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_ALU",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 89,
+          "proven_cells": 89,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0025": {
+      "task_id": "tt06-finale_0025",
+      "top_module_name": "tt_um_ALU",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0025_gen0): 35: error: ctrl is not a valid l-value in tt_um_ALU.",
+          "syntax_error": "35: error: ctrl is not a valid l-value in tt_um_ALU.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0026": {
+      "task_id": "tt06-finale_0026",
+      "top_module_name": "tt_um_i_tree_batzolislefteris",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0026_gen0): Yosys failed: Module port `\\clk' is not declared in module header.",
+          "syntax_error": "",
+          "equiv_error": "Yosys failed: Module port `\\clk' is not declared in module header.",
+          "top_module": "tt_um_i_tree_batzolislefteris",
+          "eqy_return_code": 1,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": 0.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0027": {
+      "task_id": "tt06-finale_0027",
+      "top_module_name": "tt_um_i_tree_batzolislefteris",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0027_gen0): 52: error: anomaly_detected is not a valid l-value in tt_um_i_tree_batzolislefteris.i_tree_inst.",
+          "syntax_error": "52: error: anomaly_detected is not a valid l-value in tt_um_i_tree_batzolislefteris.i_tree_inst.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0028": {
+      "task_id": "tt06-finale_0028",
+      "top_module_name": "tt_um_i_tree_batzolislefteris",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0028_gen0): 38: error: Part select uio_out[1:7] indices reversed.",
+          "syntax_error": "38: error: Part select uio_out[1:7] indices reversed.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0029": {
+      "task_id": "tt06-finale_0029",
+      "top_module_name": "tt_um_shivam",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0029_gen0): 77: error: Unable to bind wirememory `ena' in `tt_um_shivam.PWM_DFF1'",
+          "syntax_error": "77: error: Unable to bind wirememory `ena' in `tt_um_shivam.PWM_DFF1'",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "69: warning: implicit definition of wire 'PWM_OUT'."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0030": {
+      "task_id": "tt06-finale_0030",
+      "top_module_name": "tt_um_shivam",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0030_gen0): Found 24 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 24 unproven cells",
+          "top_module": "tt_um_shivam",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "23: warning: Port 3 (D) of DFF_PWM expects 1 bits, got 8.",
+            "30: warning: Port 3 (D) of DFF_PWM expects 1 bits, got 8.",
+            "37: warning: Port 3 (D) of DFF_PWM expects 1 bits, got 8.",
+            "44: warning: Port 3 (D) of DFF_PWM expects 1 bits, got 8.",
+            "51: warning: Port 3 (D) of DFF_PWM expects 1 bits, got 8.",
+            "58: warning: Port 3 (D) of DFF_PWM expects 1 bits, got 8.",
+            "65: warning: Port 3 (D) of DFF_PWM expects 1 bits, got 8.",
+            "72: warning: Port 3 (D) of DFF_PWM expects 1 bits, got 8."
+          ],
+          "total_cells": 24,
+          "proven_cells": 0,
+          "unproven_cells": 24,
+          "cells_coverage": 0.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0031": {
+      "task_id": "tt06-finale_0031",
+      "top_module_name": "tt_um_SteffenReith_ASGTop",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0031_gen0): Found 2 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 2 unproven cells",
+          "top_module": "tt_um_SteffenReith_ASGTop",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "60: warning: Port 2 (loadIt) of LSFR expects 1 bits, got 2.",
+            "69: warning: Port 2 (loadIt) of LSFR_1 expects 1 bits, got 2.",
+            "78: warning: Port 2 (loadIt) of LSFR_2 expects 1 bits, got 2."
+          ],
+          "total_cells": 32,
+          "proven_cells": 30,
+          "unproven_cells": 2,
+          "cells_coverage": 93.75
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0032": {
+      "task_id": "tt06-finale_0032",
+      "top_module_name": "tt_um_SteffenReith_ASGTop",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0032_gen0): Yosys failed: Module `\\LSFR_2' referenced in module `\\ASG' in cell `\\R3' is not part of the design.",
+          "syntax_error": "",
+          "equiv_error": "Yosys failed: Module `\\LSFR_2' referenced in module `\\ASG' in cell `\\R3' is not part of the design.",
+          "top_module": "tt_um_SteffenReith_ASGTop",
+          "eqy_return_code": 1,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": 0.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0033": {
+      "task_id": "tt06-finale_0033",
+      "top_module_name": "tt_um_SteffenReith_ASGTop",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0033_gen0): Found 7 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 7 unproven cells",
+          "top_module": "tt_um_SteffenReith_ASGTop",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 308,
+          "proven_cells": 301,
+          "unproven_cells": 7,
+          "cells_coverage": 97.72727272727273
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0034": {
+      "task_id": "tt06-finale_0034",
+      "top_module_name": "tt_um_SteffenReith_ASGTop",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0034_gen0): Found 7 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 7 unproven cells",
+          "top_module": "tt_um_SteffenReith_ASGTop",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 256,
+          "proven_cells": 249,
+          "unproven_cells": 7,
+          "cells_coverage": 97.265625
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0035": {
+      "task_id": "tt06-finale_0035",
+      "top_module_name": "tt_um_SteffenReith_ASGTop",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0035_gen0): Found 8 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 8 unproven cells",
+          "top_module": "tt_um_SteffenReith_ASGTop",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 24,
+          "proven_cells": 16,
+          "unproven_cells": 8,
+          "cells_coverage": 66.66666666666666
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0036": {
+      "task_id": "tt06-finale_0036",
+      "top_module_name": "tt_um_SteffenReith_PiMACTop",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0036_gen0): 16: error: Unable to bind wirememory `ui_in['sd3:'sd0]' in `tt_um_SteffenReith_PiMACTop.piMAC'",
+          "syntax_error": "16: error: Unable to bind wirememory `ui_in['sd3:'sd0]' in `tt_um_SteffenReith_PiMACTop.piMAC'",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0037": {
+      "task_id": "tt06-finale_0037",
+      "top_module_name": "tt_um_SteffenReith_PiMACTop",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0037_gen0): Found 24 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 24 unproven cells",
+          "top_module": "tt_um_SteffenReith_PiMACTop",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 24,
+          "proven_cells": 0,
+          "unproven_cells": 24,
+          "cells_coverage": 0.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0038": {
+      "task_id": "tt06-finale_0038",
+      "top_module_name": "tt_um_thorkn_audiochip_v2",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0038_gen0): Found 24 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 24 unproven cells",
+          "top_module": "tt_um_thorkn_audiochip_v2",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 239,
+          "proven_cells": 215,
+          "unproven_cells": 24,
+          "cells_coverage": 89.9581589958159
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0039": {
+      "task_id": "tt06-finale_0039",
+      "top_module_name": "tt_um_thorkn_audiochip_v2",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0039_gen0): Found 10 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 10 unproven cells",
+          "top_module": "tt_um_thorkn_audiochip_v2",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 199,
+          "proven_cells": 189,
+          "unproven_cells": 10,
+          "cells_coverage": 94.9748743718593
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0040": {
+      "task_id": "tt06-finale_0040",
+      "top_module_name": "tt_um_thorkn_audiochip_v2",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0040_gen0): Found 14 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 14 unproven cells",
+          "top_module": "tt_um_thorkn_audiochip_v2",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 299,
+          "proven_cells": 285,
+          "unproven_cells": 14,
+          "cells_coverage": 95.31772575250837
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0041": {
+      "task_id": "tt06-finale_0041",
+      "top_module_name": "tt_um_thorkn_audiochip_v2",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0041_gen0): Found 78 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 78 unproven cells",
+          "top_module": "tt_um_thorkn_audiochip_v2",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 352,
+          "proven_cells": 274,
+          "unproven_cells": 78,
+          "cells_coverage": 77.8409090909091
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0042": {
+      "task_id": "tt06-finale_0042",
+      "top_module_name": "tt_um_7seg_animated",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0042_gen0): 246: error: clk60 is not a valid l-value in tt_um_7seg_animated.clk_divider.",
+          "syntax_error": "246: error: clk60 is not a valid l-value in tt_um_7seg_animated.clk_divider.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0043": {
+      "task_id": "tt06-finale_0043",
+      "top_module_name": "tt_um_7seg_animated",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0043_gen0): Found 2 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 2 unproven cells",
+          "top_module": "tt_um_7seg_animated",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 137,
+          "proven_cells": 135,
+          "unproven_cells": 2,
+          "cells_coverage": 98.54014598540147
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0044": {
+      "task_id": "tt06-finale_0044",
+      "top_module_name": "tt_um_7seg_animated",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0044_gen0): Found 14 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 14 unproven cells",
+          "top_module": "tt_um_7seg_animated",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 112,
+          "proven_cells": 98,
+          "unproven_cells": 14,
+          "cells_coverage": 87.5
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0045": {
+      "task_id": "tt06-finale_0045",
+      "top_module_name": "tt_um_7seg_animated",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0045_gen0): Found 18 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 18 unproven cells",
+          "top_module": "tt_um_7seg_animated",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "36: warning: Port 7 (out) of segment_animator expects 7 bits, got 8."
+          ],
+          "total_cells": 24,
+          "proven_cells": 6,
+          "unproven_cells": 18,
+          "cells_coverage": 25.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0046": {
+      "task_id": "tt06-finale_0046",
+      "top_module_name": "tt_um_aiju_8080",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0046_gen0): Found 70 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 70 unproven cells",
+          "top_module": "tt_um_aiju_8080",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 401,
+          "proven_cells": 331,
+          "unproven_cells": 70,
+          "cells_coverage": 82.54364089775561
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0047": {
+      "task_id": "tt06-finale_0047",
+      "top_module_name": "tt_um_aiju_8080",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0047_gen0): Found 124 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 124 unproven cells",
+          "top_module": "tt_um_aiju_8080",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 198,
+          "proven_cells": 74,
+          "unproven_cells": 124,
+          "cells_coverage": 37.37373737373738
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0048": {
+      "task_id": "tt06-finale_0048",
+      "top_module_name": "tt_um_aiju_8080",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_aiju_8080",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 452,
+          "proven_cells": 452,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0049": {
+      "task_id": "tt06-finale_0049",
+      "top_module_name": "tt_um_aiju_8080",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0049_gen0): Found 50 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 50 unproven cells",
+          "top_module": "tt_um_aiju_8080",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 51,
+          "proven_cells": 1,
+          "unproven_cells": 50,
+          "cells_coverage": 1.9607843137254901
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0050": {
+      "task_id": "tt06-finale_0050",
+      "top_module_name": "tt_um_andrewtron3000",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0050_gen0): 2192: error: Invalid module instantiation",
+          "syntax_error": "2192: error: Invalid module instantiation",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0051": {
+      "task_id": "tt06-finale_0051",
+      "top_module_name": "tt_um_andrewtron3000",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_andrewtron3000",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 1348,
+          "proven_cells": 1348,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0052": {
+      "task_id": "tt06-finale_0052",
+      "top_module_name": "tt_um_andrewtron3000",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0052_gen0): Found 76 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 76 unproven cells",
+          "top_module": "tt_um_andrewtron3000",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 1322,
+          "proven_cells": 1246,
+          "unproven_cells": 76,
+          "cells_coverage": 94.25113464447806
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0053": {
+      "task_id": "tt06-finale_0053",
+      "top_module_name": "tt_um_andrewtron3000",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0053_gen0): 1943: error: Port CLK (1) of module mkRule30 is not declared within module.",
+          "syntax_error": "1943: error: Port CLK (1) of module mkRule30 is not declared within module.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "1954: warning: implicit definition of wire 'RDY_getResult'.",
+            "1955: warning: implicit definition of wire 'CAN_FIRE_getResult'.",
+            "1956: warning: implicit definition of wire 'WILL_FIRE_getResult'.",
+            "1959: warning: implicit definition of wire 'getResult'.",
+            "1962: warning: implicit definition of wire 'rule30$start_a'.",
+            "1963: warning: implicit definition of wire 'rule30$EN_start'.",
+            "1964: warning: implicit definition of wire 'rule30$EN_getResult'."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0054": {
+      "task_id": "tt06-finale_0054",
+      "top_module_name": "tt_um_andrewtron3000",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0054_gen0): 102: error: Port CLK (1) of module mkRule30Driver has no direction declaration.",
+          "syntax_error": "102: error: Port CLK (1) of module mkRule30Driver has no direction declaration.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "125: warning: implicit definition of wire 'CLK'.",
+            "126: warning: implicit definition of wire 'RST_N'.",
+            "129: warning: implicit definition of wire 'EN_startup_value'.",
+            "132: warning: implicit definition of wire 'EN_operation_mode'.",
+            "162: warning: implicit definition of wire 'RDY_operation_mode'.",
+            "163: warning: implicit definition of wire 'RDY_startup_value'.",
+            "171: warning: implicit definition of wire 'txrx_SOUT'."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0055": {
+      "task_id": "tt06-finale_0055",
+      "top_module_name": "tt_um_andrewtron3000",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0055_gen0): Found 24 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 24 unproven cells",
+          "top_module": "tt_um_andrewtron3000",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 24,
+          "proven_cells": 0,
+          "unproven_cells": 24,
+          "cells_coverage": 0.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0056": {
+      "task_id": "tt06-finale_0056",
+      "top_module_name": "tt_um_couchand_cora16",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0056_gen0): Found 34 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 34 unproven cells",
+          "top_module": "tt_um_couchand_cora16",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 599,
+          "proven_cells": 565,
+          "unproven_cells": 34,
+          "cells_coverage": 94.32387312186978
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0057": {
+      "task_id": "tt06-finale_0057",
+      "top_module_name": "tt_um_couchand_cora16",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0057_gen0): 120: error: Unable to bind wirememory `ena' in `tt_um_couchand_cora16.cpu_instance'",
+          "syntax_error": "120: error: Unable to bind wirememory `ena' in `tt_um_couchand_cora16.cpu_instance'",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "189: warning: Port 8 (data_in) of spi_ram_controller expects 32 bits, got 16.",
+            "189: warning: Port 11 (data_out) of spi_ram_controller expects 32 bits, got 16."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0058": {
+      "task_id": "tt06-finale_0058",
+      "top_module_name": "tt_um_couchand_cora16",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0058_gen0): Found 255 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 255 unproven cells",
+          "top_module": "tt_um_couchand_cora16",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 587,
+          "proven_cells": 332,
+          "unproven_cells": 255,
+          "cells_coverage": 56.558773424190804
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0059": {
+      "task_id": "tt06-finale_0059",
+      "top_module_name": "tt_um_couchand_cora16",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0059_gen0): 28: error: Unable to bind wirememory `data_out' in `tt_um_couchand_cora16'",
+          "syntax_error": "28: error: Unable to bind wirememory `data_out' in `tt_um_couchand_cora16'",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0060": {
+      "task_id": "tt06-finale_0060",
+      "top_module_name": "tt_um_drburke3_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_drburke3_top",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 201,
+          "proven_cells": 201,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0061": {
+      "task_id": "tt06-finale_0061",
+      "top_module_name": "tt_um_drburke3_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_drburke3_top",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 201,
+          "proven_cells": 201,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0062": {
+      "task_id": "tt06-finale_0062",
+      "top_module_name": "tt_um_drburke3_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_drburke3_top",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 203,
+          "proven_cells": 203,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0063": {
+      "task_id": "tt06-finale_0063",
+      "top_module_name": "tt_um_drburke3_top",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0063_gen0): 94: error: Wrong number of ports. Expecting 6, got 7.",
+          "syntax_error": "94: error: Wrong number of ports. Expecting 6, got 7.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0064": {
+      "task_id": "tt06-finale_0064",
+      "top_module_name": "tt_um_exai_izhikevich_neuron",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0064_gen0): 154: error: Port out (1) of module signed_mult has no direction declaration.",
+          "syntax_error": "154: error: Port out (1) of module signed_mult has no direction declaration.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "163: warning: implicit definition of wire 'out'."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0065": {
+      "task_id": "tt06-finale_0065",
+      "top_module_name": "tt_um_exai_izhikevich_neuron",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0065_gen0): 31: error: Unable to bind wirememory `a' in `tt_um_exai_izhikevich_neuron'",
+          "syntax_error": "31: error: Unable to bind wirememory `a' in `tt_um_exai_izhikevich_neuron'",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [
+            "31: warning: implicit definition of wire 'out'."
+          ],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0066": {
+      "task_id": "tt06-finale_0066",
+      "top_module_name": "tt_um_triple_watchdog",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0066_gen0): 58: error: Net watchdog_expired is not defined in this context.",
+          "syntax_error": "58: error: Net watchdog_expired is not defined in this context.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0067": {
+      "task_id": "tt06-finale_0067",
+      "top_module_name": "tt_um_triple_watchdog",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0067_gen0): 60: error: Unable to bind wirememory `ena' in `tt_um_triple_watchdog.watchdog1'",
+          "syntax_error": "60: error: Unable to bind wirememory `ena' in `tt_um_triple_watchdog.watchdog1'",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0068": {
+      "task_id": "tt06-finale_0068",
+      "top_module_name": "tt_um_topTDC",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0068_gen0): 237: error: can not select part of scalar: tx_data",
+          "syntax_error": "237: error: can not select part of scalar: tx_data",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0069": {
+      "task_id": "tt06-finale_0069",
+      "top_module_name": "tt_um_topTDC",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0069_gen0): Found 16 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 16 unproven cells",
+          "top_module": "tt_um_topTDC",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 113,
+          "proven_cells": 97,
+          "unproven_cells": 16,
+          "cells_coverage": 85.84070796460178
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0070": {
+      "task_id": "tt06-finale_0070",
+      "top_module_name": "tt_um_topTDC",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0070_gen0): Found 4 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 4 unproven cells",
+          "top_module": "tt_um_topTDC",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 29,
+          "proven_cells": 25,
+          "unproven_cells": 4,
+          "cells_coverage": 86.20689655172413
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0071": {
+      "task_id": "tt06-finale_0071",
+      "top_module_name": "tt_um_topTDC",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0071_gen0): Found 16 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 16 unproven cells",
+          "top_module": "tt_um_topTDC",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 24,
+          "proven_cells": 8,
+          "unproven_cells": 16,
+          "cells_coverage": 33.33333333333333
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0072": {
+      "task_id": "tt06-finale_0072",
+      "top_module_name": "tt_um_ian_keypad_controller",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0072_gen0): Found 14 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 14 unproven cells",
+          "top_module": "tt_um_ian_keypad_controller",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 113,
+          "proven_cells": 99,
+          "unproven_cells": 14,
+          "cells_coverage": 87.61061946902655
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0073": {
+      "task_id": "tt06-finale_0073",
+      "top_module_name": "tt_um_ian_keypad_controller",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0073_gen0): Found 24 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 24 unproven cells",
+          "top_module": "tt_um_ian_keypad_controller",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 108,
+          "proven_cells": 84,
+          "unproven_cells": 24,
+          "cells_coverage": 77.77777777777779
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0074": {
+      "task_id": "tt06-finale_0074",
+      "top_module_name": "tt_um_ian_keypad_controller",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0074_gen0): Found 20 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 20 unproven cells",
+          "top_module": "tt_um_ian_keypad_controller",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 28,
+          "proven_cells": 8,
+          "unproven_cells": 20,
+          "cells_coverage": 28.57142857142857
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0075": {
+      "task_id": "tt06-finale_0075",
+      "top_module_name": "tt_um_mattvenn_rgb_mixer",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0075_gen0): Found 83 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 83 unproven cells",
+          "top_module": "tt_um_mattvenn_rgb_mixer",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 146,
+          "proven_cells": 63,
+          "unproven_cells": 83,
+          "cells_coverage": 43.15068493150685
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0076": {
+      "task_id": "tt06-finale_0076",
+      "top_module_name": "tt_um_mattvenn_rgb_mixer",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0076_gen0): 48: error: uo_out is not a valid l-value in tt_um_mattvenn_rgb_mixer.",
+          "syntax_error": "48: error: uo_out is not a valid l-value in tt_um_mattvenn_rgb_mixer.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0077": {
+      "task_id": "tt06-finale_0077",
+      "top_module_name": "tt_um_MATTHIAS_M_PAL_TOP_WRAPPER",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0077_gen0): Found 24 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 24 unproven cells",
+          "top_module": "tt_um_MATTHIAS_M_PAL_TOP_WRAPPER",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 24,
+          "proven_cells": 0,
+          "unproven_cells": 24,
+          "cells_coverage": 0.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0078": {
+      "task_id": "tt06-finale_0078",
+      "top_module_name": "tt_um_mitssdd",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0078_gen0): Found 2 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 2 unproven cells",
+          "top_module": "tt_um_mitssdd",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 188,
+          "proven_cells": 186,
+          "unproven_cells": 2,
+          "cells_coverage": 98.93617021276596
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0079": {
+      "task_id": "tt06-finale_0079",
+      "top_module_name": "tt_um_mitssdd",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0079_gen0): Found 10 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 10 unproven cells",
+          "top_module": "tt_um_mitssdd",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 86,
+          "proven_cells": 76,
+          "unproven_cells": 10,
+          "cells_coverage": 88.37209302325581
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0080": {
+      "task_id": "tt06-finale_0080",
+      "top_module_name": "tt_um_mitssdd",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0080_gen0): Found 24 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 24 unproven cells",
+          "top_module": "tt_um_mitssdd",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 24,
+          "proven_cells": 0,
+          "unproven_cells": 24,
+          "cells_coverage": 0.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0081": {
+      "task_id": "tt06-finale_0081",
+      "top_module_name": "tt_um_noritsuna_i4004",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0081_gen0): 458: error: Malformed statement",
+          "syntax_error": "458: error: Malformed statement",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0082": {
+      "task_id": "tt06-finale_0082",
+      "top_module_name": "tt_um_noritsuna_i4004",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0082_gen0): Found 18 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 18 unproven cells",
+          "top_module": "tt_um_noritsuna_i4004",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 631,
+          "proven_cells": 613,
+          "unproven_cells": 18,
+          "cells_coverage": 97.1473851030111
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0083": {
+      "task_id": "tt06-finale_0083",
+      "top_module_name": "tt_um_noritsuna_i4004",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0083_gen0): 764: error: Unable to bind wirememory `a12' in `tt_um_noritsuna_i4004.id_board'",
+          "syntax_error": "764: error: Unable to bind wirememory `a12' in `tt_um_noritsuna_i4004.id_board'",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0084": {
+      "task_id": "tt06-finale_0084",
+      "top_module_name": "tt_um_noritsuna_i4004",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_noritsuna_i4004",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 522,
+          "proven_cells": 522,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0085": {
+      "task_id": "tt06-finale_0085",
+      "top_module_name": "tt_um_noritsuna_i4004",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_noritsuna_i4004",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [
+            "1148: warning: @* is sensitive to all 16 words in array 'ram'."
+          ],
+          "total_cells": 533,
+          "proven_cells": 533,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0086": {
+      "task_id": "tt06-finale_0086",
+      "top_module_name": "tt_um_noritsuna_i4004",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0086_gen0): Found 199 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 199 unproven cells",
+          "top_module": "tt_um_noritsuna_i4004",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "163: warning: output port data_out_pad is coerced to inout."
+          ],
+          "total_cells": 610,
+          "proven_cells": 411,
+          "unproven_cells": 199,
+          "cells_coverage": 67.37704918032786
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0087": {
+      "task_id": "tt06-finale_0087",
+      "top_module_name": "tt_um_noritsuna_i4004",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0087_gen0): 34: error: Unable to bind wirememory `sysclk' in `tt_um_noritsuna_i4004'",
+          "syntax_error": "34: error: Unable to bind wirememory `sysclk' in `tt_um_noritsuna_i4004'",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0088": {
+      "task_id": "tt06-finale_0088",
+      "top_module_name": "tt_um_pckys_game",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0088_gen0): Found 16 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 16 unproven cells",
+          "top_module": "tt_um_pckys_game",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "22: warning: implicit definition of wire 'DI'."
+          ],
+          "total_cells": 120,
+          "proven_cells": 104,
+          "unproven_cells": 16,
+          "cells_coverage": 86.66666666666667
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0089": {
+      "task_id": "tt06-finale_0089",
+      "top_module_name": "tt_um_pckys_game",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0089_gen0): Found 30 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 30 unproven cells",
+          "top_module": "tt_um_pckys_game",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "22: warning: implicit definition of wire 'DI'."
+          ],
+          "total_cells": 127,
+          "proven_cells": 97,
+          "unproven_cells": 30,
+          "cells_coverage": 76.37795275590551
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0090": {
+      "task_id": "tt06-finale_0090",
+      "top_module_name": "tt_um_pckys_game",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0090_gen0): Found 24 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 24 unproven cells",
+          "top_module": "tt_um_pckys_game",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 24,
+          "proven_cells": 0,
+          "unproven_cells": 24,
+          "cells_coverage": 0.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0091": {
+      "task_id": "tt06-finale_0091",
+      "top_module_name": "tt_um_ks_pyamnihc",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_ks_pyamnihc",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 1676,
+          "proven_cells": 1676,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0092": {
+      "task_id": "tt06-finale_0092",
+      "top_module_name": "tt_um_ks_pyamnihc",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_ks_pyamnihc",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 1676,
+          "proven_cells": 1676,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0093": {
+      "task_id": "tt06-finale_0093",
+      "top_module_name": "tt_um_ks_pyamnihc",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0093_gen0): Found 16 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 16 unproven cells",
+          "top_module": "tt_um_ks_pyamnihc",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 24,
+          "proven_cells": 8,
+          "unproven_cells": 16,
+          "cells_coverage": 33.33333333333333
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0094": {
+      "task_id": "tt06-finale_0094",
+      "top_module_name": "tt_um_tommythorn_4b_cpu_v2",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0094_gen0): Found 16 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 16 unproven cells",
+          "top_module": "tt_um_tommythorn_4b_cpu_v2",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "141: warning: Part select [7:4] is selecting after the vector mem_data[3:0]."
+          ],
+          "total_cells": 28,
+          "proven_cells": 12,
+          "unproven_cells": 16,
+          "cells_coverage": 42.857142857142854
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0095": {
+      "task_id": "tt06-finale_0095",
+      "top_module_name": "tt_um_otp_encryptor",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0095_gen0): 86: error: Port clk (1) of module LFSR_PRNG is not declared within module.",
+          "syntax_error": "86: error: Port clk (1) of module LFSR_PRNG is not declared within module.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0096": {
+      "task_id": "tt06-finale_0096",
+      "top_module_name": "tt_um_otp_encryptor",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0096_gen0): Found 20 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 20 unproven cells",
+          "top_module": "tt_um_otp_encryptor",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 24,
+          "proven_cells": 4,
+          "unproven_cells": 20,
+          "cells_coverage": 16.666666666666664
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0097": {
+      "task_id": "tt06-finale_0097",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0097_gen0): Found 32 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 32 unproven cells",
+          "top_module": "tt_um_minibyte",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 775,
+          "proven_cells": 743,
+          "unproven_cells": 32,
+          "cells_coverage": 95.87096774193549
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0098": {
+      "task_id": "tt06-finale_0098",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_minibyte",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 775,
+          "proven_cells": 775,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0099": {
+      "task_id": "tt06-finale_0099",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0099_gen0): 3248: error: A reference to a wire or reg (`b_in['sd2:'sd0]') is not allowed in a constant expression.",
+          "syntax_error": "3248: error: A reference to a wire or reg (`b_in['sd2:'sd0]') is not allowed in a constant expression.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0100": {
+      "task_id": "tt06-finale_0100",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0100_gen0): Found 141 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 141 unproven cells",
+          "top_module": "tt_um_minibyte",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "243: warning: implicit definition of wire 'set_a_out'.",
+            "255: warning: implicit definition of wire 'set_m_out'.",
+            "267: warning: implicit definition of wire 'set_pc_out'.",
+            "268: warning: implicit definition of wire 'inc_pc_out'.",
+            "280: warning: implicit definition of wire 'set_ir_out'.",
+            "292: warning: implicit definition of wire 'set_ccr_out'.",
+            "305: warning: implicit definition of wire 'alu_op_out'.",
+            "362: warning: implicit definition of wire 'dft_curr_state'.",
+            "301: warning: Port 3 (alu_op_in) of minibyte_alu expects 4 bits, got 1.",
+            "315: warning: Port 3 (sel_in) of minibyte_genmux_2x expects 1 bits, got 8.",
+            "330: warning: Port 13 (addr_mux_out) of minibyte_cu expects 1 bits, got 8.",
+            "330: warning: Port 14 (alu_op_out) of minibyte_cu expects 4 bits, got 1.",
+            "330: warning: Port 17 (dft_curr_state) of minibyte_cu expects 8 bits, got 1.",
+            "368: warning: Port 3 (c_in) of minibyte_genmux_8x expects 8 bits, got 9.",
+            "368: warning: Port 7 (g_in) of minibyte_genmux_8x expects 8 bits, got 7.",
+            "368: warning: Port 8 (h_in) of minibyte_genmux_8x expects 8 bits, got 1."
+          ],
+          "total_cells": 543,
+          "proven_cells": 402,
+          "unproven_cells": 141,
+          "cells_coverage": 74.03314917127072
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0101": {
+      "task_id": "tt06-finale_0101",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": false,
+          "equiv_passed": false,
+          "passfail": "Syntax error (id=tt06-finale_0101_gen0): 558: error: Incomprehensible case expression.",
+          "syntax_error": "558: error: Incomprehensible case expression.",
+          "equiv_error": "",
+          "top_module": null,
+          "eqy_return_code": null,
+          "equiv_method": "error",
+          "warnings": [],
+          "total_cells": null,
+          "proven_cells": null,
+          "unproven_cells": null,
+          "cells_coverage": null
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 0,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "0.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0102": {
+      "task_id": "tt06-finale_0102",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_minibyte",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 775,
+          "proven_cells": 775,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0103": {
+      "task_id": "tt06-finale_0103",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_minibyte",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 775,
+          "proven_cells": 775,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0104": {
+      "task_id": "tt06-finale_0104",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_minibyte",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 775,
+          "proven_cells": 775,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0105": {
+      "task_id": "tt06-finale_0105",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_minibyte",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 775,
+          "proven_cells": 775,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0106": {
+      "task_id": "tt06-finale_0106",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": true,
+          "passfail": "Success",
+          "syntax_error": "",
+          "equiv_error": "",
+          "top_module": "tt_um_minibyte",
+          "eqy_return_code": 0,
+          "equiv_method": "proven",
+          "warnings": [],
+          "total_cells": 775,
+          "proven_cells": 775,
+          "unproven_cells": 0,
+          "cells_coverage": 100.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 1,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "100.00%"
+      }
+    },
+    "tt06-finale_0107": {
+      "task_id": "tt06-finale_0107",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0107_gen0): Found 24 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 24 unproven cells",
+          "top_module": "tt_um_minibyte",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [
+            "3717: warning: @* is sensitive to all 8 words in array 'reg_file'."
+          ],
+          "total_cells": 551,
+          "proven_cells": 527,
+          "unproven_cells": 24,
+          "cells_coverage": 95.6442831215971
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    },
+    "tt06-finale_0108": {
+      "task_id": "tt06-finale_0108",
+      "top_module_name": "tt_um_minibyte",
+      "num_generations": 1,
+      "generations": [
+        {
+          "generation_idx": 0,
+          "syntax_passed": true,
+          "equiv_passed": false,
+          "passfail": "Equivalence error (id=tt06-finale_0108_gen0): Found 24 unproven cells",
+          "syntax_error": "",
+          "equiv_error": "Found 24 unproven cells",
+          "top_module": "tt_um_minibyte",
+          "eqy_return_code": 0,
+          "equiv_method": "failed",
+          "warnings": [],
+          "total_cells": 24,
+          "proven_cells": 0,
+          "unproven_cells": 24,
+          "cells_coverage": 0.0
+        }
+      ],
+      "summary": {
+        "syntax_pass_count": 1,
+        "equiv_pass_count": 0,
+        "total_generations": 1,
+        "syntax_pass_rate": "100.00%",
+        "equiv_pass_rate": "0.00%"
+      }
+    }
+  }
+}
